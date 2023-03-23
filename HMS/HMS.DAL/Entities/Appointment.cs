@@ -7,6 +7,6 @@ namespace HMS.DAL.Entities
         public DateTime AppointmentDate { get; set; }
         public string Reason { get; set; }
         public int AppUserId { get; set; }
-        public AppUser user { get; set; }
+        public AppUser AppUser { get; set; }
     }
 }
