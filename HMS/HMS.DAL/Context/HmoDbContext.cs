@@ -13,6 +13,23 @@ namespace HMS.DAL.Context
         {
             //
 
+            
+            modelBuilder.Entity<AppUser>(e =>
+            {
+                e.Property(u => u.Email)
+                .HasMaxLength(50)
+                .IsRequired();
+                e.HasIndex(u => u.Email)
+                 .IsUnique();
+            });
+
+
+
+            modelBuilder.Entity<AppUser>()
+                .Property(u => u.UserName)
+                .HasMaxLength(100)
+                .IsRequired();
+
             base.OnModelCreating(modelBuilder);
         }
     }
