@@ -4,12 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HMS.DAL.Enums
+namespace HMS.DAL.Dtos.Reponses
 {
-    public enum UserType
+    internal class AuthenticationResponse
     {
-        Patient,
-        Admin,
-        Doctor
     }
 }

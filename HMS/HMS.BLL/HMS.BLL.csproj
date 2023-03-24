@@ -11,9 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Extensions\" />
     <Folder Include="Handlers\" />
-    <Folder Include="Implementation\" />
     <Folder Include="Interfaces\" />
     <Folder Include="Infrastructure\" />
   </ItemGroup>

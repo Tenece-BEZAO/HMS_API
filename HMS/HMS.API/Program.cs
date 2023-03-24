@@ -1,6 +1,14 @@
+using AutoMapper;
+using HMS.BLL.Extensions;
+using HMS.BLL.Implementation;
+using HMS.DAL.Configuration.MappingConfiguration;
 using HMS.DAL.Context;
+using HMS.DAL.Entities;
+using HMS.DAL.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-
+using System;
+using System.Reflection;
 
 namespace HMS.API
 {
@@ -18,7 +26,16 @@ namespace HMS.API
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
+            builder.Services.AddIdentity<AppUser, IdentityRole>()
+              .AddEntityFrameworkStores<HmoDbContext>()
+              .AddDefaultTokenProviders();
+            builder.Services.AddAutoMapper(typeof(MappingProfile));
+            builder.Services.AddAutoMapper(Assembly.Load("HMS.DAL"));
 
+            builder.Services.RegisterServices();
+
+            builder.Services.AddAuthentication();
+           
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
