@@ -1,4 +1,5 @@
-﻿using HMS.DAL.Entities;
+﻿using HMS.DAL.Configuration.RepoConfiguration;
+using HMS.DAL.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,12 +10,10 @@ namespace HMS.DAL.Context
         public HmoDbContext(DbContextOptions<HmoDbContext> options) : base(options)
         { }
 
+        public DbSet<Appointment> Appointments { get; set; }
+        public DbSet<Plan> Plans { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-
-
-
+        {   
             modelBuilder.Entity<AppUser>(e =>
             {
                 e.Property(u => u.Email)
@@ -42,11 +41,6 @@ namespace HMS.DAL.Context
                 .HasMaxLength(100)
                 .IsRequired()
                 .HasAnnotation("ErrorMessage", "Lastname field is required");
-
-            modelBuilder.Entity<AppUser>()
-                .Property(u => u.MiddleName)
-                .HasMaxLength(100)
-                .IsRequired(false);
 
             modelBuilder.Entity<Appointment>()
                 .Property(a => a.Reason)
@@ -83,6 +77,10 @@ namespace HMS.DAL.Context
                 .HasPrecision(15, 2)
                 .IsRequired()
                 .HasAnnotation("ErrorMessage", "Price field is required");
+                
+          base.OnModelCreating(modelBuilder);
+
+            modelBuilder.ApplyConfiguration(new RoleConfiguration());
         }
     }
 }
