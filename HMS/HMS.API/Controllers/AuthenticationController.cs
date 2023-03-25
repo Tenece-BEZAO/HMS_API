@@ -1,6 +1,6 @@
 ﻿using HMS.DAL.Dtos.Requests;
 using HMS.DAL.Interfaces;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HMS.API.Controllers
@@ -18,7 +18,6 @@ namespace HMS.API.Controllers
 
         [HttpPost]
         [Route("register")]
-        //[ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> RegisterUser([FromBody] RegisterDto register)
         {
             if (ModelState.IsValid)
@@ -37,16 +36,36 @@ namespace HMS.API.Controllers
             return BadRequest();
         }
 
-/*        [HttpPost]
-        [Route("Login")]
-        public async Task<IActionResult> LoginUser([FromBody] LoginDto loginDto)
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Authenticate([FromBody] LoginDto loginDto)
         {
-            if (ModelState.IsValid)
+            if (!await _authService.UserLogin(loginDto))
+                return Unauthorized();
+            return Ok(new
             {
-                await _authService.UserLogin(loginDto);
-                return StatusCode(201);
-            }
-            return BadRequest();
-        }*/
+                Token = await _authService.GenerateToken()
+            });
+        }
+
+
+        [Authorize]
+        [HttpPost]
+        [Route("ChangePassword")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto model)
+        {
+            await _authService.ChangePasswordAsync(model.Email, model.OldPassword, model.NewPassword);
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("Logout")]
+        public async Task<IActionResult> Logout()
+        {
+            await _authService.Logout();
+
+            return Ok();
+        }
+
     }
 }

@@ -1,86 +1,113 @@
 ﻿using AutoMapper;
-using Azure.Core;
-using HMS.DAL.Configuration.MappingConfiguration;
-using HMS.DAL.Dtos.Reponses;
 using HMS.DAL.Dtos.Requests;
 using HMS.DAL.Entities;
 using HMS.DAL.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
+
 
 namespace HMS.BLL.Implementation
 {
     public class AuthenticationService : IAuthenticationService
     {
-        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly UserManager<AppUser> _userManager;
         private readonly IConfiguration _configuration;
-        private readonly IRepository<AppUser> _userRepo;
+        private readonly SignInManager<AppUser> _signInManager;
+        private AppUser? _user;
 
-        public AuthenticationService(IUnitOfWork unitOfWork, IMapper mapper, UserManager<AppUser> userManager, IConfiguration configuration)
+
+        public AuthenticationService(IMapper mapper, UserManager<AppUser> userManager, IConfiguration configuration, SignInManager<AppUser> signInManager)
         {
-            _unitOfWork = unitOfWork;
             _mapper = mapper;
             _userManager = userManager;
             _configuration = configuration;
-            _userRepo = _unitOfWork.GetRepository<AppUser>();
+            _signInManager = signInManager;
         }
-       
+
         public async Task<IdentityResult> RegisterUser(RegisterDto register)
         {
-            AppUser UserExist = await _userManager.FindByEmailAsync(register.Email);
-            if (UserExist != null)
+            _user = await _userManager.FindByEmailAsync(register.Email);
+            if (_user != null)
             {
-                return null;
-            
-
+                return IdentityResult.Failed(new IdentityError { Description = "User already exist" });
             }
-/*            var newUser = new RegisterDto()
-            {
-                Email = register.Email,
-                FullName = register.FullName,
-                UserName = register.FullName,
-                Password = register.Password,
-                ConfirmedPassword = register.Password,
-                PhoneNumber = register.PhoneNumber,
-                Roles = register.Roles,
-            };*/
-           // var newUser = _mapper.Map<AppUser>(register);
-            var newUser = _mapper.Map(register, UserExist);
+            var newUser = _mapper.Map(register, _user);
             var result = await _userManager.CreateAsync(newUser, register.Password);
             if (result.Succeeded)
                 await _userManager.AddToRolesAsync(newUser, register.Roles);
             return result;
         }
 
-  /*      public async Task<AuthenticationResponse> UserLogin(LoginDto loginDto)
+        public async Task<bool> UserLogin(LoginDto loginDto)
         {
-            var existingUser = await _userManager.FindByEmailAsync(loginDto.Email);
-            if (existingUser == null)
+            _user = await _userManager.FindByEmailAsync(loginDto.Email);
+            var result = (_user != null && await _userManager.CheckPasswordAsync(_user, loginDto.Password));
+            if (!result)
+            { return false; }
+            return result;
+        }
+        public async Task<string> GenerateToken()
+        {
+            var signingCredentials = GetSigningCredentials();
+            var claims = await GetClaims();
+            var tokenOptions = GenerateTokenOptions(signingCredentials, claims);
+            return new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+
+        }
+        private SigningCredentials GetSigningCredentials()
+        {
+            var key = Encoding.UTF8.GetBytes(_configuration.GetSection("JwtConfig:Secret").Value);
+            var secret = new SymmetricSecurityKey(key);
+            return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
+        }
+        private async Task<List<Claim>> GetClaims()
+        {
+            var claims = new List<Claim>
+             {
+             new Claim(ClaimTypes.Name, _user.UserName)
+             };
+            var roles = await _userManager.GetRolesAsync(_user);
+            foreach (var role in roles)
             {
-                throw new InvalidOperationException("Invalid username or password");
+                claims.Add(new Claim(ClaimTypes.Role, role));
             }
-            bool isCorrectPassword = await _userManager.CheckPasswordAsync(existingUser, loginDto.Password);
-            if (!isCorrectPassword)
+            return claims;
+        }
+        private JwtSecurityToken GenerateTokenOptions(SigningCredentials signingCredentials, List<Claim> claims)
+        {
+            var jwtSettings = _configuration.GetSection("JwtConfig");
+            var tokenOptions = new JwtSecurityToken
+            (
+            issuer: jwtSettings["Issuer"],
+            audience: jwtSettings["Audience"],
+            claims: claims,
+            expires: DateTime.Now.AddMinutes(Convert.ToDouble(jwtSettings["Expires"])),
+            signingCredentials: signingCredentials
+            );
+            return tokenOptions;
+        }
+
+
+        public async Task<IdentityResult> ChangePasswordAsync(string Email, string oldPassword, string newPassword)
+        {
+            var user = await _userManager.FindByEmailAsync(Email);
+            if (user == null)
             {
-                throw new InvalidOperationException("Invalid username or password");
+                return IdentityResult.Failed(new IdentityError { Description = "User not found." });
             }
-            *//*          var jwtToken = GenerateToken(existingUser); return Ok(new AuthResult()
-                      {
-                          Token = jwtToken,
-                          Result = true
-                      });*//*
-            return new AuthenticationResponse { UserType = userType, FullName = fullName, UserId = user.Id, TwoFactor = true };
 
-        }*/
-
-       
-
+            var result = await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
+            return result;
+        }
+        public async Task Logout()
+        {
+            await _signInManager.SignOutAsync();
+        }
     }
 }
+

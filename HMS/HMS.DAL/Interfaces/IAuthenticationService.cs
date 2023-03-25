@@ -1,4 +1,5 @@
 ﻿using HMS.DAL.Dtos.Requests;
+using HMS.DAL.Entities;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,10 @@ namespace HMS.DAL.Interfaces
     public interface IAuthenticationService
     {
          Task<IdentityResult> RegisterUser(RegisterDto userForRegistration);
-        /*Task<string> UserLogin(LoginDto loginDto);*/
+        Task<bool> UserLogin(LoginDto loginDto);
+        Task<string> GenerateToken();
+        Task<IdentityResult> ChangePasswordAsync(string Email, string oldPassword, string newPassword);
+        Task Logout();
+
     }
 }
