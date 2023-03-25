@@ -30,17 +30,6 @@ namespace HMS.DAL.Context
                 .IsRequired()
                 .HasAnnotation("ErrorMessage", "Username field is required");
 
-            modelBuilder.Entity<AppUser>()
-                .Property(u => u.FirstName)
-                .HasMaxLength(100)
-                .IsRequired()
-                .HasAnnotation("ErrorMessage", "Firstname field is required");
-
-            modelBuilder.Entity<AppUser>()
-                .Property(u => u.LastName)
-                .HasMaxLength(100)
-                .IsRequired()
-                .HasAnnotation("ErrorMessage", "Lastname field is required");
 
             modelBuilder.Entity<Appointment>()
                 .Property(a => a.Reason)

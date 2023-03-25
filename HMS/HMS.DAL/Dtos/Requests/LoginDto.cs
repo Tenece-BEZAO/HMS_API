@@ -9,11 +9,12 @@ namespace HMS.DAL.Dtos.Requests
 {
     public class LoginDto
     {
-        [Required]
+        
         [EmailAddress]
-        public string Email { get; set; }
-
-        [Required]
-        public string Password { get; set; }
+        [Required(ErrorMessage = "User name is required")]
+        public string? Email { get; init; }
+        [Required(ErrorMessage = "Password name is required")]
+        public string? Password { get; init; }
     }
+ 
 }

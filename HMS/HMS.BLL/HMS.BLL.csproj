@@ -12,8 +12,13 @@
 
   <ItemGroup>
     <Folder Include="Handlers\" />
-    <Folder Include="Interfaces\" />
     <Folder Include="Infrastructure\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.0" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.27.0" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="5.2.2" />
   </ItemGroup>
 
 </Project>

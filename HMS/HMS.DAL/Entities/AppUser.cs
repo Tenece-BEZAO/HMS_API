@@ -9,7 +9,13 @@ namespace HMS.DAL.Entities
         public string? Address { get; set; }
         public DateTime DateOfBirth { get; set; }
         public Gender Gender { get; set; }
-        public Plan? plan { get; set; }
+        /*public string? RefreshToken { get; set; }
+        public DateTime RefreshTokenExpiryTime { get; set; }*/
+
+        public int? PlanId { get; set; }    
+        public Plan? Plan { get; set; }
+
+        public int? AppointmentId { get; set; }
         public Appointment? Appointment { get; set; }
     }
 }

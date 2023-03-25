@@ -8,23 +8,23 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace HMS.DAL.Migrations
 {
     /// <inheritdoc />
-    public partial class AddedIdentity : Migration
+    public partial class updatedEntities : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Appointment",
+                name: "Appointments",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     AppointmentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Reason = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Reason = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Appointment", x => x.Id);
+                    table.PrimaryKey("PK_Appointments", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -42,18 +42,18 @@ namespace HMS.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Plan",
+                name: "Plans",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     PlanType = table.Column<int>(type: "int", nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    Price = table.Column<decimal>(type: "decimal(15,2)", precision: 15, scale: 2, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Plan", x => x.Id);
+                    table.PrimaryKey("PK_Plans", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -86,8 +86,8 @@ namespace HMS.DAL.Migrations
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Gender = table.Column<int>(type: "int", nullable: false),
-                    planId = table.Column<int>(type: "int", nullable: false),
-                    AppointmentId = table.Column<int>(type: "int", nullable: false),
+                    PlanId = table.Column<int>(type: "int", nullable: true),
+                    AppointmentId = table.Column<int>(type: "int", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
@@ -107,15 +107,35 @@ namespace HMS.DAL.Migrations
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AspNetUsers_Appointment_AppointmentId",
+                        name: "FK_AspNetUsers_Appointments_AppointmentId",
                         column: x => x.AppointmentId,
-                        principalTable: "Appointment",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalTable: "Appointments",
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_AspNetUsers_Plan_planId",
-                        column: x => x.planId,
-                        principalTable: "Plan",
+                        name: "FK_AspNetUsers_Plans_PlanId",
+                        column: x => x.PlanId,
+                        principalTable: "Plans",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Drug",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    Price = table.Column<decimal>(type: "decimal(15,2)", precision: 15, scale: 2, nullable: false),
+                    PlanId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Drug", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Drug_Plans_PlanId",
+                        column: x => x.PlanId,
+                        principalTable: "Plans",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -210,8 +230,8 @@ namespace HMS.DAL.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "1dd8fed2-031c-407e-bd96-f77ba0fc820c", null, "Admin", "Admin" },
-                    { "da0b22f5-358d-453c-a161-3fbdb331c896", null, "Enrolle", "Enrolle" }
+                    { "0468939a-7269-482a-91e2-23837cc87ee7", null, "Admin", "Admin" },
+                    { "78fda444-61de-480f-86f8-7868ce38bd12", null, "Enrolle", "Enrolle" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -252,15 +272,17 @@ namespace HMS.DAL.Migrations
                 column: "AppointmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_Email",
+                name: "IX_AspNetUsers_PlanId",
+                table: "AspNetUsers",
+                column: "PlanId",
+                unique: true,
+                filter: "[PlanId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UniqueEmail",
                 table: "AspNetUsers",
                 column: "Email",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_planId",
-                table: "AspNetUsers",
-                column: "planId");
 
             migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
@@ -268,6 +290,12 @@ namespace HMS.DAL.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Drug_PlanId",
+                table: "Drug",
+                column: "PlanId",
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -289,16 +317,19 @@ namespace HMS.DAL.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Drug");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Appointment");
+                name: "Appointments");
 
             migrationBuilder.DropTable(
-                name: "Plan");
+                name: "Plans");
         }
     }
 }
