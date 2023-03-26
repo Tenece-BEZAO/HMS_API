@@ -7,10 +7,10 @@ namespace HMS.DAL.Entities
     {
         public string FullName { get; set; }
         public string? Address { get; set; }
-        public DateTime DateOfBirth { get; set; }
+        public DateTime DateOfBirth { get; set; } = DateTime.Now;
         public Gender Gender { get; set; }
-        /*public string? RefreshToken { get; set; }
-        public DateTime RefreshTokenExpiryTime { get; set; }*/
+        public string? RefreshToken { get; set; }
+        public DateTime RefreshTokenExpiryTime { get; set; }
 
         public int? PlanId { get; set; }    
         public Plan? Plan { get; set; }

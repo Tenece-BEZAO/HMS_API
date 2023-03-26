@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using HMS.DAL.Dtos.Reponses;
 using HMS.DAL.Dtos.Requests;
 using HMS.DAL.Entities;
 using HMS.DAL.Interfaces;
@@ -43,13 +44,27 @@ namespace HMS.BLL.Implementation
             return result;
         }
 
-        public async Task<bool> UserLogin(LoginDto loginDto)
+        public async Task<AuthStatus> UserLogin(LoginDto loginDto)
         {
+            LoginStatus loginStatus;
+            //string jwtToken = "";
+            string roleName = "";
             _user = await _userManager.FindByEmailAsync(loginDto.Email);
-            var result = (_user != null && await _userManager.CheckPasswordAsync(_user, loginDto.Password));
-            if (!result)
-            { return false; }
-            return result;
+            var result = _signInManager.PasswordSignInAsync(loginDto.Email,loginDto.Password, false, lockoutOnFailure: true).Result;
+            //var result = (_user != null && await _userManager.CheckPasswordAsync(_user, loginDto.Password));
+            if (!result.Succeeded)
+            {
+                loginStatus = LoginStatus.LoginFailed;               
+            }
+            loginStatus = LoginStatus.LoginSuccessful;
+
+            var authResponse = new AuthStatus()
+            {
+                LoginStatus = loginStatus,
+               // Token = jwtToken,
+                Role = roleName
+            };
+            return authResponse;
         }
         public async Task<string> GenerateToken()
         {
@@ -108,6 +123,7 @@ namespace HMS.BLL.Implementation
         {
             await _signInManager.SignOutAsync();
         }
+
     }
 }
 

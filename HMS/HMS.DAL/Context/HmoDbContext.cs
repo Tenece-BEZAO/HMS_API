@@ -1,4 +1,5 @@
 ﻿using HMS.DAL.Configuration.RepoConfiguration;
+using HMS.DAL.Configuration.Seed;
 using HMS.DAL.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -70,6 +71,7 @@ namespace HMS.DAL.Context
           base.OnModelCreating(modelBuilder);
 
             modelBuilder.ApplyConfiguration(new RoleConfiguration());
+            modelBuilder.ApplyConfiguration(new UserConfiguration());
         }
     }
 }

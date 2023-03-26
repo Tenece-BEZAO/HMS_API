@@ -35,12 +35,14 @@ namespace HMS.API
 
             builder.Services.AddSwaggerGen(options =>
             {
-                options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme()
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
                 {
                     Description = "Standard Authorization Header Using the Bearer Scheme (\"bearer {token}\")",
                     In = ParameterLocation.Header,
                     Name = "Authorization",
-                    Type = SecuritySchemeType.ApiKey
+                    //Type = SecuritySchemeType.ApiKey,
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "Bearer"
                 });
 
                 options.OperationFilter<SecurityRequirementsOperationFilter>();
