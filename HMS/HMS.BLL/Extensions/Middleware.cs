@@ -3,11 +3,7 @@ using HMS.DAL.Context;
 using HMS.DAL.Implementation;
 using HMS.DAL.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace HMS.BLL.Extensions
 {

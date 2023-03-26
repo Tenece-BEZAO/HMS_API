@@ -1,18 +1,11 @@
 using HMS.BLL.Extensions;
-using HMS.BLL.Implementation;
 using HMS.DAL.Configuration.MappingConfiguration;
-using HMS.DAL.Context;
-using HMS.DAL.Entities;
 using HMS.DAL.Interfaces;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using NLog;
 using Swashbuckle.AspNetCore.Filters;
 using System.Reflection;
-using System.Text;
+
 
 namespace HMS.API
 {
@@ -32,6 +25,8 @@ namespace HMS.API
             builder.Services.AddAutoMapper(Assembly.Load("HMS.DAL"));
 
             builder.Services.RegisterServices();
+            builder.Services.ReportServices();
+            builder.Services.AppointmentServices();
 
             builder.Services.AddSwaggerGen(options =>
             {
@@ -50,10 +45,9 @@ namespace HMS.API
             var app = builder.Build();
             var logger = app.Services.GetRequiredService<ILoggerService>();
             app.ConfigureExceptionHandler(logger);
+
             if (app.Environment.IsProduction())
                 app.UseHsts();
-
-
 
             if (app.Environment.IsDevelopment())
             {
@@ -67,8 +61,6 @@ namespace HMS.API
             app.UseAuthentication();
 
             app.UseAuthorization();
-
-
 
             app.MapControllers();
 

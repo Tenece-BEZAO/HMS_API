@@ -11,7 +11,7 @@ namespace HMS.DAL.Interfaces
 {
     public interface IAuthenticationService
     {
-         Task<IdentityResult> RegisterUser(RegisterDto userForRegistration);
+        Task<IdentityResult> RegisterUser(RegisterDto userForRegistration);
         Task<bool> UserLogin(LoginDto loginDto);
         Task<string> GenerateToken();
         Task<IdentityResult> ChangePasswordAsync(string Email, string oldPassword, string newPassword);
