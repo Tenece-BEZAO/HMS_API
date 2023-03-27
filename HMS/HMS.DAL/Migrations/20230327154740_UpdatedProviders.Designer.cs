@@ -4,6 +4,7 @@ using HMS.DAL.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HMS.DAL.Migrations
 {
     [DbContext(typeof(HmoDbContext))]
-    partial class HmoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230327154740_UpdatedProviders")]
+    partial class UpdatedProviders
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -130,11 +133,11 @@ namespace HMS.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "c5024f27-e6da-4f5d-a249-8ca162be4a80",
+                            Id = "cafd2387-625b-40e7-8b8b-a94f54c3cc89",
                             AccessFailedCount = 0,
                             Address = "583 Wall Dr. Gwynn Oak, MD 21207",
-                            ConcurrencyStamp = "80933bd9-448c-49b6-8c81-f34b76130828",
-                            DateOfBirth = new DateTime(2023, 3, 27, 16, 57, 17, 802, DateTimeKind.Local).AddTicks(268),
+                            ConcurrencyStamp = "5163be41-ac7d-4b2e-9f60-15583e79a09b",
+                            DateOfBirth = new DateTime(2023, 3, 27, 16, 47, 40, 221, DateTimeKind.Local).AddTicks(9308),
                             Email = "bellos@gmail.com",
                             EmailConfirmed = false,
                             FirstName = "Bello",
@@ -145,17 +148,17 @@ namespace HMS.DAL.Migrations
                             PhoneNumber = "07038730732",
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "d2028435-5111-42eb-a211-0193e3c4ad8d",
+                            SecurityStamp = "cbe5b5a2-12b2-472d-b730-6fa82e83d53d",
                             TwoFactorEnabled = false,
                             UserName = "SobTech"
                         },
                         new
                         {
-                            Id = "15c9208b-1214-43b3-9ab8-95313c06e536",
+                            Id = "e33b9058-c761-43ca-8ce9-9080a1706e20",
                             AccessFailedCount = 0,
                             Address = "583 Wall Dr. Gwynn Oak, MD 21207",
-                            ConcurrencyStamp = "13d4c481-c0df-4f27-bd4f-6daad92ccbe1",
-                            DateOfBirth = new DateTime(2023, 3, 27, 16, 57, 17, 802, DateTimeKind.Local).AddTicks(307),
+                            ConcurrencyStamp = "d4962ec4-744f-4d82-a558-134560717d83",
+                            DateOfBirth = new DateTime(2023, 3, 27, 16, 47, 40, 221, DateTimeKind.Local).AddTicks(9339),
                             Email = "caleb@gmail.com",
                             EmailConfirmed = false,
                             FirstName = "Caleb",
@@ -166,17 +169,17 @@ namespace HMS.DAL.Migrations
                             PhoneNumber = "07038730732",
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "11d9d93f-71e0-40ee-9498-6315df8cce6a",
+                            SecurityStamp = "3f0e6a48-902e-4ca5-95f1-3b0dd271c96d",
                             TwoFactorEnabled = false,
                             UserName = "Caleb"
                         },
                         new
                         {
-                            Id = "20f80a55-351e-4be5-b7dd-ef1b9664ea87",
+                            Id = "14bd3734-1b1b-4a5b-9636-fa2c6a3c4fc3",
                             AccessFailedCount = 0,
                             Address = "583 Wall Dr. Gwynn Oak, MD 21207",
-                            ConcurrencyStamp = "4fcdb824-4c0c-4751-a7fb-bfb7c1e7a5f5",
-                            DateOfBirth = new DateTime(2023, 3, 27, 16, 57, 17, 802, DateTimeKind.Local).AddTicks(319),
+                            ConcurrencyStamp = "64a95c94-32e4-4577-8c24-69ffadcb04b0",
+                            DateOfBirth = new DateTime(2023, 3, 27, 16, 47, 40, 221, DateTimeKind.Local).AddTicks(9357),
                             Email = "amara@gmail.com",
                             EmailConfirmed = false,
                             FirstName = "Amarachi",
@@ -187,7 +190,7 @@ namespace HMS.DAL.Migrations
                             PhoneNumber = "07038730732",
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "9dfd64b0-6127-4c8c-b48a-8d3a81c04f69",
+                            SecurityStamp = "c998cd1f-79c2-4628-a99e-190da12d27c8",
                             TwoFactorEnabled = false,
                             UserName = "maraxhi"
                         });
@@ -268,16 +271,16 @@ namespace HMS.DAL.Migrations
 
             modelBuilder.Entity("HMS.DAL.Entities.Enrollee", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
                     b.Property<int?>("PlanId")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("id");
 
                     b.HasIndex("PlanId")
                         .IsUnique()
@@ -348,7 +351,7 @@ namespace HMS.DAL.Migrations
                     b.Property<int?>("EnrolleId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("EnrolleeId")
+                    b.Property<int?>("Enrolleeid")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -372,7 +375,7 @@ namespace HMS.DAL.Migrations
 
                     b.HasIndex("DrugId");
 
-                    b.HasIndex("EnrolleeId");
+                    b.HasIndex("Enrolleeid");
 
                     b.HasIndex("PlanId");
 
@@ -410,13 +413,13 @@ namespace HMS.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "cd5541e8-6e97-4dfb-9b9e-d69bd607c5f8",
+                            Id = "4ea8e304-3811-4875-9de4-499ead801efe",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "46fa6c14-bcb8-473e-9f35-531677f8b437",
+                            Id = "5447774f-fd90-440c-87b6-cd1484ffd7d4",
                             Name = "Enrollee",
                             NormalizedName = "ENROLLEE"
                         });
@@ -586,7 +589,7 @@ namespace HMS.DAL.Migrations
 
                     b.HasOne("HMS.DAL.Entities.Enrollee", "Enrollee")
                         .WithMany()
-                        .HasForeignKey("EnrolleeId");
+                        .HasForeignKey("Enrolleeid");
 
                     b.HasOne("HMS.DAL.Entities.Plan", "Plan")
                         .WithMany()

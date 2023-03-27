@@ -95,7 +95,6 @@ namespace HMS.API.Controllers
         }
 
 
-
         [HttpPut("RejectAppointment/{id}")]
         public async Task<IActionResult> RejectAppointment(int id)
         {
@@ -120,7 +119,6 @@ namespace HMS.API.Controllers
         }
 
 
-
         [HttpPut("ConfirmAppointment/{id}")]
         public async Task<IActionResult> ConfirmAppointment(int id)
         {
@@ -143,8 +141,6 @@ namespace HMS.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, $"An error occurred: {ex.Message}");
             }
         }
-
-
 
 
         [HttpDelete("DeleteAppointment/{id}")]
