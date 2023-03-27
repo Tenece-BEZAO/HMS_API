@@ -15,8 +15,6 @@ namespace HMS.API.Controllers
     public class AdminController : ControllerBase
     {
         private readonly IAdminService _adminService;
-
-        //delete,update,put
         public AdminController(IAdminService adminService)
         {
             _adminService = adminService;
@@ -130,44 +128,6 @@ namespace HMS.API.Controllers
                 return BadRequest(response);
             }
         }
-
-       /* [Route("post/auth/user")]
-        [HttpPost]
-        public async Task<IActionResult> AuthUserAsync(LoginUser user)
-        {
-            ResponseStatus response = new ResponseStatus();
-            try
-            {
-                var res = await _adminService.AuthUserAsync(user);
-                if (res.LoginStatus == LoginStatus.LoginFailed)
-                {
-                    response = SetResponse(401, "UserName or Password is not found", "", "");
-                    return Unauthorized(response);
-                }
-                if (res.LoginStatus == LoginStatus.NoRoleToUser)
-                {
-                    response = SetResponse(401, "User is not activated with role. 
-                                 Please contact admin on mahesh@myapp.com","","");
-                    return Unauthorized(response);
-                }
-                if (res.LoginStatus == LoginStatus.LoginSuccessful)
-                {
-                    response = SetResponse(200, "Login Sussessful", res.Token, res.Role);
-                    response.UserName = user.UserName;
-                    return Ok(response);
-                }
-                else
-                {
-                    response = SetResponse(500, "Internal Server Error Occured", "", "");
-                    return StatusCode(500, response);
-                }
-            }
-            catch (Exception ex)
-            {
-                response = SetResponse(400, ex.Message, "", "");
-                return BadRequest(response);
-            }
-        }*/
         private ResponseStatus SetResponse(int code, string message, string token, string role)
         {
             ResponseStatus response = new ResponseStatus()
