@@ -11,7 +11,6 @@ namespace HMS.API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(Roles = "Admin")]
-
     public class AdminController : ControllerBase
     {
         private readonly IAdminService _adminService;
@@ -19,6 +18,8 @@ namespace HMS.API.Controllers
         {
             _adminService = adminService;
         }
+
+
         [Authorize(Policy = "AdminPolicy")]
         [Route("roles/readall")]
         [HttpGet]
@@ -37,6 +38,7 @@ namespace HMS.API.Controllers
             }
         }
 
+
         [Authorize(Policy = "AdminPolicy")]
         [Route("users/readall")]
         [HttpGet]
@@ -54,6 +56,8 @@ namespace HMS.API.Controllers
                 return BadRequest(response);
             }
         }
+
+
         [Authorize("Admin")]
         [Route("post/role/create")]
         [HttpPost]
@@ -82,6 +86,8 @@ namespace HMS.API.Controllers
                 return BadRequest(response);
             }
         }
+
+
         [Route("post/register/user")]
         [HttpPost]
         public async Task<IActionResult> RegisterUserAsync(RegisterDto user)
@@ -104,6 +110,7 @@ namespace HMS.API.Controllers
                 return BadRequest(response);
             }
         }
+
 
         [Authorize(Policy = "AdminPolicy")]
         [Route("post/activate/user")]
@@ -128,6 +135,7 @@ namespace HMS.API.Controllers
                 return BadRequest(response);
             }
         }
+
         private ResponseStatus SetResponse(int code, string message, string token, string role)
         {
             ResponseStatus response = new ResponseStatus()
@@ -141,5 +149,3 @@ namespace HMS.API.Controllers
         }
     }
 }
-    
-

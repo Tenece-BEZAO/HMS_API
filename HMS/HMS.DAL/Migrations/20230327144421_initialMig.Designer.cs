@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HMS.DAL.Migrations
 {
     [DbContext(typeof(HmoDbContext))]
-    [Migration("20230326231913_createdEnrolleTable")]
-    partial class createdEnrolleTable
+    [Migration("20230327144421_initialMig")]
+    partial class initialMig
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -108,10 +108,8 @@ namespace HMS.DAL.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("UserName")
-                        .IsRequired()
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)")
-                        .HasAnnotation("ErrorMessage", "Username field is required");
+                        .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
 
@@ -135,11 +133,11 @@ namespace HMS.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "01024324-99ec-47c2-92a4-9ea8a53b7762",
+                            Id = "6b53480f-f539-43c8-8e2d-e0cb539390a1",
                             AccessFailedCount = 0,
                             Address = "583 Wall Dr. Gwynn Oak, MD 21207",
-                            ConcurrencyStamp = "487b3d17-36be-445c-9cfa-af1a20cb0f49",
-                            DateOfBirth = new DateTime(2023, 3, 27, 0, 19, 12, 855, DateTimeKind.Local).AddTicks(6824),
+                            ConcurrencyStamp = "08129a8a-c5da-4e7d-bba7-4211175f265a",
+                            DateOfBirth = new DateTime(2023, 3, 27, 15, 44, 21, 54, DateTimeKind.Local).AddTicks(9261),
                             Email = "bellos@gmail.com",
                             EmailConfirmed = false,
                             FirstName = "Bello",
@@ -150,17 +148,17 @@ namespace HMS.DAL.Migrations
                             PhoneNumber = "07038730732",
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "29efe4d5-8da6-45e5-a437-e93cec4fa4bb",
+                            SecurityStamp = "853d550c-ca40-4481-84d7-ba9bd10e5bcb",
                             TwoFactorEnabled = false,
                             UserName = "SobTech"
                         },
                         new
                         {
-                            Id = "25461733-462e-4332-93bb-e8ad29ffc555",
+                            Id = "e548b05d-e04a-4c7e-94d1-5b2beeb71f4c",
                             AccessFailedCount = 0,
                             Address = "583 Wall Dr. Gwynn Oak, MD 21207",
-                            ConcurrencyStamp = "f6b7f7e6-8e66-4033-9d72-7831df021417",
-                            DateOfBirth = new DateTime(2023, 3, 27, 0, 19, 12, 855, DateTimeKind.Local).AddTicks(6837),
+                            ConcurrencyStamp = "f92bced5-88b6-435a-8f0d-7ef5f9bb6842",
+                            DateOfBirth = new DateTime(2023, 3, 27, 15, 44, 21, 54, DateTimeKind.Local).AddTicks(9311),
                             Email = "caleb@gmail.com",
                             EmailConfirmed = false,
                             FirstName = "Caleb",
@@ -171,17 +169,17 @@ namespace HMS.DAL.Migrations
                             PhoneNumber = "07038730732",
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "63fc6f43-4de1-429a-90fb-b828f4f2cb69",
+                            SecurityStamp = "c03fc242-cabd-4f0b-a51f-ac6a227ffa53",
                             TwoFactorEnabled = false,
                             UserName = "Caleb"
                         },
                         new
                         {
-                            Id = "3107b321-ac51-49ee-b767-2c568e728908",
+                            Id = "de779f82-456e-462b-a225-2310746243a7",
                             AccessFailedCount = 0,
                             Address = "583 Wall Dr. Gwynn Oak, MD 21207",
-                            ConcurrencyStamp = "f3ac7496-fed9-4c32-8647-c0ca5eb3bc47",
-                            DateOfBirth = new DateTime(2023, 3, 27, 0, 19, 12, 855, DateTimeKind.Local).AddTicks(6850),
+                            ConcurrencyStamp = "831feb3a-5189-4b81-a0a6-42199bacb130",
+                            DateOfBirth = new DateTime(2023, 3, 27, 15, 44, 21, 54, DateTimeKind.Local).AddTicks(9322),
                             Email = "amara@gmail.com",
                             EmailConfirmed = false,
                             FirstName = "Amarachi",
@@ -192,7 +190,7 @@ namespace HMS.DAL.Migrations
                             PhoneNumber = "07038730732",
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "af1075c8-0e94-48d5-875a-422fc3516e02",
+                            SecurityStamp = "1ee773bf-d8df-4de7-b3b5-34406e0dbe4a",
                             TwoFactorEnabled = false,
                             UserName = "maraxhi"
                         });
@@ -212,6 +210,10 @@ namespace HMS.DAL.Migrations
                     b.Property<int?>("EnrolleId")
                         .HasColumnType("int");
 
+                    b.Property<string>("EnrolleeName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("ProviderId")
                         .HasColumnType("int");
 
@@ -220,6 +222,9 @@ namespace HMS.DAL.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)")
                         .HasAnnotation("ErrorMessage", "Reason field is required");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -337,6 +342,61 @@ namespace HMS.DAL.Migrations
                     b.ToTable("Provider");
                 });
 
+            modelBuilder.Entity("HMS.DAL.Entities.Report", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("AppUserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("AppUserId1")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("DrugId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("EnrolleId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Enrolleeid")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("PlanId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ProviderId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ReportDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppUserId1");
+
+                    b.HasIndex("DrugId");
+
+                    b.HasIndex("Enrolleeid");
+
+                    b.HasIndex("PlanId");
+
+                    b.HasIndex("ProviderId");
+
+                    b.ToTable("Reports");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -366,13 +426,13 @@ namespace HMS.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "9dfe79a4-80ac-4e12-8992-64c0c95a86c3",
+                            Id = "300c75f2-88d7-4a86-996d-189c46f8c5f5",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "b27010e7-dc98-4249-8c1d-cd8979d43d69",
+                            Id = "7fa67ff7-2c53-48c2-bf21-d97db66f7cd3",
                             Name = "Enrollee",
                             NormalizedName = "ENROLLEE"
                         });
@@ -532,6 +592,41 @@ namespace HMS.DAL.Migrations
                     b.Navigation("Plan");
 
                     b.Navigation("appointment");
+                });
+
+            modelBuilder.Entity("HMS.DAL.Entities.Report", b =>
+                {
+                    b.HasOne("HMS.DAL.Entities.AppUser", "AppUser")
+                        .WithMany()
+                        .HasForeignKey("AppUserId1");
+
+                    b.HasOne("HMS.DAL.Entities.Drug", "Drug")
+                        .WithMany()
+                        .HasForeignKey("DrugId");
+
+                    b.HasOne("HMS.DAL.Entities.Enrollee", "Enrollee")
+                        .WithMany()
+                        .HasForeignKey("Enrolleeid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HMS.DAL.Entities.Plan", "Plan")
+                        .WithMany()
+                        .HasForeignKey("PlanId");
+
+                    b.HasOne("HMS.DAL.Entities.Provider", "provider")
+                        .WithMany()
+                        .HasForeignKey("ProviderId");
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("Drug");
+
+                    b.Navigation("Enrollee");
+
+                    b.Navigation("Plan");
+
+                    b.Navigation("provider");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

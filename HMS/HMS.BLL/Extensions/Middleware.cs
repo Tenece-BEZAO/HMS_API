@@ -5,6 +5,7 @@ using HMS.DAL.Implementation;
 using HMS.DAL.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
+
 namespace HMS.BLL.Extensions
 {
    public static class Middleware

@@ -2,6 +2,7 @@
 using HMS.BLL.Interfaces;
 using HMS.DAL.Dtos.Reponses;
 using HMS.DAL.Entities;
+using HMS.DAL.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -19,7 +20,6 @@ namespace HMS.BLL.Implementation
         private readonly IConfiguration _configuration;
         private readonly SignInManager<AppUser> _signInManager;
         private AppUser? _user;
-
 
         public AuthenticationService(IMapper mapper, UserManager<AppUser> userManager, IConfiguration configuration, SignInManager<AppUser> signInManager)
         {
@@ -46,10 +46,8 @@ namespace HMS.BLL.Implementation
         public async Task<AuthStatus> UserLogin(LoginDto loginDto)
         {
             LoginStatus loginStatus;
-            //string jwtToken = "";
             string roleName = "";
             _user = await _userManager.FindByEmailAsync(loginDto.Email);
-            //var result = _signInManager.PasswordSignInAsync(loginDto.Email,loginDto.Password, false, lockoutOnFailure: true).Result;
             var result = (_user != null && await _userManager.CheckPasswordAsync(_user, loginDto.Password));
             if (result)
             {
@@ -62,11 +60,12 @@ namespace HMS.BLL.Implementation
                     Role = roleName
                 };
                 return authResponse;
-                         
+
             }
             loginStatus = LoginStatus.LoginFailed;
             return null;
         }
+
         private async Task<string> GenerateToken()
         {
             var signingCredentials = GetSigningCredentials();
@@ -91,16 +90,19 @@ namespace HMS.BLL.Implementation
             }
 
             var claims = new List<Claim>
-    {
-        new Claim(ClaimTypes.Name, _user.UserName)
-    };
+            {
+                 new Claim(ClaimTypes.Name, _user.UserName)
+            };
+
             var roles = await _userManager.GetRolesAsync(_user);
+
             foreach (var role in roles)
             {
                 claims.Add(new Claim(ClaimTypes.Role, role));
             }
             return claims;
         }
+
         private JwtSecurityToken GenerateTokenOptions(SigningCredentials signingCredentials, List<Claim> claims)
         {
             var jwtSettings = _configuration.GetSection("JwtConfig");
@@ -127,10 +129,10 @@ namespace HMS.BLL.Implementation
             var result = await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
             return result;
         }
+
         public async Task Logout()
         {
             await _signInManager.SignOutAsync();
         }
     }
 }
-

@@ -4,11 +4,7 @@ using HMS.DAL.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using static HMS.DAL.Dtos.Requests.AuthenticationRequest;
 
 namespace HMS.BLL.Implementation
@@ -30,6 +26,7 @@ namespace HMS.BLL.Implementation
             _roleManager = roleManager;
             _mapper = mapper;
         }
+
         public async Task<bool> CreateRoleAsync(IdentityRole role)
         {
             bool isRoleCreated = false;
@@ -40,6 +37,7 @@ namespace HMS.BLL.Implementation
             }
             return isRoleCreated;
         }
+
         public async Task<List<ApplicationRole>> GetRolesAsync()
         {
             List<ApplicationRole> roles = new List<ApplicationRole>();
@@ -47,10 +45,10 @@ namespace HMS.BLL.Implementation
                      select new ApplicationRole()
                      {
                          Name = r.Name,
-                        // NormalizedName = r.NormalizedName
                      }).ToList();
             return roles;
         }
+
         public async Task<List<AppUser>> GetUsersAsync()
         {
             List<AppUser> users = new List<AppUser>();
@@ -62,13 +60,11 @@ namespace HMS.BLL.Implementation
                      }).ToList();
             return users;
         }
+
         public async Task<bool> AssignRoleToUserAsync(UserRole user)
         {
             bool isRoleAssigned = false;
-            // find role associated with the RoleName
             var role = _roleManager.FindByNameAsync(user.RoleName).Result;
-            // var registeredUser = new IdentityUser() { UserName = user.User.UserName};
-            // find user by name
             var registeredUser = await _userManager.FindByNameAsync(user.UserName);
             if (role != null)
             {
@@ -90,7 +86,6 @@ namespace HMS.BLL.Implementation
                 return IsCreated;
             }
             var registerUser = _mapper.Map(register, user);
-            //var registerUser = new IdentityUser() { UserName = register.Email, Email = register.Email };
             var result = await _userManager.CreateAsync(registerUser, register.Password);
             if (result.Succeeded)
             {
