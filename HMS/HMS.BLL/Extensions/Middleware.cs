@@ -1,4 +1,5 @@
 ﻿using HMS.BLL.Implementation;
+using HMS.BLL.Interfaces;
 using HMS.DAL.Context;
 using HMS.DAL.Implementation;
 using HMS.DAL.Interfaces;

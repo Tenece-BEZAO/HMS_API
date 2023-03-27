@@ -1,14 +1,15 @@
 ﻿using AutoMapper;
-using HMS.DAL.Dtos.Requests;
+using HMS.BLL.Interfaces;
+using HMS.DAL.Dtos.Reponses;
 using HMS.DAL.Entities;
-using HMS.DAL.Interfaces;
+using HMS.DAL.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-
+using static HMS.DAL.Dtos.Requests.AuthenticationRequest;
 
 namespace HMS.BLL.Implementation
 {
@@ -19,7 +20,6 @@ namespace HMS.BLL.Implementation
         private readonly IConfiguration _configuration;
         private readonly SignInManager<AppUser> _signInManager;
         private AppUser? _user;
-
 
         public AuthenticationService(IMapper mapper, UserManager<AppUser> userManager, IConfiguration configuration, SignInManager<AppUser> signInManager)
         {
@@ -43,15 +43,30 @@ namespace HMS.BLL.Implementation
             return result;
         }
 
-        public async Task<bool> UserLogin(LoginDto loginDto)
+        public async Task<AuthStatus> UserLogin(LoginDto loginDto)
         {
+            LoginStatus loginStatus;
+            string roleName = "";
             _user = await _userManager.FindByEmailAsync(loginDto.Email);
             var result = (_user != null && await _userManager.CheckPasswordAsync(_user, loginDto.Password));
-            if (!result)
-            { return false; }
-            return result;
+            if (result)
+            {
+                loginStatus = LoginStatus.LoginSuccessful;
+
+                var authResponse = new AuthStatus()
+                {
+                    LoginStatus = loginStatus,
+                    Token = await GenerateToken(),
+                    Role = roleName
+                };
+                return authResponse;
+
+            }
+            loginStatus = LoginStatus.LoginFailed;
+            return null;
         }
-        public async Task<string> GenerateToken()
+
+        private async Task<string> GenerateToken()
         {
             var signingCredentials = GetSigningCredentials();
             var claims = await GetClaims();
@@ -59,25 +74,35 @@ namespace HMS.BLL.Implementation
             return new JwtSecurityTokenHandler().WriteToken(tokenOptions);
 
         }
+
         private SigningCredentials GetSigningCredentials()
         {
             var key = Encoding.UTF8.GetBytes(_configuration.GetSection("JwtConfig:Secret").Value);
             var secret = new SymmetricSecurityKey(key);
             return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
         }
+
         private async Task<List<Claim>> GetClaims()
         {
+            if (_user == null)
+            {
+                throw new ArgumentNullException(nameof(_user), "User cannot be null.");
+            }
+
             var claims = new List<Claim>
-             {
-             new Claim(ClaimTypes.Name, _user.UserName)
-             };
+            {
+                 new Claim(ClaimTypes.Name, _user.UserName)
+            };
+
             var roles = await _userManager.GetRolesAsync(_user);
+
             foreach (var role in roles)
             {
                 claims.Add(new Claim(ClaimTypes.Role, role));
             }
             return claims;
         }
+
         private JwtSecurityToken GenerateTokenOptions(SigningCredentials signingCredentials, List<Claim> claims)
         {
             var jwtSettings = _configuration.GetSection("JwtConfig");
@@ -104,10 +129,10 @@ namespace HMS.BLL.Implementation
             var result = await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
             return result;
         }
+
         public async Task Logout()
         {
             await _signInManager.SignOutAsync();
         }
     }
 }
-

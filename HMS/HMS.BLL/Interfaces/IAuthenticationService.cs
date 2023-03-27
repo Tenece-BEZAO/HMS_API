@@ -1,19 +1,13 @@
-﻿using HMS.DAL.Dtos.Requests;
-using HMS.DAL.Entities;
+﻿using HMS.DAL.Dtos.Reponses;
 using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using static HMS.DAL.Dtos.Requests.AuthenticationRequest;
 
-namespace HMS.DAL.Interfaces
+namespace HMS.BLL.Interfaces
 {
     public interface IAuthenticationService
     {
         Task<IdentityResult> RegisterUser(RegisterDto userForRegistration);
-        Task<bool> UserLogin(LoginDto loginDto);
-        Task<string> GenerateToken();
+        Task<AuthStatus> UserLogin(LoginDto loginDto);
         Task<IdentityResult> ChangePasswordAsync(string Email, string oldPassword, string newPassword);
         Task Logout();
 

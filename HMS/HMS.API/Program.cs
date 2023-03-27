@@ -25,17 +25,19 @@ namespace HMS.API
             builder.Services.AddAutoMapper(Assembly.Load("HMS.DAL"));
 
             builder.Services.RegisterServices();
+
             builder.Services.ReportServices();
             builder.Services.AppointmentServices();
 
             builder.Services.AddSwaggerGen(options =>
             {
-                options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme()
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
                 {
                     Description = "Standard Authorization Header Using the Bearer Scheme (\"bearer {token}\")",
                     In = ParameterLocation.Header,
                     Name = "Authorization",
-                    Type = SecuritySchemeType.ApiKey
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
                 });
 
                 options.OperationFilter<SecurityRequirementsOperationFilter>();
@@ -54,6 +56,7 @@ namespace HMS.API
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
             app.UseCors("CorsPolicy");
 
             app.UseHttpsRedirection();

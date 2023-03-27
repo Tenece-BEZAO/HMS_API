@@ -10,7 +10,7 @@ namespace HMS.DAL.Entities
         public PlanType PlanType { get; set; }
         public decimal Price { get; set; }
 
-        public AppUser AppUser { get; set; }
+        public Enrollee Enrollee { get; set; }
         public Drug Drug { get; set; }
     }
 }
