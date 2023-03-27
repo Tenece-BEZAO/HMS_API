@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore;
-using HMS.DAL.Entities;
+﻿using HMS.DAL.Entities;
 using HMS.DAL.Enums;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace HMS.DAL.Configuration.Seed
 {
@@ -17,12 +17,12 @@ namespace HMS.DAL.Configuration.Seed
                 FirstName = "Bello",
                 LastName = "Soliu",
                 Address = "583 Wall Dr. Gwynn Oak, MD 21207",
-                DateOfBirth =  DateTime.Now,
+                DateOfBirth = DateTime.Now,
                 Gender = Gender.Male,
                 PhoneNumber = "07038730732",
                 PasswordHash = "@Bello123",
                 Email = "bellos@gmail.com",
-                
+
             },
             new AppUser
             {
