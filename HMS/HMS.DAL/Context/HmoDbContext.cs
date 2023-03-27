@@ -11,7 +11,9 @@ namespace HMS.DAL.Context
         { }
 
         public DbSet<Appointment> Appointments { get; set; }
+        public DbSet<Report> Reports { get; set; }
         public DbSet<Plan> Plans { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {   
             modelBuilder.Entity<AppUser>(e =>

@@ -4,14 +4,10 @@ using HMS.DAL.Entities;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace HMS.DAL.Configuration.MappingConfiguration
 {
-    public class MappingProfile :Profile
+    public class MappingProfile : Profile
     {
         public MappingProfile()
         {
@@ -24,7 +20,15 @@ namespace HMS.DAL.Configuration.MappingConfiguration
             .ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(src => src.Password))
             .ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(src => src.ConfirmedPassword));
 
+
+            CreateMap<AppointmentDto, Appointment>();
+
+            CreateMap<Appointment, AppointmentDto>();
+
+            CreateMap<ReportDto, Report>();
+
+            CreateMap<Report, ReportDto>();
+
         }
     }
-   
 }
