@@ -509,8 +509,7 @@
 2023-03-25 14:48:54.5090 Trace  Scanning SimpleLayout '${longdate} ${level:uppercase=true} ${message}'
 2023-03-25 14:48:54.5090 Trace  Scanning Property LineEnding 'Default' NLog.Targets
 2023-03-25 14:48:54.5090 Trace FileTarget(Name=logfile) has 2 layouts
-2023-03-25 14:48:54.5090 Trace FileTarget(Name=logfile): Using appenderFactory: NLog.Internal.FileAppenders.SingleProcessFileAppender+Factory
-<<<<<<< HEAD
+2023-03-25 14:48:54.5090 Trace FileTarget(Name=logfile): Using appenderFactory: NLog.Internal.FileAppenders.SingleProcessFileAppender+Factor
 2023-03-25 15:14:13.9526 Info Message Template Auto Format enabled
 2023-03-25 15:14:14.0108 Debug ScanAssembly('NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c')
 2023-03-25 15:14:14.0923 Debug Setting 'NLog.Targets.FileTarget.Name' to 'logfile'
@@ -5845,7 +5844,6 @@
 2023-03-27 00:18:00.6553 Trace Closing Layout Renderer: ${message}
 2023-03-27 00:18:00.6553 Debug Finished closing logging configuration.
 2023-03-27 00:18:00.6553 Info LogFactory has been closed.
->>>>>>> ebc69a81542220b888e74815637cfdd4356f9a86
 2023-03-27 15:41:03.5572 Info Message Template Auto Format enabled
 2023-03-27 15:41:03.6129 Debug ScanAssembly('NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c')
 2023-03-27 15:41:03.7109 Debug Setting 'NLog.Targets.FileTarget.Name' to 'logfile'
