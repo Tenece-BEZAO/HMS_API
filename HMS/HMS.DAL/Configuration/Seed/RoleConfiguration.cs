@@ -12,12 +12,12 @@ namespace HMS.DAL.Configuration.RepoConfiguration
              new IdentityRole
              {
                  Name = "Admin",
-                 NormalizedName = "Admin"
+                 NormalizedName = "ADMIN"
              },
              new IdentityRole
              {
-                 Name = "Enrolle",
-                 NormalizedName = "Enrolle"
+                 Name = "Enrollee",
+                 NormalizedName = "ENROLLEE"
              }
          );
         }

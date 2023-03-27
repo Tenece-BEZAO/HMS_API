@@ -5,14 +5,11 @@ namespace HMS.DAL.Entities
     {
         public int Id { get; set; }
 
-        public int AppUserId { get; set; }
-        public AppUser user { get; set; }
+        public int? EnrolleId { get; set; }
+        public Enrollee Enrolle{ get; set; }
 
-        public int PlanId { get; set; }
-        public Plan Plan { get; set; }
-
-        public int DrugId { get; set; }
-        public Drug Drug { get; set; }
+        public int? ProviderId { get; set; }
+        public Provider provider{ get; set; }
 
     }
 }

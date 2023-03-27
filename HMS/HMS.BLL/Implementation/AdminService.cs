@@ -1,4 +1,5 @@
-﻿using HMS.BLL.Interfaces;
+﻿using AutoMapper;
+using HMS.BLL.Interfaces;
 using HMS.DAL.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static HMS.DAL.Dtos.Requests.AuthenticationRequest;
 
 namespace HMS.BLL.Implementation
 {
@@ -17,14 +19,16 @@ namespace HMS.BLL.Implementation
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IMapper _mapper;
 
         public AdminService(IConfiguration configuration, SignInManager<IdentityUser> signInManager,
-            UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
+            UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper)
         {
             _configuration = configuration;
             _signInManager = signInManager;
             _userManager = userManager;
             _roleManager = roleManager;
+            _mapper = mapper;
         }
         public async Task<bool> CreateRoleAsync(IdentityRole role)
         {
@@ -43,7 +47,7 @@ namespace HMS.BLL.Implementation
                      select new ApplicationRole()
                      {
                          Name = r.Name,
-                         NormalizedName = r.NormalizedName
+                        // NormalizedName = r.NormalizedName
                      }).ToList();
             return roles;
         }
@@ -75,6 +79,24 @@ namespace HMS.BLL.Implementation
                 }
             }
             return isRoleAssigned;
+        }
+
+        public async Task<bool> RegisterUserAsync(RegisterDto register)
+        {
+            bool IsCreated = false;
+            AppUser user = (AppUser)await _userManager.FindByEmailAsync(register.Email);
+            if (user != null)
+            {
+                return IsCreated;
+            }
+            var registerUser = _mapper.Map(register, user);
+            //var registerUser = new IdentityUser() { UserName = register.Email, Email = register.Email };
+            var result = await _userManager.CreateAsync(registerUser, register.Password);
+            if (result.Succeeded)
+            {
+                IsCreated = true;
+            }
+            return IsCreated;
         }
     }
 }

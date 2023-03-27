@@ -10,9 +10,11 @@ namespace HMS.DAL.Entities
         public int Id { get; set; }
         public DateTime AppointmentDate { get; set; }
         public string Reason { get; set; }
+        public int? EnrolleId { get; set; }
+        public Enrollee enrollee { get; set; }
 
-        /*[ForeignKey("AppUser")]
-        public int AppUserId { get; set; }*/
-        //public AppUser AppUser { get; set; }
+        public int? ProviderId { get; set; }
+        public Provider provider { get; set; }
+       
     }
 }

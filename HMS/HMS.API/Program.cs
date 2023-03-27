@@ -1,18 +1,11 @@
 using HMS.BLL.Extensions;
-using HMS.BLL.Implementation;
 using HMS.DAL.Configuration.MappingConfiguration;
-using HMS.DAL.Context;
-using HMS.DAL.Entities;
 using HMS.DAL.Interfaces;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using NLog;
 using Swashbuckle.AspNetCore.Filters;
 using System.Reflection;
-using System.Text;
+
 
 namespace HMS.API
 {
@@ -32,6 +25,19 @@ namespace HMS.API
             builder.Services.AddAutoMapper(Assembly.Load("HMS.DAL"));
 
             builder.Services.RegisterServices();
+          /*  builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Admin", policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireRole("Admin");
+                });
+            });*/
+         /*   builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Admin", policy =>
+                    policy.RequireRole("Admin"));
+            });*/
 
             builder.Services.AddSwaggerGen(options =>
             {
@@ -40,8 +46,8 @@ namespace HMS.API
                     Description = "Standard Authorization Header Using the Bearer Scheme (\"bearer {token}\")",
                     In = ParameterLocation.Header,
                     Name = "Authorization",
-                    //Type = SecuritySchemeType.ApiKey,
-                    Type = SecuritySchemeType.Http,
+                    Type = SecuritySchemeType.ApiKey,
+                    //Type = SecuritySchemeType.Http,
                     Scheme = "Bearer"
                 });
 

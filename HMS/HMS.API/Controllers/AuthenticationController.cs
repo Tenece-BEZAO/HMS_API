@@ -1,7 +1,9 @@
-﻿using HMS.DAL.Dtos.Requests;
+﻿using HMS.BLL.Interfaces;
+using HMS.DAL.Dtos.Reponses;
 using HMS.DAL.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static HMS.DAL.Dtos.Requests.AuthenticationRequest;
 
 namespace HMS.API.Controllers
 {
@@ -40,12 +42,8 @@ namespace HMS.API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Authenticate([FromBody] LoginDto loginDto)
         {
-            if (!await _authService.UserLogin(loginDto))
-                return Unauthorized();
-            return Ok(new
-            {
-                Token = await _authService.GenerateToken()
-            });
+            AuthStatus response = await _authService.UserLogin(loginDto);
+            return Ok(response);
         }
 
 
@@ -54,7 +52,7 @@ namespace HMS.API.Controllers
         [Route("ChangePassword")]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto model)
         {
-            await _authService.ChangePasswordAsync(model.Email, model.OldPassword, model.NewPassword);
+            await _authService.ChangePasswordAsync(model.Email, model.CurrentPassword, model.NewPassword);
             return Ok();
         }
 

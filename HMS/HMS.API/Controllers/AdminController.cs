@@ -2,11 +2,9 @@
 using HMS.DAL.Dtos.Reponses;
 using HMS.DAL.Entities;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Data;
-using System.Numerics;
+using static HMS.DAL.Dtos.Requests.AuthenticationRequest;
 
 namespace HMS.API.Controllers
 {
@@ -58,7 +56,7 @@ namespace HMS.API.Controllers
                 return BadRequest(response);
             }
         }
-        [Authorize(Policy = "AdminPolicy")]
+        [Authorize("Admin")]
         [Route("post/role/create")]
         [HttpPost]
         public async Task<IActionResult> PostRoleAsync(ApplicationRole role)
@@ -69,7 +67,7 @@ namespace HMS.API.Controllers
                 IdentityRole roleInfo = new IdentityRole()
                 {
                     Name = role.Name,
-                    NormalizedName = role.NormalizedName
+                    //NormalizedName = role.NormalizedName
                 };
                 var res = await _adminService.CreateRoleAsync(roleInfo);
                 if (!res)
@@ -86,9 +84,9 @@ namespace HMS.API.Controllers
                 return BadRequest(response);
             }
         }
-        /*[Route("post/register/user")]
+        [Route("post/register/user")]
         [HttpPost]
-        public async Task<IActionResult> RegisterUserAsync(RegisterUser user)
+        public async Task<IActionResult> RegisterUserAsync(RegisterDto user)
         {
             ResponseStatus response;
             try
@@ -99,8 +97,7 @@ namespace HMS.API.Controllers
                     response = SetResponse(500, "User Registration Failed", "", "");
                     return StatusCode(500, response);
                 }
-                response = SetResponse(200, $"User {user.Email} is 
-                        Created sussessfully","","");
+                response = SetResponse(200, $"User {user.Email} is Created sussessfully","","");
                 return Ok(response);
             }
             catch (Exception ex)
@@ -108,7 +105,7 @@ namespace HMS.API.Controllers
                 response = SetResponse(400, ex.Message, "", "");
                 return BadRequest(response);
             }
-        }*/
+        }
 
         [Authorize(Policy = "AdminPolicy")]
         [Route("post/activate/user")]

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static HMS.DAL.Dtos.Requests.AuthenticationRequest;
 
 namespace HMS.BLL.Interfaces
 {
@@ -14,5 +15,6 @@ namespace HMS.BLL.Interfaces
         Task<List<ApplicationRole>> GetRolesAsync();
         Task<List<AppUser>> GetUsersAsync();
         Task<bool> AssignRoleToUserAsync(UserRole user);
+        Task<bool> RegisterUserAsync(RegisterDto register);
     }
 }
