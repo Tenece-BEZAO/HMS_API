@@ -25,7 +25,7 @@ namespace HMS.API.Controllers
         }
 
 
-        [HttpGet("SearchReport/{id}")]
+        [HttpGet("SearchReport")]
         public async Task<IActionResult> SearchReport(string searchTerm)
         {
             var report = await _reportService.SearchReportsAsync(searchTerm);

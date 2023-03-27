@@ -39,7 +39,6 @@ namespace HMS.BLL.Implementation
             return reportDto;
         }
 
-
         public async Task<IEnumerable<ReportDto>> SearchReportsAsync(string searchTerm)
         {
             var reports = await _reportRepository.GetByAsync(a => a.Name.ToLower().Contains(searchTerm.ToLower()) ||

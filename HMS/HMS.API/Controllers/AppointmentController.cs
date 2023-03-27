@@ -86,6 +86,11 @@ namespace HMS.API.Controllers
             try
             {
                 var updatedAppointmentDto = await _appointmentService.UpdateAppointmentAsync(id, appointmentDto);
+
+                if (updatedAppointmentDto == null)
+                {
+                    return BadRequest("Failed to update appointment details. Please try again.");
+                }
                 return Ok(updatedAppointmentDto);
             }
             catch (ArgumentException ex)

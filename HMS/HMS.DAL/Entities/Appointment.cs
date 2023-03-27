@@ -1,4 +1,3 @@
-﻿
 using HMS.DAL.Enums;
 using System.ComponentModel.DataAnnotations;
 
@@ -16,7 +15,6 @@ namespace HMS.DAL.Entities
         public Enrollee? Enrollee { get; set; }
         public Status Status { get; set; } = Status.Pending;
         public int? ProviderId { get; set; }
-        public Provider? Provider { get; set; }
-       
+        public Provider? Provider { get; set; } 
     }
 }
