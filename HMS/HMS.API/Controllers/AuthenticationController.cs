@@ -1,8 +1,8 @@
 ﻿using HMS.BLL.Interfaces;
 using HMS.DAL.Dtos.Reponses;
-using HMS.DAL.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 using static HMS.DAL.Dtos.Requests.AuthenticationRequest;
 
 namespace HMS.API.Controllers
@@ -18,8 +18,14 @@ namespace HMS.API.Controllers
             _authService = authenticationService;
         }
 
-        [HttpPost]
         [Route("register")]
+        [HttpPost]
+        [SwaggerOperation(Summary = "Creates user")]
+        [SwaggerResponse(StatusCodes.Status200OK, Description = "UserId of created user", Type = typeof(AuthStatus))]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, Description = "User with provided email already exists", Type = typeof(ErrorResponse))]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, Description = "Failed to create user", Type = typeof(ErrorResponse))]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, Description = "It's not you, it's us", Type = typeof(ErrorResponse))]
+
         public async Task<IActionResult> RegisterUser([FromBody] RegisterDto register)
         {
             if (ModelState.IsValid)

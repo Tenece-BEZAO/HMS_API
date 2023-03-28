@@ -12,16 +12,16 @@ namespace HMS.BLL.Implementation
     public class AdminService : IAdminService
     {
         private readonly IConfiguration _configuration;
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly UserManager<IdentityUser> _userManager;
+       // private readonly SignInManager<AppUser> _signInManager;
+        private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IMapper _mapper;
 
-        public AdminService(IConfiguration configuration, SignInManager<IdentityUser> signInManager,
-            UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper)
+        public AdminService(IConfiguration configuration,
+            UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper)
         {
             _configuration = configuration;
-            _signInManager = signInManager;
+           // _signInManager = signInManager;
             _userManager = userManager;
             _roleManager = roleManager;
             _mapper = mapper;
@@ -80,7 +80,7 @@ namespace HMS.BLL.Implementation
         public async Task<bool> RegisterUserAsync(RegisterDto register)
         {
             bool IsCreated = false;
-            AppUser user = (AppUser)await _userManager.FindByEmailAsync(register.Email);
+            AppUser user = await _userManager.FindByEmailAsync(register.Email);
             if (user != null)
             {
                 return IsCreated;
