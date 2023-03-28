@@ -86,6 +86,11 @@ namespace HMS.API.Controllers
             try
             {
                 var updatedAppointmentDto = await _appointmentService.UpdateAppointmentAsync(id, appointmentDto);
+
+                if (updatedAppointmentDto == null)
+                {
+                    return BadRequest("Failed to update appointment details. Please try again.");
+                }
                 return Ok(updatedAppointmentDto);
             }
             catch (ArgumentException ex)
@@ -93,7 +98,6 @@ namespace HMS.API.Controllers
                 return BadRequest("Updating appointment details failed,try again! ");
             }
         }
-
 
 
         [HttpPut("RejectAppointment/{id}")]
@@ -120,7 +124,6 @@ namespace HMS.API.Controllers
         }
 
 
-
         [HttpPut("ConfirmAppointment/{id}")]
         public async Task<IActionResult> ConfirmAppointment(int id)
         {
@@ -143,8 +146,6 @@ namespace HMS.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, $"An error occurred: {ex.Message}");
             }
         }
-
-
 
 
         [HttpDelete("DeleteAppointment/{id}")]

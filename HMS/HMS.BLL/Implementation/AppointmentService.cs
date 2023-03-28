@@ -1,11 +1,10 @@
-﻿
-using AutoMapper;
+﻿using AutoMapper;
 using HMS.BLL.Interfaces;
 using HMS.DAL.Dtos.Requests;
 using HMS.DAL.Entities;
 using HMS.DAL.Enums;
 using HMS.DAL.Interfaces;
-using Microsoft.AspNetCore.Mvc;
+
 
 namespace HMS.BLL.Implementation
 {
@@ -115,7 +114,9 @@ namespace HMS.BLL.Implementation
                 throw new ArgumentException("Appointment not found.");
             }
 
-            _mapper.Map(appointmentDto, existingAppointment);
+            existingAppointment.EnrolleeName = appointmentDto.EnrolleeName;
+            existingAppointment.Reason = appointmentDto.Reason;
+            existingAppointment.AppointmentDate = appointmentDto.AppointmentDate;
 
             await _unitOfWork.SaveChangesAsync();
 
