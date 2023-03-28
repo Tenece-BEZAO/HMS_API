@@ -1,6 +1,8 @@
 using HMS.BLL.Extensions;
 using HMS.DAL.Configuration.MappingConfiguration;
+using HMS.DAL.Context;
 using HMS.DAL.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using NLog;
 using Swashbuckle.AspNetCore.Filters;
@@ -14,12 +16,17 @@ namespace HMS.API
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(),"/nlog.config"));
+            LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
             builder.Services.ConfigureLoggerService();
             builder.Services.ConfigureCors();
             builder.Services.ConfigureJWT(builder.Configuration);
 
             builder.Services.AddControllers();
+            builder.Services.AddDbContext<HmoDbContext>(options =>
+            {
+                var conn = builder.Configuration.GetConnectionString("DefaultConnection");
+                options.UseSqlServer(conn);
+            });
             builder.Services.AddDatabaseConnection();
             builder.Services.AddAutoMapper(typeof(MappingProfile));
             builder.Services.AddAutoMapper(Assembly.Load("HMS.DAL"));
@@ -28,6 +35,9 @@ namespace HMS.API
 
             builder.Services.ReportServices();
             builder.Services.AppointmentServices();
+            builder.Services.EnrolleeServices();
+            builder.Services.PlanServices();
+            builder.Services.DrugServices();
 
             builder.Services.AddSwaggerGen(options =>
             {
@@ -42,7 +52,7 @@ namespace HMS.API
 
                 options.OperationFilter<SecurityRequirementsOperationFilter>();
             });
-            
+
             builder.Services.AddEndpointsApiExplorer();
             var app = builder.Build();
             var logger = app.Services.GetRequiredService<ILoggerService>();
