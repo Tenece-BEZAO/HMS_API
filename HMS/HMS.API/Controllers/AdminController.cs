@@ -21,7 +21,7 @@ namespace HMS.API.Controllers
 
 
         [Authorize(Policy = "AdminPolicy")]
-        [Route("roles/readall")]
+        [Route("GetRoles")]
         [HttpGet]
         public async Task<IActionResult> GetRolesAsync()
         {
@@ -39,8 +39,8 @@ namespace HMS.API.Controllers
         }
 
 
-        [Authorize(Policy = "AdminPolicy")]
-        [Route("users/readall")]
+        [Authorize(Roles = "Admin")]
+        [Route("GetUsers")]
         [HttpGet]
         public async Task<IActionResult> GetUsersAsync()
         {
@@ -58,9 +58,10 @@ namespace HMS.API.Controllers
         }
 
 
-        [Authorize("Admin")]
-        [Route("post/role/create")]
+        [Authorize(Policy = "AdminPolicy")]
+        [Route("CreateRoles")]
         [HttpPost]
+
         public async Task<IActionResult> PostRoleAsync(ApplicationRole role)
         {
             ResponseStatus response;
@@ -69,7 +70,6 @@ namespace HMS.API.Controllers
                 IdentityRole roleInfo = new IdentityRole()
                 {
                     Name = role.Name,
-                    //NormalizedName = role.NormalizedName
                 };
                 var res = await _adminService.CreateRoleAsync(roleInfo);
                 if (!res)
@@ -88,7 +88,7 @@ namespace HMS.API.Controllers
         }
 
 
-        [Route("post/register/user")]
+        [Route("RegisterUser")]
         [HttpPost]
         public async Task<IActionResult> RegisterUserAsync(RegisterDto user)
         {
@@ -101,7 +101,7 @@ namespace HMS.API.Controllers
                     response = SetResponse(500, "User Registration Failed", "", "");
                     return StatusCode(500, response);
                 }
-                response = SetResponse(200, $"User {user.Email} is Created sussessfully","","");
+                response = SetResponse(200, $"User {user.Email} is Created sussessfully", "", "");
                 return Ok(response);
             }
             catch (Exception ex)
@@ -113,7 +113,7 @@ namespace HMS.API.Controllers
 
 
         [Authorize(Policy = "AdminPolicy")]
-        [Route("post/activate/user")]
+        [Route("ActivateUser")]
         [HttpPost]
         public async Task<IActionResult> ActivateUserAsync(UserRole user)
         {
