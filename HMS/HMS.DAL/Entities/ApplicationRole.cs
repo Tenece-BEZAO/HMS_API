@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace HMS.DAL.Entities
 {
-    public class ApplicationRole
+    public class ApplicationRole    
     {
         public string Name { get; set; }
         public string NormalizedName { get; set; }

@@ -21,7 +21,8 @@ namespace HMS.DAL.Dtos.Requests
         public class RegisterDto
         {
             [Required]
-            public string FullName { get; init; }
+            public string FirstName { get; init; }
+            public string LastName { get; init; }
 
             [Required(ErrorMessage = "Username is required")]
             public string UserName { get; init; }

@@ -53,6 +53,12 @@ namespace HMS.API
                 options.OperationFilter<SecurityRequirementsOperationFilter>();
             });
 
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminPolicy", policy =>
+                    policy.RequireRole("Admin"));
+            });
+
             builder.Services.AddEndpointsApiExplorer();
             var app = builder.Build();
             var logger = app.Services.GetRequiredService<ILoggerService>();
