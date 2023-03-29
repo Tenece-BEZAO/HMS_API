@@ -1,6 +1,8 @@
 using HMS.BLL.Extensions;
 using HMS.DAL.Configuration.MappingConfiguration;
+using HMS.DAL.Context;
 using HMS.DAL.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using NLog;
 using Swashbuckle.AspNetCore.Filters;
@@ -20,6 +22,11 @@ namespace HMS.API
             builder.Services.ConfigureJWT(builder.Configuration);
 
             builder.Services.AddControllers();
+            builder.Services.AddDbContext<HmoDbContext>(options =>
+            {
+                var conn = builder.Configuration.GetConnectionString("DefaultConnection");
+                options.UseSqlServer(conn);
+            });
             builder.Services.AddDatabaseConnection();
             builder.Services.AddAutoMapper(typeof(MappingProfile));
             builder.Services.AddAutoMapper(Assembly.Load("HMS.DAL"));
@@ -28,41 +35,9 @@ namespace HMS.API
 
             builder.Services.ReportServices();
             builder.Services.AppointmentServices();
-
-            /*        builder.Services.AddSwaggerGen(c =>
-                    {
-                        c.EnableAnnotations();
-                        c.SwaggerDoc("v1", new OpenApiInfo { Title = "HMS", Version = "v1" });
-
-
-                        c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
-                        {
-                            Name = "Authorization",
-                            Type = SecuritySchemeType.ApiKey,
-                            Scheme = "Bearer",
-                            BearerFormat = "JWT",
-                            In = ParameterLocation.Header,
-                            Description =
-                                "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 1safsfsdfdfd\""
-                        });
-
-                        c.AddSecurityRequirement(new OpenApiSecurityRequirement
-            {
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer"
-                            }
-                        },
-                        Array.Empty<string>()
-                    },
-            });
-                    });
-        */
-
+            builder.Services.EnrolleeServices();
+            builder.Services.PlanServices();
+            builder.Services.DrugServices();
 
             builder.Services.AddSwaggerGen(options =>
             {
@@ -77,6 +52,7 @@ namespace HMS.API
 
                 options.OperationFilter<SecurityRequirementsOperationFilter>();
             });
+
             builder.Services.AddAuthorization(options =>
             {
                 options.AddPolicy("AdminPolicy", policy =>
