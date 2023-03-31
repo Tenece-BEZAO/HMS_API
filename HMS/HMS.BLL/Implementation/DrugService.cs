@@ -18,12 +18,13 @@ namespace HMS.BLL.Implementation
             _drugRepository = _unitOfWork.GetRepository<Drug>();
         }
 
-        public async Task DeletePlanAsync(int drugId)
+
+        public async Task DeletDrugAsync(int drugId)
         {
             var drug = await _drugRepository.GetByIdAsync(drugId);
 
             if (drug == null)
-                throw new Exception("Plan not found");
+                throw new Exception("Drug not found");
 
             await _drugRepository.DeleteAsync(drug);
 

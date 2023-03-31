@@ -53,6 +53,7 @@ namespace HMS.API
                 options.OperationFilter<SecurityRequirementsOperationFilter>();
             });
 
+
             builder.Services.AddAuthorization(options =>
             {
                 options.AddPolicy("AdminPolicy", policy =>

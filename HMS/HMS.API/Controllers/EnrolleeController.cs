@@ -15,14 +15,44 @@ namespace HMS.API.Controllers
             _enrolleeService = enrolleeService;
         }
 
-        [HttpGet]
-        [Route("GetEnrollees")]
+
+        [HttpGet("GetEnrollees")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<EnrolleeDTO>))]
         public async Task<IActionResult> GetEnrollees()
         {
             var enrollees = await _enrolleeService.GetEnrolleesAsync();
 
             return Ok(enrollees);
         }
+
+
+        [HttpGet("GetEnrollee/{id}")]
+        [ProducesResponseType(200, Type = typeof(EnrolleeDTO))]
+        public async Task<ActionResult<EnrolleeDTO>> GetEnrollee(int id)
+        {
+            var enrollee = await _enrolleeService.GetEnrolleeAsync(id);
+
+            if (enrollee == null)
+                return NotFound("Enrollee does not exist");
+
+            return Ok(enrollee);
+        }
+
+
+        [HttpDelete("DeleteEnrollee/{id}")]
+        [ProducesResponseType(200)]
+        public async Task<IActionResult> DeleteEnrollee(int id)
+        {
+            try
+            {
+                await _enrolleeService.DeleteEnrolleeAsync(id);
+                return NoContent();
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+         }
 
 
         [HttpPost]
