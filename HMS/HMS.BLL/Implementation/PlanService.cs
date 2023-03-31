@@ -56,6 +56,11 @@ namespace HMS.BLL.Implementation
             return planDto;
         }
 
+        public Task GetPlanDrugs(int planId)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<IEnumerable<PlanDto>> GetPlansAsync()
         {
             var plans = await _planRepository.GetAllAsync(orderBy: e => e.OrderBy(en => en.Id));
@@ -88,5 +93,7 @@ namespace HMS.BLL.Implementation
 
             return updatedPlan;
         }
+
+
     }
 }

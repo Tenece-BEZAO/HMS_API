@@ -15,7 +15,7 @@ namespace HMS.API.Controllers
         public AppointmentController(IAppointmentService appointmentService, IReportService reportService)
         {
             _appointmentService = appointmentService;
-            _reportService = reportService; 
+            _reportService = reportService;
         }
 
 

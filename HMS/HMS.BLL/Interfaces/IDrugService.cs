@@ -9,6 +9,6 @@ namespace HMS.BLL.Interfaces
         Task<DrugDto> GetDrugByNameAsync(string drugName);
         Task<DrugDto> NewDrugAsync(DrugDto drugDto);
         Task<DrugDto> UpdateDrugAsync(int drugId, DrugDto drugDto);
-        Task DeletePlanAsync(int drugId);
+        Task DeletDrugAsync(int drugId);
     }
 }

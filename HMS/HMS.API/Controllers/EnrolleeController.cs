@@ -15,8 +15,8 @@ namespace HMS.API.Controllers
             _enrolleeService = enrolleeService;
         }
 
-        [HttpGet]
-        [Route("GetEnrollees")]
+        [HttpGet("GetEnrollees")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<EnrolleeDTO>))]
         public async Task<IActionResult> GetEnrollees()
         {
             var enrollees = await _enrolleeService.GetEnrolleesAsync();
@@ -25,18 +25,32 @@ namespace HMS.API.Controllers
         }
 
 
-        [HttpPost]
-        [Route("AddEnrollee")]
-        public async Task<IActionResult> AddEnrollee([FromBody] EnrolleeDTO enrolleeDTO)
+        [HttpGet("GetEnrollee/{id}")]
+        [ProducesResponseType(200, Type = typeof(EnrolleeDTO))]
+        public async Task<ActionResult<EnrolleeDTO>> GetEnrollee(int id)
         {
-            if (enrolleeDTO == null)
+            var enrollee = await _enrolleeService.GetEnrolleeAsync(id);
+
+            if (enrollee == null)
+                return NotFound("Enrollee does not exist");
+
+            return Ok(enrollee);
+        }
+
+
+        [HttpDelete("DeleteEnrollee/{id}")]
+        [ProducesResponseType(200)]
+        public async Task<IActionResult> DeleteEnrollee(int id)
+        {
+            try
             {
-                return BadRequest("Cannot create new enrollee");
+                await _enrolleeService.DeleteEnrolleeAsync(id);
+                return NoContent();
             }
-
-            await _enrolleeService.NewEnrolleeAsync(enrolleeDTO);
-
-            return Ok(enrolleeDTO);
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
