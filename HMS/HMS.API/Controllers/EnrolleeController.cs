@@ -15,6 +15,7 @@ namespace HMS.API.Controllers
             _enrolleeService = enrolleeService;
         }
 
+
         [HttpGet("GetEnrollees")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<EnrolleeDTO>))]
         public async Task<IActionResult> GetEnrollees()
@@ -51,6 +52,21 @@ namespace HMS.API.Controllers
             {
                 return BadRequest(ex.Message);
             }
+         }
+
+
+        [HttpPost]
+        [Route("AddEnrollee")]
+        public async Task<IActionResult> AddEnrollee([FromBody] EnrolleeDTO enrolleeDTO)
+        {
+            if (enrolleeDTO == null)
+            {
+                return BadRequest("Cannot create new enrollee");
+            }
+
+            await _enrolleeService.NewEnrolleeAsync(enrolleeDTO);
+
+            return Ok(enrolleeDTO);
         }
     }
 }

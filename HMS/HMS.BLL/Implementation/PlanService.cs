@@ -8,7 +8,6 @@ namespace HMS.BLL.Implementation
 {
     public class PlanService : IPlanService
     {
-
         private readonly IRepository<Plan> _planRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -32,6 +31,7 @@ namespace HMS.BLL.Implementation
             await _unitOfWork.SaveChangesAsync();
         }
 
+
         public async Task<PlanDto> GetPlanByIdAsync(int planId)
         {
             var plan = await _planRepository.GetByIdAsync(planId);
@@ -43,6 +43,7 @@ namespace HMS.BLL.Implementation
 
             return planDto;
         }
+
 
         public async Task<PlanDto> GetPlanByNameAsync(string name)
         {
@@ -56,10 +57,12 @@ namespace HMS.BLL.Implementation
             return planDto;
         }
 
+
         public Task GetPlanDrugs(int planId)
         {
             throw new NotImplementedException();
         }
+
 
         public async Task<IEnumerable<PlanDto>> GetPlansAsync()
         {
@@ -70,6 +73,7 @@ namespace HMS.BLL.Implementation
             return planDto;
         }
 
+
         public async Task<PlanDto> NewPlanAsync(PlanDto planDto)
         {
             var plan = _mapper.Map<Plan>(planDto);
@@ -79,6 +83,7 @@ namespace HMS.BLL.Implementation
 
             return planDto;
         }
+
 
         public async Task<PlanDto> UpdatePlanAsync(int planId, PlanDto planDto)
         {
@@ -93,7 +98,5 @@ namespace HMS.BLL.Implementation
 
             return updatedPlan;
         }
-
-
     }
 }

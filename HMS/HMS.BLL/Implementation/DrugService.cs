@@ -18,6 +18,7 @@ namespace HMS.BLL.Implementation
             _drugRepository = _unitOfWork.GetRepository<Drug>();
         }
 
+
         public async Task DeletDrugAsync(int drugId)
         {
             var drug = await _drugRepository.GetByIdAsync(drugId);
@@ -29,7 +30,6 @@ namespace HMS.BLL.Implementation
 
             await _unitOfWork.SaveChangesAsync();
         }
-
 
         public async Task<DrugDto> GetDrugByIdAsync(int drugId)
         {

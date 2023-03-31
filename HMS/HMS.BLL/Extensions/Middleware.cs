@@ -14,6 +14,8 @@ namespace HMS.BLL.Extensions
         {
             services.AddTransient<IUnitOfWork, UnitOfWork<HmoDbContext>>();
             services.AddTransient<IAuthenticationService, AuthenticationService>();
+            services.AddTransient<IAdminService, AdminService>();
+
         }
     }
 }
