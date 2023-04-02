@@ -1,10 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Query;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HMS.DAL.Interfaces
 {
@@ -67,6 +62,8 @@ namespace HMS.DAL.Interfaces
         T GetById(object id);
 
         Task<T> GetByIdAsync(object id);
+
+        Task<T> GetByNameAsync(object name);
 
         Task<bool> AnyAsync(Expression<Func<T, bool>> predicate = null);
 

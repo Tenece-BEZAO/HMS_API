@@ -17,5 +17,20 @@ namespace HMS.BLL.Extensions
         {
             services.AddScoped<IReportService, ReportService>();
         }
+
+        public static void EnrolleeServices(this IServiceCollection services)
+        {
+            services.AddScoped<IEnrolleeService, EnrolleeService>();
+        }
+
+        public static void PlanServices(this IServiceCollection services)
+        {
+            services.AddScoped<IPlanService, PlanService>();
+        }
+
+        public static void DrugServices(this IServiceCollection services)
+        {
+            services.AddScoped<IDrugService, DrugService>();
+        }
     }
 }

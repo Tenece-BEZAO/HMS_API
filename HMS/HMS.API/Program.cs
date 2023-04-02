@@ -1,8 +1,10 @@
 using HMS.BLL.Extensions;
 using HMS.DAL.Configuration.MappingConfiguration;
+
 using HMS.DAL.Dtos.Requests;
 using HMS.DAL.Interfaces;
 using Microsoft.AspNetCore.Identity;
+
 using Microsoft.OpenApi.Models;
 using NLog;
 using Swashbuckle.AspNetCore.Filters;
@@ -19,7 +21,6 @@ namespace HMS.API
             LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
             builder.Services.ConfigureLoggerService();
             builder.Services.ConfigureCors();
-
             //builder.Services.AddControllers();
             builder.Services.AddControllers().AddNewtonsoftJson();
             builder.Services.AddDatabaseConnection();
@@ -33,6 +34,7 @@ namespace HMS.API
 
             builder.Services.ReportServices();
             builder.Services.AppointmentServices();
+
             
              builder.Services.AddSwaggerGen(options =>
              {
@@ -48,6 +50,11 @@ namespace HMS.API
                  options.OperationFilter<SecurityRequirementsOperationFilter>();
              });
             builder.Services.ConfigureJWT(builder.Configuration);
+
+            builder.Services.EnrolleeServices();
+            builder.Services.PlanServices();
+            builder.Services.DrugServices();
+
             builder.Services.AddAuthorization(options =>
             {
                 options.AddPolicy("AdminPolicy", policy =>

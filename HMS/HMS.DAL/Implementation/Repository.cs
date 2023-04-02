@@ -1,7 +1,7 @@
 ﻿
 using HMS.DAL.Interfaces;
-using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using System.Linq.Expressions;
 
 namespace HMS.DAL.Implementation
@@ -315,6 +315,11 @@ namespace HMS.DAL.Implementation
         public virtual async Task<T> GetByIdAsync(object id)
         {
             return await _dbSet.FindAsync(id);
+        }
+
+        public virtual async Task<T> GetByNameAsync(object name)
+        {
+            return await _dbSet.FindAsync(name);
         }
 
         //public async Task<PagedList<T>> GetPagedItems(RequestParameters parameters, Expression<Func<T, bool>> predicate = null, Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null)

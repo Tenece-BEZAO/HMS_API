@@ -1,5 +1,5 @@
-﻿using HMS.DAL.Dtos.Requests;
-using AutoMapper;
+﻿using AutoMapper;
+using HMS.DAL.Dtos.Requests;
 using HMS.DAL.Entities;
 using static HMS.DAL.Dtos.Requests.AuthenticationRequest;
 
@@ -10,10 +10,12 @@ namespace HMS.DAL.Configuration.MappingConfiguration
     {
         public MappingProfile()
         {
+
            CreateMap<RegisterDto, AppUser>()
             .ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(src => src.Password))
             .ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(src => src.ConfirmedPassword))
              .ForMember(dest => dest.TwoFactorEnabled, opt => opt.MapFrom(src => src.TwoFactorEnabled));
+
 
            // CreateMap<AppUser, LoginDto>();
          
@@ -36,6 +38,18 @@ namespace HMS.DAL.Configuration.MappingConfiguration
                     return true;
                 }
             ));
+
+            CreateMap<EnrolleeDTO, Enrollee>();
+
+            CreateMap<Enrollee, EnrolleeDTO>();
+
+            CreateMap<PlanDto, Plan>();
+
+            CreateMap<Plan, PlanDto>();
+
+            CreateMap<DrugDto, Drug>();
+
+            CreateMap<Drug, DrugDto>();
 
         }
     }
