@@ -12,9 +12,11 @@ namespace HMS.BLL.Interfaces
     public interface IAdminService
     {
         Task<bool> CreateRoleAsync(IdentityRole role);
+        //Task<bool> CreateRoleAsync(string name);
         Task<List<ApplicationRole>> GetRolesAsync();
         Task<List<AppUser>> GetUsersAsync();
         Task<bool> AssignRoleToUserAsync(UserRole user);
         Task<bool> RegisterUserAsync(RegisterDto register);
+        Task<bool> RemoveUserFromRoleAsync(UserRole user);
     }
 }

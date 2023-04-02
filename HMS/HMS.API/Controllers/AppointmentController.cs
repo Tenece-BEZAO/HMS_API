@@ -1,6 +1,7 @@
 ﻿using HMS.BLL.Interfaces;
 using HMS.DAL.Dtos.Requests;
 using HMS.DAL.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HMS.API.Controllers
@@ -18,7 +19,7 @@ namespace HMS.API.Controllers
             _reportService = reportService;
         }
 
-
+        [Authorize]
         [HttpGet]
         [Route("GetAppointments")]
         public async Task<IActionResult> GetAppointments()
