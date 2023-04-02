@@ -198,8 +198,6 @@ namespace HMS.BLL.Implementation
                 {
                     return "forget password link has been sent to your email; go and verify";
                 }
-                
-
             }
 
                 return "email does not exist";
