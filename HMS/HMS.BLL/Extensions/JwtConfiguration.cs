@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using System.Data;
 using System.Text;
 
 namespace HMS.BLL.Extensions
@@ -20,9 +21,10 @@ namespace HMS.BLL.Extensions
                  .AllowAnyHeader());
              });
 
-        public static void ConfigureIdentity(this IServiceCollection services)
+        public static void ConfigureEmail(this IServiceCollection services)
         {
-            var builder = services.AddIdentity<AppUser, IdentityRole>(o =>
+
+            /*var builder = services.AddIdentity<AppUser, IdentityRole>(o =>
             {
                 o.Password.RequireDigit = true;
                 o.Password.RequireLowercase = false;
@@ -32,7 +34,25 @@ namespace HMS.BLL.Extensions
                 o.User.RequireUniqueEmail = true;
             })
             .AddEntityFrameworkStores<HmoDbContext>()
-            .AddDefaultTokenProviders();
+            .AddDefaultTokenProviders()
+            .AddTokenProvider<EmailTokenProvider<AppUser>>("Email");*/
+
+            services.Configure<IdentityOptions>(opts => opts.SignIn.RequireConfirmedEmail = true);
+
+            services.Configure<DataProtectionTokenProviderOptions>(options =>
+            {
+                options.TokenLifespan = TimeSpan.FromMinutes(60);
+            });
+
+/*            services.Configure<EmailTokenProviderOptions>(options =>
+            {
+                options.TokenLifespan = TimeSpan.FromMinutes(15);
+                options.EmailService = typeof(SmtpEmailService);
+                options.EmailSender = "noreply@yourdomain.com";
+                options.EmailSubject = "Your Token";
+                options.EmailBody = "Your security code is {0}";
+            });*/
+
         }
 
         public static void ConfigureJWT(this IServiceCollection services, IConfiguration configuration)

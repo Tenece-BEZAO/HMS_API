@@ -18,10 +18,12 @@ namespace HMS.BLL.Extensions
                 config = serviceProvider.GetService<IConfiguration>();
             }
             string cc = config.GetConnectionString("DefaultConnection");
+
             services.AddDbContext<HmoDbContext>(options =>
             {
                 options.UseSqlServer(config.GetConnectionString("DefaultConnection"));
             });
+
             services.AddIdentity<AppUser, IdentityRole>()
                   .AddEntityFrameworkStores<HmoDbContext>()
                   .AddDefaultTokenProviders();

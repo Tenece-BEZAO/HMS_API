@@ -14,13 +14,16 @@ namespace HMS.API.Controllers
     public class AdminController : ControllerBase
     {
         private readonly IAdminService _adminService;
-        public AdminController(IAdminService adminService)
+        private readonly ILogger<AdminController> _logger;
+
+        public AdminController(IAdminService adminService, ILogger<AdminController> logger)
         {
             _adminService = adminService;
+            _logger = logger;
         }
 
 
-        [Authorize(Policy = "AdminPolicy")]
+       // [Authorize(Policy = "AdminPolicy")]
         [Route("GetRoles")]
         [HttpGet]
         public async Task<IActionResult> GetRolesAsync()
@@ -39,7 +42,7 @@ namespace HMS.API.Controllers
         }
 
 
-        [Authorize(Roles = "Admin")]
+      //  [Authorize(Roles = "Admin")]
         [Route("GetUsers")]
         [HttpGet]
         public async Task<IActionResult> GetUsersAsync()
@@ -58,7 +61,7 @@ namespace HMS.API.Controllers
         }
 
 
-        [Authorize(Policy = "AdminPolicy")]
+        [Authorize]
         [Route("CreateRoles")]
         [HttpPost]
 
@@ -77,6 +80,7 @@ namespace HMS.API.Controllers
                     response = SetResponse(500, "Role Registration Failed", "", "");
                     return StatusCode(500, response);
                 }
+                _logger.LogInformation($"the role {roleInfo} has been added successfully");
                 response = SetResponse(200, $"{role.Name} is Created sussessfully", "", "");
                 return Ok(response);
             }
@@ -112,7 +116,7 @@ namespace HMS.API.Controllers
         }
 
 
-        [Authorize(Policy = "AdminPolicy")]
+       // [Authorize(Policy = "AdminPolicy")]
         [Route("ActivateUser")]
         [HttpPost]
         public async Task<IActionResult> ActivateUserAsync(UserRole user)
@@ -135,7 +139,27 @@ namespace HMS.API.Controllers
                 return BadRequest(response);
             }
         }
-
+        [HttpPost]
+        public async Task<IActionResult> RemoveUserRoleAsync(UserRole user)
+        {
+            ResponseStatus response;
+            try
+            {
+                var res = await _adminService.RemoveUserFromRoleAsync(user);
+                if (!res)
+                {
+                    response = SetResponse(500, "Role is not assigned to user", "", "");
+                    return StatusCode(500, response);
+                }
+                response = SetResponse(200, "Role is sussessfully removed from user", "", "");
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                response = SetResponse(400, ex.Message, "", "");
+                return BadRequest(response);
+            }
+        }
         private ResponseStatus SetResponse(int code, string message, string token, string role)
         {
             ResponseStatus response = new ResponseStatus()
