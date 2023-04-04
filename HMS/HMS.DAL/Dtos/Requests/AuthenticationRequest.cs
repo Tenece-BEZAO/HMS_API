@@ -17,6 +17,8 @@ namespace HMS.DAL.Dtos.Requests
             public string? Email { get; init; }
             [Required(ErrorMessage = "Password name is required")]
             public string? Password { get; init; }
+          
+           
         }
         public class RegisterDto
         {
@@ -40,6 +42,8 @@ namespace HMS.DAL.Dtos.Requests
             public string ConfirmedPassword { get; init; }
             public string? PhoneNumber { get; init; }
             public ICollection<string>? Roles { get; init; }
+            [Display(Name = "2 Factor Authentication")]
+            public bool TwoFactorEnabled { get; set; } = true;
 
 
         }
@@ -64,17 +68,9 @@ namespace HMS.DAL.Dtos.Requests
         }
         public class UserRole
         {
-            public string UserName { get; set; }
+            public string Email { get; set; }
             public string RoleName { get; set; }
         }
-
-   /*     public class AddUserToRoleRequest
-        {
-            public string UserName { get; set; }
-
-            [Required(ErrorMessage = "Role Name cannot be empty"), MinLength(2), MaxLength(50)]
-            public string Role { get; set; }
-        }*/
 
         public class VerifyAccountRequest
         {
@@ -95,9 +91,12 @@ namespace HMS.DAL.Dtos.Requests
             [Required]
             public string Email { get; set; }
             [Required]
-            public string AuthenticationToken { get; set; }
+            public string Token { get; set; }
             [Required]
             public string NewPassword { get; set; }
+
+            [Compare("Password", ErrorMessage = "your password does not match")]
+            public string ConfirmedPassword { get; set; }
         }
 
         public class UpdateRecoveryMailRequest

@@ -11,6 +11,7 @@ namespace HMS.DAL.Entities
         public string? Address { get; set; }
         public DateTime DateOfBirth { get; set; }
         public Gender Gender { get; set; }
+        public bool TwoFactorEnabled { get; set; }
         public string? RefreshToken { get; set; }
         public DateTime RefreshTokenExpiryTime { get; set; }
 
