@@ -34,6 +34,7 @@ namespace HMS.API.Controllers
 
 
         [HttpPost]
+        [Route("roleClaim")]
         public async Task<IActionResult> AddClaims(string email, Claim claim)
         {
             var claims = await _claimServices.AddClaimToUserAsync(email, claim);
