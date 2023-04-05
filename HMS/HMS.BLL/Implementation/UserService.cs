@@ -27,16 +27,18 @@ namespace HMS.BLL.Implementation
             _validator = validator;
         }
 
-        public string GetUserProfile()
+
+        public async Task<string> GetUserProfile()
         {
             var result = string.Empty;
             if(_httpContextAccessor.HttpContext is not null)
             {
                 result = _httpContextAccessor.HttpContext.User?.Identity?.Name;
-                result = _httpContextAccessor.HttpContext.User?.FindFirst(ClaimTypes.Name).Value ?? result;
+                result =  _httpContextAccessor.HttpContext.User?.FindFirst(ClaimTypes.Name).Value ?? result;
             }
             return result;
         }
+
 
         public async Task<bool> UpdateUserAsync(string id, UpdateRequest model)
         {

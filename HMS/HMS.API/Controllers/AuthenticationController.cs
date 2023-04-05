@@ -21,6 +21,7 @@ namespace HMS.API.Controllers
             _userService = userService;
         }
 
+
         [Route("register")]
         [HttpPost]
         [SwaggerOperation(Summary = "Creates user")]
@@ -28,6 +29,7 @@ namespace HMS.API.Controllers
         [SwaggerResponse(StatusCodes.Status400BadRequest, Description = "User with provided email already exists", Type = typeof(ErrorResponse))]
         [SwaggerResponse(StatusCodes.Status400BadRequest, Description = "Failed to create user", Type = typeof(ErrorResponse))]
         [SwaggerResponse(StatusCodes.Status500InternalServerError, Description = "It's not you, it's us", Type = typeof(ErrorResponse))]
+
 
         public async Task<IActionResult> RegisterUser([FromBody] RegisterDto register)
         {
@@ -48,6 +50,7 @@ namespace HMS.API.Controllers
             return BadRequest();
         }
 
+
         [HttpGet]
         [Route("ConfirmEmail")]
         public async Task<IActionResult> ConfirmEmail(string token, string email)
@@ -57,7 +60,6 @@ namespace HMS.API.Controllers
         }
 
 
-
         [HttpPost("login")]
         public async Task<IActionResult> Authenticate([FromBody] LoginDto loginDto)
         {
@@ -65,6 +67,8 @@ namespace HMS.API.Controllers
 
             return Ok(response);
         }
+
+
         [HttpPost]
         [Route("login-2FA")]
         public async Task<IActionResult> LoginWithOtp(string userName, string code)
@@ -72,6 +76,7 @@ namespace HMS.API.Controllers
             var token = await _authService.LoginWithOtp(userName, code);
             return Ok(token);
         }
+
 
         [Authorize]
         [HttpPost]
@@ -82,15 +87,6 @@ namespace HMS.API.Controllers
             return Ok();
         }
 
-        [AllowAnonymous]
-        [HttpPost]
-        [Route("ForgotPassword")]
-        public async Task<IActionResult> ForgetPassword([Required] string email)
-        {
-            var response = await _authService.ForgetPasswordAsync(email);
-            return Ok(response);
-        }
-
 
         [AllowAnonymous]
         [HttpGet]
@@ -104,26 +100,6 @@ namespace HMS.API.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        [Route("ResetPassword")]
-        public async Task<IActionResult> ResetPassword(ResetPasswordRequest reset) {
-            var response = await _authService.ResetPasswordAsync(reset);
-            return Ok(response);
-
-        }
-
-
-
-        [HttpGet]
-        [Route("email")]
-        public async Task<IActionResult> TestEmail(RegisterDto register)
-        {
-            await _authService.EmailTestAsync();
-           // await _authService.RegisterUser(register);
-            return Ok("Email sent Successfully");
-        }
-
-        [AllowAnonymous]
-        [HttpPost]
         [Route("ForgotPassword")]
         public async Task<IActionResult> ForgetPassword([Required] string email)
         {
@@ -133,23 +109,12 @@ namespace HMS.API.Controllers
 
 
         [AllowAnonymous]
-        [HttpGet]
-        [Route("ResetPassword")]
-        public async Task<IActionResult> ResetPassword(string token, string email)
-        {
-            var response = await _authService.ResetPasswordAsync(token, email);
-            return Ok(response);
-        }
-
-
-        [AllowAnonymous]
         [HttpPost]
         [Route("ResetPassword")]
         public async Task<IActionResult> ResetPassword(ResetPasswordRequest reset) {
             var response = await _authService.ResetPasswordAsync(reset);
             return Ok(response);
         }
-
 
 
         [HttpGet]
@@ -160,8 +125,6 @@ namespace HMS.API.Controllers
             return Ok("Email sent Successfully");
         }
 
-
-      
 
         [HttpPost]
         [Route("Logout")]
@@ -175,11 +138,8 @@ namespace HMS.API.Controllers
         [HttpGet, Authorize]
         public async Task<IActionResult> GetUser()
         {
-            var result = _userService.GetUserProfile();
+            var result = await _userService.GetUserProfile();
             return Ok(result);
-        }
-
-
-       
+        } 
     }
 }

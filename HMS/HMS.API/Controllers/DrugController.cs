@@ -8,13 +8,13 @@ namespace HMS.API.Controllers
     [Route("api/[controller]")]
     public class DrugController : Controller
     {
-
         private readonly IDrugService _drugService;
 
         public DrugController(IDrugService appointmentService)
         {
             _drugService = appointmentService;
         }
+
 
         [HttpGet("GetDrugs")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<PlanDto>))]
@@ -25,6 +25,7 @@ namespace HMS.API.Controllers
             return Ok(drugs);
 
         }
+
 
         [HttpGet("GetDrug/{id}")]
         [ProducesResponseType(200, Type = typeof(DrugDto))]
@@ -51,6 +52,7 @@ namespace HMS.API.Controllers
             return drug;
         }
 
+
         [HttpPost("AddDrug")]
         [ProducesResponseType(200)]
         public async Task<IActionResult> AddDrug([FromBody] DrugDto drugDto)
@@ -62,6 +64,7 @@ namespace HMS.API.Controllers
 
             return CreatedAtAction(nameof(GetDrugById), new { id = addedDrug.Id }, addedDrug);
         }
+
 
         [HttpPut("UpdateDrug")]
         [ProducesResponseType(200, Type = typeof(DrugDto))]
@@ -81,7 +84,6 @@ namespace HMS.API.Controllers
                 return BadRequest("Failed to update drug");
             }
         }
-
 
 
         [HttpDelete("DeleteDrug/{id}")]
