@@ -29,9 +29,13 @@ namespace HMS.BLL.Extensions
 
             //services.AddSingleton<IHttpContextAccessor>();
 
-            //services.AddSingleton<IHttpContextAccessor>();
-
         }
+       
+
+<<<<<<< HEAD
+        }
+=======
+>>>>>>> 4075c8a4cb9c3a57c974d7e939efee611ca98ea4
         public static IServiceCollection AddEmailService(this IServiceCollection services, IConfiguration configuration)
         {
             var emailConfig = configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();

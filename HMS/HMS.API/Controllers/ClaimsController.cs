@@ -1,6 +1,4 @@
 ﻿using HMS.BLL.Interfaces;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -19,21 +17,26 @@ namespace HMS.API.Controllers
 
 
         [HttpGet]
-               public async Task<IActionResult> GetAllClaim(string email)
-                {
+        public async Task<IActionResult> GetAllClaim(string email)
+        {
             var clams = await _claimServices.GetAllClaimsAsync(email);
-                    return Ok(clams);
-                }
-
-        [HttpPost]
-           public async Task<IActionResult> AddClaims(string email, string claimName, string claimValue)
-           {
-               var claims = await _claimServices.AddClaimsToUserAsync(email, claimName, claimValue);
-               return Ok(claims);
-           }
+            return Ok(clams);
+        }
 
 
         [HttpPost]
+<<<<<<< HEAD
+=======
+        [Route("userClaim")]
+        public async Task<IActionResult> AddClaims(string email, string claimName, string claimValue)
+        {
+            var claims = await _claimServices.AddClaimsToUserAsync(email, claimName, claimValue);
+            return Ok(claims);
+        }
+
+
+        [HttpPost]
+>>>>>>> 4075c8a4cb9c3a57c974d7e939efee611ca98ea4
         [Route("roleClaim")]
         public async Task<IActionResult> AddClaims(string email, Claim claim)
         {
