@@ -7,12 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\HMS.DAL\HMS.DAL.csproj" />
+    <Compile Remove="Handlers\**" />
+    <Compile Remove="Infrastructure\**" />
+    <EmbeddedResource Remove="Handlers\**" />
+    <EmbeddedResource Remove="Infrastructure\**" />
+    <None Remove="Handlers\**" />
+    <None Remove="Infrastructure\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Handlers\" />
-    <Folder Include="Infrastructure\" />
+    <ProjectReference Include="..\HMS.DAL\HMS.DAL.csproj" />
   </ItemGroup>
 
   <ItemGroup>

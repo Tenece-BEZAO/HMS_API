@@ -52,7 +52,7 @@ namespace HMS.API.Controllers
             {
                 return BadRequest(ex.Message);
             }
-         }
+        }
 
 
         [HttpPost]
