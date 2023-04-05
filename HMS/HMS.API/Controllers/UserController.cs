@@ -1,8 +1,6 @@
 ﻿using HMS.BLL.Interfaces;
 using HMS.DAL.Dtos.Requests;
-using HMS.DAL.Entities;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
@@ -47,17 +45,17 @@ namespace HMS.API.Controllers
                 return BadRequest("fail to update");
             }
 
-            return Ok("successfully");
+            return Ok("updated successfully");
         }
 
 
-        //[Authorize]
+        [Authorize]
         [HttpDelete("deactivateUser")]
         public async Task<IActionResult> DeleteUser(string id)
         {
             var deletedUser = await _userService.DeleteAsync(id);
 
-            if(!deletedUser)
+            if (!deletedUser)
             {
                 return NotFound("User not found, try again");
             }
@@ -68,15 +66,9 @@ namespace HMS.API.Controllers
         [HttpGet("getUser")]
         public async Task<IActionResult> GetUserById(string userId)
         {
-            try
-            {
-                var user = await _userService.GetUserByIdAsync(userId);
-                return Ok(user);
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
+            var user = await _userService.GetUserByIdAsync(userId);
+            return Ok(user);
+
         }
     }
 }

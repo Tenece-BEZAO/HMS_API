@@ -51,7 +51,6 @@ namespace HMS.BLL.Implementation
             var result = await _userManager.UpdateAsync(updatedUser);
             if (!result.Succeeded)
             {
-                //var errors = string.Join(", ", result.Errors.Select(e => e.Description));
                 throw new InvalidOperationException($"Failed to update user detail");
             }
 
@@ -78,10 +77,7 @@ namespace HMS.BLL.Implementation
             {
                 throw new ValidationException(validationResult.Errors);
             }
-
-            user.UserName = userUpdateDto.UserName;
-            user.Email = userUpdateDto.Email;
-
+            _mapper.Map(userUpdateDto, user);
             var result = await _userManager.UpdateAsync(user);
 
             return result.Succeeded;

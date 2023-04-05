@@ -38,7 +38,7 @@ namespace HMS.DAL.Configuration.MappingConfiguration
                     return true;
                 }
             ));
-
+            CreateMap<AppUser, UpdateRequest>();
             CreateMap<EnrolleeDTO, Enrollee>();
 
             CreateMap<Enrollee, EnrolleeDTO>();
