@@ -16,17 +16,15 @@ namespace HMS.DAL.Configuration.MappingConfiguration
             .ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(src => src.ConfirmedPassword))
              .ForMember(dest => dest.TwoFactorEnabled, opt => opt.MapFrom(src => src.TwoFactorEnabled));
 
-
             // CreateMap<AppUser, LoginDto>();
             CreateMap<AppUserDto, AppUser>().ReverseMap();
 
-            CreateMap<AppointmentDto, Appointment>();
+            CreateMap<ProviderDto, Provider>().ReverseMap();
 
-            CreateMap<Appointment, AppointmentDto>();
+            CreateMap<AppointmentDto, Appointment>().ReverseMap();
 
-            CreateMap<ReportDto, Report>();
+            CreateMap<ReportDto, Report>().ReverseMap();
 
-            CreateMap<Report, ReportDto>();
             CreateMap<UpdateRequest, AppUser>()
             .ForAllMembers(x => x.Condition(
                 (src, dest, prop) =>
@@ -39,17 +37,12 @@ namespace HMS.DAL.Configuration.MappingConfiguration
                 }
             ));
             CreateMap<AppUser, UpdateRequest>();
-            CreateMap<EnrolleeDTO, Enrollee>();
 
-            CreateMap<Enrollee, EnrolleeDTO>();
+            CreateMap<EnrolleeDTO, Enrollee>().ReverseMap();
 
-            CreateMap<PlanDto, Plan>();
+            CreateMap<PlanDto, Plan>().ReverseMap();
 
-            CreateMap<Plan, PlanDto>();
-
-            CreateMap<DrugDto, Drug>();
-
-            CreateMap<Drug, DrugDto>();
+            CreateMap<DrugDto, Drug>().ReverseMap();
 
         }
     }

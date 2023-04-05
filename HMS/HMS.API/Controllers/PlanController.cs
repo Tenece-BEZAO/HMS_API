@@ -11,14 +11,13 @@ namespace HMS.API.Controllers
     {
         private readonly IPlanService _planService;
 
-
         public PlanController(IPlanService planService)
         {
             _planService = planService;
         }
 
 
-        [HttpGet("GetPlans")]
+        [HttpGet("getPlans")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<PlanDto>))]
         public async Task<IActionResult> GetPlans()
         {
@@ -28,8 +27,7 @@ namespace HMS.API.Controllers
         }
 
 
-
-        [HttpGet("GetPlan/{id}")]
+        [HttpGet("getPlan/{id}")]
         [ProducesResponseType(200, Type = typeof(PlanDto))]
         public async Task<ActionResult<PlanDto>> GetPlanById(int id)
         {
@@ -55,12 +53,12 @@ namespace HMS.API.Controllers
         }
 
 
-        [HttpPost("AddPlan")]
+        [HttpPost("subscribePlan")]
         [ProducesResponseType(200)]
         public async Task<IActionResult> AddPlan([FromBody] PlanDto planDto)
         {
             if (planDto == null)
-                return BadRequest("Plan cannot be created.");
+                return BadRequest("Subscription to plan failed, try again!.");
 
             var addedPlan = await _planService.NewPlanAsync(planDto);
 
@@ -68,8 +66,7 @@ namespace HMS.API.Controllers
         }
 
 
-
-        [HttpPut("UpdatePlan")]
+        [HttpPut("updatePlan")]
         [ProducesResponseType(200)]
         public async Task<IActionResult> Update(int id, [FromBody] PlanDto planDto)
         {
@@ -87,6 +84,7 @@ namespace HMS.API.Controllers
                 return BadRequest("Failed to update plan");
             }
         }
+
 
         [HttpDelete("DeletePlan/{id}")]
         [ProducesResponseType(200)]

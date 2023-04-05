@@ -14,6 +14,8 @@ namespace HMS.BLL.Implementation
         {
             _emailConfiguration = emailConfiguration;
         }
+
+
         public void sendEmail(Message message)
         {
             var emailMessage = CreateEmailMessage(message);
@@ -21,7 +23,6 @@ namespace HMS.BLL.Implementation
         }
 
        
-
         private MimeMessage CreateEmailMessage(Message message)
         {
             var emailMessage = new MimeMessage();
@@ -31,6 +32,8 @@ namespace HMS.BLL.Implementation
             emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Text) { Text = message?.Content };
             return emailMessage;
         }
+
+
         private void send(MimeMessage mailMessage)
         {
            using var client = new SmtpClient();
