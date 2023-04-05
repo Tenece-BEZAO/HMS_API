@@ -75,6 +75,7 @@ namespace HMS.BLL.Extensions
 
         public static void ConfigureExceptionHandler(this IApplicationBuilder app, IWebHostEnvironment hostEnvironment, ILoggerService logger)
         {
+
             app.UseExceptionHandler(appError =>
             {
                 appError.Run(async context =>
@@ -130,6 +131,7 @@ namespace HMS.BLL.Extensions
                 });
             });
         }
+
 
         public static void ConfigureLoggerService(this IServiceCollection services) =>
            services.AddSingleton<ILoggerService, LoggerService>();

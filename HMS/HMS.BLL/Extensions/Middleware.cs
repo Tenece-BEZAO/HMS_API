@@ -29,6 +29,18 @@ namespace HMS.BLL.Extensions
 
             //services.AddSingleton<IHttpContextAccessor>();
 
+            //services.AddSingleton<IHttpContextAccessor>();
+
+        }
+        public static IServiceCollection AddEmailService(this IServiceCollection services, IConfiguration configuration)
+        {
+            var emailConfig = configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
+            services.AddSingleton(emailConfig);
+            services.AddScoped<IEmailService, EmailService>();
+            services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            //services.AddScoped<IUserTwoFactorTokenProvider<AppUser>, MyTokenProvider>();
+            return services;
         }
         public static IServiceCollection AddEmailService(this IServiceCollection services, IConfiguration configuration)
         {

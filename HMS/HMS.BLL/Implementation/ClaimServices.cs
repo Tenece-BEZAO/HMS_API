@@ -2,7 +2,13 @@
 using HMS.DAL.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
+using System.Text;
+using System.Threading.Tasks;
+using static HMS.DAL.Dtos.Requests.AuthenticationRequest;
 
 namespace HMS.BLL.Implementation
 {
@@ -20,21 +26,21 @@ namespace HMS.BLL.Implementation
         }
 
         /*        public async Task<IdentityResult> GetAllClaimsAsync(string email, ApplicationRole role)
-                {
-                    var user = await _userManager.FindByEmailAsync(email);
+        {
+            var user = await _userManager.FindByEmailAsync(email);
                     var registeredUser = await _roleManager.FindByNameAsync(role.Name);
-                    if (registeredUser == null)
-                    {
-                        _logger.LogInformation($"the user with the {email} does not exist");
-                        return IdentityResult.Failed(new IdentityError { Description = "User does not exist" });
-                    }
-                    var userClaims = await _roleManager.GetClaimsAsync(registeredUser);
-                    if (userClaims != null)
-                    {
-                        _logger.LogInformation("Successfully");
+            if (registeredUser == null)
+            {
+                _logger.LogInformation($"the user with the {email} does not exist");
+                return IdentityResult.Failed(new IdentityError { Description = "User does not exist" });
+            }
+            var userClaims = await _roleManager.GetClaimsAsync(registeredUser);
+            if (userClaims != null)
+            {
+                _logger.LogInformation("Successfully");
 
-                    }
-                    return (IdentityResult)userClaims;
+            }
+            return (IdentityResult)userClaims;
                 }*/
 
 
@@ -45,7 +51,7 @@ namespace HMS.BLL.Implementation
             {
                 _logger.LogInformation($"the user with the {email} does not exist");
                 return null;
-            }
+        }
             var userRole = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
             var role = await _roleManager.FindByNameAsync(userRole);
             var roleClaims = await _roleManager.GetClaimsAsync(role);
@@ -73,16 +79,16 @@ namespace HMS.BLL.Implementation
             }
     */
 
-        public async Task<IdentityResult> AddClaimsToUserAsync(string Email, string claimName, string claimValue)
-        {
-            var registeredUser = await _userManager.FindByEmailAsync(Email);
-            if (registeredUser == null)
+            public async Task<IdentityResult> AddClaimsToUserAsync(string Email, string claimName, string claimValue)
             {
-                _logger.LogInformation($"the user with the {Email} does not exist");
-                return IdentityResult.Failed(new IdentityError { Description = "User does not exist" });
-            }
-            var userClaims = new Claim(Email, claimName, claimValue);
-            var result = await _userManager.AddClaimAsync(registeredUser, userClaims);
+                var registeredUser = await _userManager.FindByEmailAsync(Email);
+                if (registeredUser == null)
+                {
+                    _logger.LogInformation($"the user with the {Email} does not exist");
+                    return IdentityResult.Failed(new IdentityError { Description = "User does not exist" });
+                }
+                var userClaims = new Claim(Email, claimName, claimValue);
+                var result = await _userManager.AddClaimAsync(registeredUser, userClaims);
             if (result.Succeeded)
                 return result;
             else
@@ -116,8 +122,8 @@ namespace HMS.BLL.Implementation
             }
 
             return result;
-        }
-
+            }
+        
 
 
     }

@@ -57,6 +57,7 @@ namespace HMS.API.Controllers
         }
 
 
+
         [HttpPost("login")]
         public async Task<IActionResult> Authenticate([FromBody] LoginDto loginDto)
         {
@@ -79,6 +80,46 @@ namespace HMS.API.Controllers
         {
             await _authService.ChangePasswordAsync(model.Email, model.CurrentPassword, model.NewPassword);
             return Ok();
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("ForgotPassword")]
+        public async Task<IActionResult> ForgetPassword([Required] string email)
+        {
+            var response = await _authService.ForgetPasswordAsync(email);
+            return Ok(response);
+        }
+
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("ResetPassword")]
+        public async Task<IActionResult> ResetPassword(string token, string email)
+        {
+            var response = await _authService.ResetPasswordAsync(token, email);
+            return Ok(response);
+        }
+
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("ResetPassword")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordRequest reset) {
+            var response = await _authService.ResetPasswordAsync(reset);
+            return Ok(response);
+
+        }
+
+
+
+        [HttpGet]
+        [Route("email")]
+        public async Task<IActionResult> TestEmail(RegisterDto register)
+        {
+            await _authService.EmailTestAsync();
+           // await _authService.RegisterUser(register);
+            return Ok("Email sent Successfully");
         }
 
         [AllowAnonymous]

@@ -24,6 +24,7 @@ namespace HMS.BLL.Implementation
             _userManager = userManager;
             _roleManager = roleManager;
             _mapper = mapper;
+        
         }
 
 
