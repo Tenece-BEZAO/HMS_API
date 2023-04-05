@@ -57,7 +57,6 @@ namespace HMS.BLL.Implementation
         }
 
 
-
         public async Task<EnrolleeDTO> NewEnrolleeAsync(EnrolleeDTO enrolleeDTO)
         {
             var enrollee = _mapper.Map<Enrollee>(enrolleeDTO);
@@ -67,6 +66,7 @@ namespace HMS.BLL.Implementation
 
             return enrolleeDTO;
         }
+
 
         public async Task<EnrolleeDTO> UpdateEnrolleeAsync(int enrolleeId, EnrolleeDTO enrolleeDTO)
         {
