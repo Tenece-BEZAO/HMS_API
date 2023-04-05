@@ -24,6 +24,7 @@ namespace HMS.BLL.Extensions
             services.AddTransient<IAuthenticationService, AuthenticationService>();
             services.AddTransient<IAdminService, AdminService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IClaimServices, ClaimServices>();
             services.AddTransient<IValidator<UpdateRequest>, UpdateRequestValidator>();
 
             //services.AddSingleton<IHttpContextAccessor>();
