@@ -34,8 +34,12 @@ namespace HMS.API
             builder.Services.ReportServices();
             builder.Services.AppointmentServices();
 
-            
-             builder.Services.AddSwaggerGen(options =>
+            builder.Services.ProviderServices();
+            builder.Services.EnrolleeServices();
+            builder.Services.PlanServices();
+            builder.Services.DrugServices();
+
+            builder.Services.AddSwaggerGen(options =>
              {
                  options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme()
                  {
@@ -49,10 +53,6 @@ namespace HMS.API
                  options.OperationFilter<SecurityRequirementsOperationFilter>();
              });
             builder.Services.ConfigureJWT(builder.Configuration);
-
-            builder.Services.EnrolleeServices();
-            builder.Services.PlanServices();
-            builder.Services.DrugServices();
 
             builder.Services.AddAuthorization(options =>
             {

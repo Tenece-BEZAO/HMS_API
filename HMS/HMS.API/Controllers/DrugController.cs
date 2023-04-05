@@ -16,7 +16,7 @@ namespace HMS.API.Controllers
         }
 
 
-        [HttpGet("GetDrugs")]
+        [HttpGet("getDrugs")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<PlanDto>))]
         public async Task<IActionResult> GetDrugs()
         {
@@ -27,7 +27,7 @@ namespace HMS.API.Controllers
         }
 
 
-        [HttpGet("GetDrug/{id}")]
+        [HttpGet("getDrug/{id}")]
         [ProducesResponseType(200, Type = typeof(DrugDto))]
         public async Task<ActionResult<DrugDto>> GetDrugById(int id)
         {
@@ -40,7 +40,7 @@ namespace HMS.API.Controllers
         }
 
 
-        [HttpGet("GetDrug/{name}")]
+        [HttpGet("searchDrug")]
         [ProducesResponseType(200, Type = typeof(DrugDto))]
         public async Task<ActionResult<DrugDto>> GetDrugByName(string name)
         {
@@ -53,7 +53,7 @@ namespace HMS.API.Controllers
         }
 
 
-        [HttpPost("AddDrug")]
+        [HttpPost("addDrug")]
         [ProducesResponseType(200)]
         public async Task<IActionResult> AddDrug([FromBody] DrugDto drugDto)
         {
@@ -66,7 +66,7 @@ namespace HMS.API.Controllers
         }
 
 
-        [HttpPut("UpdateDrug")]
+        [HttpPut("updateDrug")]
         [ProducesResponseType(200, Type = typeof(DrugDto))]
         public async Task<IActionResult> Update(int id, [FromBody] DrugDto drugDto)
         {
@@ -86,7 +86,7 @@ namespace HMS.API.Controllers
         }
 
 
-        [HttpDelete("DeleteDrug/{id}")]
+        [HttpDelete("deleteDrug/{id}")]
         [ProducesResponseType(200)]
         public async Task<IActionResult> Delete(int id)
         {

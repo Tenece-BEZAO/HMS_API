@@ -17,7 +17,7 @@ namespace HMS.API.Controllers
 
 
         [HttpGet]
-        [Route("GetReports")]
+        [Route("getReports")]
         public async Task<IActionResult> GetReports()
         {
             var appointments = await _reportService.GetReportsAsync();
@@ -25,7 +25,7 @@ namespace HMS.API.Controllers
         }
 
 
-        [HttpGet("SearchReport")]
+        [HttpGet("searchReport")]
         public async Task<IActionResult> SearchReport(string searchTerm)
         {
             var report = await _reportService.SearchReportsAsync(searchTerm);
@@ -38,7 +38,7 @@ namespace HMS.API.Controllers
         }
 
 
-        [HttpDelete("DeleteReport/{id}")]
+        [HttpDelete("deleteReport/{id}")]
         public async Task<IActionResult> DeleteReport(int id)
         {
             try
