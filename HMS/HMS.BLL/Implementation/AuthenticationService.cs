@@ -73,7 +73,6 @@ namespace HMS.BLL.Implementation
 
                 }
                 await _userManager.AddToRolesAsync(newUser, register.Roles);
-                //return result;
 
                 //add token to verify email
                 string token = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
@@ -145,7 +144,7 @@ namespace HMS.BLL.Implementation
         public async Task<string> ForgetPasswordAsync(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
-            if(user != null)
+            if (user != null)
             {
                 var token = await _userManager.GeneratePasswordResetTokenAsync(user);
                 var request = _httpContextAccessor.HttpContext.Request;
@@ -200,8 +199,8 @@ namespace HMS.BLL.Implementation
                 }
             }
 
-                return "email does not exist";
-            
+            return "email does not exist";
+
         }
 
         public async Task<AuthStatus> UserLogin(LoginDto loginDto)
@@ -220,7 +219,6 @@ namespace HMS.BLL.Implementation
                 {
                     LoginStatus = loginStatus,
                     Token = await GenerateToken(),
-                    Role = roleName
                 };
 
                 if (_user.TwoFactorEnabled)
@@ -244,8 +242,6 @@ namespace HMS.BLL.Implementation
         {
             _user = await _userManager.FindByNameAsync(userName);
             var signIn = await _signInManager.TwoFactorSignInAsync("Email", code, false, false);
-            // var signIn = await _signInManager.TwoFactorSignInAsync("Email", code, false, false, twoFactorEnabled: true);
-
 
             if (!signIn.Succeeded)
             {
@@ -307,6 +303,8 @@ namespace HMS.BLL.Implementation
             }
             return claims;
         }
+
+
 
         private JwtSecurityToken GenerateTokenOptions(SigningCredentials signingCredentials, List<Claim> claims)
         {

@@ -21,7 +21,7 @@ namespace HMS.API.Controllers
 
 
 
-        [HttpPut("{userId}")]
+        [HttpPut("updateUser")]
         public async Task<IActionResult> UpdateUser(string userId, [FromBody] UpdateRequest model)
         {
 
@@ -32,11 +32,11 @@ namespace HMS.API.Controllers
                 return NotFound();
             }
 
-            return Ok(new { message = "user updated successfully" });
+            return Ok(new { message = "user details updated successfully" });
         }
 
 
-        [HttpPatch("{userId}")]
+        [HttpPatch("partialUpdateUser")]
         public async Task<IActionResult> PartialUpdateUser(string userId, JsonPatchDocument<UpdateRequest> patchDoc)
         {
             var result = await _userService.PartialUpdateUserAsync(userId, patchDoc);
@@ -47,20 +47,26 @@ namespace HMS.API.Controllers
                 return BadRequest("fail to update");
             }
 
-            return Ok("successfully");
+            return Ok("updated successfully");
         }
 
 
 
         [Authorize]
-        [HttpDelete("{id}")]
-        public IActionResult Delete(string id)
+        [HttpDelete("deactivateUser")]
+        public async Task<IActionResult> DeleteUser(string id)
         {
-            _userService.Delete(id);
-            return Ok(new { message = "User deleted successfully" });
+            var deletedUser = await _userService.DeleteAsync(id);
+
+            if (!deletedUser)
+            {
+                return NotFound("User not found, try again");
+            }
+            return Ok(new { message = "User deactivated successfully" });
         }
 
-        [HttpGet("{userId}")]
+
+        [HttpGet("getUser")]
         public async Task<IActionResult> GetUserById(string userId)
         {
             try

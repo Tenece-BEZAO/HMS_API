@@ -17,8 +17,8 @@ namespace HMS.DAL.Configuration.MappingConfiguration
              .ForMember(dest => dest.TwoFactorEnabled, opt => opt.MapFrom(src => src.TwoFactorEnabled));
 
 
-           // CreateMap<AppUser, LoginDto>();
-         
+            // CreateMap<AppUser, LoginDto>();
+            CreateMap<AppUserDto, AppUser>().ReverseMap();
 
             CreateMap<AppointmentDto, Appointment>();
 
@@ -38,7 +38,7 @@ namespace HMS.DAL.Configuration.MappingConfiguration
                     return true;
                 }
             ));
-
+            CreateMap<AppUser, UpdateRequest>();
             CreateMap<EnrolleeDTO, Enrollee>();
 
             CreateMap<Enrollee, EnrolleeDTO>();

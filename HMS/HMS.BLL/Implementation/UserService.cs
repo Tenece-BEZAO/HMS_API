@@ -26,6 +26,7 @@ namespace HMS.BLL.Implementation
             _mapper = mapper;
             _validator = validator;
         }
+
         public string GetUserProfile()
         {
             var result = string.Empty;
@@ -43,18 +44,19 @@ namespace HMS.BLL.Implementation
 
             if (user == null)
             {
-                throw new ArgumentException($"User with ID {id} not found");
+                throw new ArgumentException($"User not found");
             }
-            _mapper.Map(model, user);
-            var result = await _userManager.UpdateAsync( user);
+            var updatedUser = _mapper.Map(model, user);
+
+            var result = await _userManager.UpdateAsync(updatedUser);
             if (!result.Succeeded)
             {
-                var errors = string.Join(", ", result.Errors.Select(e => e.Description));
-                throw new InvalidOperationException($"Failed to update user. Errors: {errors}");
+                throw new InvalidOperationException($"Failed to update user detail");
             }
 
             return result.Succeeded;
         }
+
 
         public async Task<bool> PartialUpdateUserAsync(string userId, JsonPatchDocument<UpdateRequest> patchDoc)
         {
@@ -75,28 +77,32 @@ namespace HMS.BLL.Implementation
             {
                 throw new ValidationException(validationResult.Errors);
             }
-
-            user.UserName = userUpdateDto.UserName;
-            user.Email = userUpdateDto.Email;
-
+            _mapper.Map(userUpdateDto, user);
             var result = await _userManager.UpdateAsync(user);
 
             return result.Succeeded;
         }
 
-        //map my response
-        public async Task<AppUser> GetUserByIdAsync(string userId)
+        
+        public async Task<AppUserDto> GetUserByIdAsync(string userId)
         {
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null) throw new KeyNotFoundException("User not found");
+            var userfetch = await _userManager.FindByIdAsync(userId);
+
+            if (userfetch == null) throw new KeyNotFoundException("User not found");
+            var user = _mapper.Map<AppUserDto>(userfetch);
+            
             return user;
         }
+
+
         public async Task<IEnumerable<AppUser>> GetAllUsersAsync()
         {
             var users = await _userManager.Users.ToListAsync();
             return users;
         }
-        public async Task Delete(string userId)
+
+
+        public async Task<bool> DeleteAsync(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
@@ -105,11 +111,7 @@ namespace HMS.BLL.Implementation
             }
 
             var result = await _userManager.DeleteAsync(user);
-            if (!result.Succeeded)
-            {
-                throw new Exception($"Failed to delete user: {result.Errors.FirstOrDefault()?.Description}");
-            }
-
+            return true;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using HMS.DAL.Entities;
+﻿using HMS.DAL.Dtos.Requests;
+using HMS.DAL.Entities;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -14,9 +15,10 @@ namespace HMS.BLL.Interfaces
         Task<bool> CreateRoleAsync(IdentityRole role);
         //Task<bool> CreateRoleAsync(string name);
         Task<List<ApplicationRole>> GetRolesAsync();
-        Task<List<AppUser>> GetUsersAsync();
+        Task<IEnumerable<AppUserDto>> GetUsersAsync();
         Task<bool> AssignRoleToUserAsync(UserRole user);
         Task<bool> RegisterUserAsync(RegisterDto register);
         Task<bool> RemoveUserFromRoleAsync(UserRole user);
+        Task<bool> DeleteRoleAsync(IdentityRole role);
     }
 }

@@ -43,7 +43,7 @@ namespace HMS.API.Controllers
                     }
                     return BadRequest(ModelState);
                 }
-                return StatusCode(201);
+                return StatusCode(201, "go and confirm your email");
             }
             return BadRequest();
         }
@@ -55,6 +55,7 @@ namespace HMS.API.Controllers
             await _authService.ConfirmedEmailAsync(token, email);
             return Ok("Email sent Successfully");
         }
+
 
 
         [HttpPost("login")]
@@ -121,6 +122,44 @@ namespace HMS.API.Controllers
             return Ok("Email sent Successfully");
         }
 
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("ForgotPassword")]
+        public async Task<IActionResult> ForgetPassword([Required] string email)
+        {
+            var response = await _authService.ForgetPasswordAsync(email);
+            return Ok(response);
+        }
+
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("ResetPassword")]
+        public async Task<IActionResult> ResetPassword(string token, string email)
+        {
+            var response = await _authService.ResetPasswordAsync(token, email);
+            return Ok(response);
+        }
+
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("ResetPassword")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordRequest reset) {
+            var response = await _authService.ResetPasswordAsync(reset);
+            return Ok(response);
+        }
+
+
+
+        [HttpGet]
+        [Route("email")]
+        public async Task<IActionResult> TestEmail(RegisterDto register)
+        {
+            await _authService.EmailTestAsync();
+            return Ok("Email sent Successfully");
+        }
+
 
       
 
@@ -129,7 +168,6 @@ namespace HMS.API.Controllers
         public async Task<IActionResult> Logout()
         {
             await _authService.Logout();
-
             return Ok();
         }
 

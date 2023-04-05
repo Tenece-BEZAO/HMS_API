@@ -21,6 +21,7 @@ namespace HMS.BLL.Implementation
             _appointmentRepository = _unitOfWork.GetRepository<Appointment>();
         }
 
+
         public async Task<IEnumerable<AppointmentDto>> GetAppointmentsAsync()
         {
             var appointments = await _appointmentRepository.GetAllAsync(orderBy: q => q.OrderBy(a => a.AppointmentDate));

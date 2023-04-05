@@ -16,6 +16,8 @@ namespace HMS.API.Controllers
         {
             _claimServices = claimServices;
         }
+
+
         [HttpGet]
                public async Task<IActionResult> GetAllClaim(string email)
                 {
@@ -29,5 +31,13 @@ namespace HMS.API.Controllers
                var claims = await _claimServices.AddClaimsToUserAsync(email, claimName, claimValue);
                return Ok(claims);
            }
+
+
+        [HttpPost]
+        public async Task<IActionResult> AddClaims(string email, Claim claim)
+        {
+            var claims = await _claimServices.AddClaimToUserAsync(email, claim);
+            return Ok(claims);
+        }
     }
 }

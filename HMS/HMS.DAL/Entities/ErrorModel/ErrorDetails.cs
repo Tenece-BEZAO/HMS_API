@@ -13,5 +13,19 @@ namespace HMS.DAL.Entities.ErrorModel
         public string? Message { get; set; }
         public override string ToString() => JsonSerializer.Serialize(this);
     }
+    public abstract class NotFoundException : Exception
+    {
+        protected NotFoundException(string message)
+        : base(message)
+        { }
+    }
+
+    public sealed class UserNotFoundException : NotFoundException
+    {
+        public UserNotFoundException(AppUser user)
+        : base($"The User with id: {user.Email} doesn't exist in the database.")
+        {
+        }
+    }
 
 }

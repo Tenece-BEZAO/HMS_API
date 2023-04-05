@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using HMS.BLL.Interfaces;
+using HMS.DAL.Dtos.Requests;
 using HMS.DAL.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -17,8 +18,7 @@ namespace HMS.BLL.Implementation
         private readonly IMapper _mapper;
        
 
-        public AdminService(IConfiguration configuration,
-            UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper)
+        public AdminService(IConfiguration configuration, UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper)
         {
             _configuration = configuration;
             _userManager = userManager;
@@ -27,11 +27,12 @@ namespace HMS.BLL.Implementation
         
         }
 
+
         public async Task<bool> CreateRoleAsync(IdentityRole role)
         {
             bool isRoleCreated = false;
-            var roleExist = _roleManager.RoleExistsAsync(role.Name);
-            if(roleExist != null)
+            var roleExist = await _roleManager.RoleExistsAsync(role.Name);
+            if(!roleExist)
             {
                 var res = await _roleManager.CreateAsync(role);
                 if (res.Succeeded)
@@ -44,6 +45,27 @@ namespace HMS.BLL.Implementation
       
         }
 
+        
+        public async Task<bool> DeleteRoleAsync(IdentityRole role)
+        {
+            //var roleExist = await _roleManager.RoleExistsAsync(role.Name);
+
+            var _role = await _roleManager.FindByNameAsync(role.Name);
+            if (_role != null)
+            {
+                var res = await _roleManager.DeleteAsync(_role);
+
+                if (!res.Succeeded)
+                {
+                    throw new ArgumentException("Role can not be deleted.");
+                }
+                return true;
+            }
+
+            return false;
+        }
+
+
         public async Task<List<ApplicationRole>> GetRolesAsync()
         {
             List<ApplicationRole> roles = new List<ApplicationRole>();
@@ -55,17 +77,14 @@ namespace HMS.BLL.Implementation
             return roles;
         }
 
-        public async Task<List<AppUser>> GetUsersAsync()
+
+        public async Task<IEnumerable<AppUserDto>> GetUsersAsync()
         {
-            List<AppUser> users = new List<AppUser>();
-            users = (from u in await _userManager.Users.ToListAsync()
-                     select new AppUser()
-                     {
-                         Email = u.Email,
-                         UserName = u.UserName
-                     }).ToList();
-            return users;
+            var users = await _userManager.Users.ToListAsync();
+            var appUserDtos = _mapper.Map<IEnumerable<AppUserDto>>(users);
+            return appUserDtos;
         }
+
 
         public async Task<bool> AssignRoleToUserAsync(UserRole user)
         {
@@ -87,6 +106,7 @@ namespace HMS.BLL.Implementation
             return isRoleAssigned;
         }
 
+
         public async Task<bool> RemoveUserFromRoleAsync(UserRole user)
         {
             bool isRoleAssigned = false;
@@ -106,6 +126,8 @@ namespace HMS.BLL.Implementation
             }
             return isRoleAssigned;
         }
+
+
         public async Task<bool> RegisterUserAsync(RegisterDto register)
         {
             bool IsCreated = false;

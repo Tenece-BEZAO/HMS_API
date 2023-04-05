@@ -4,7 +4,7 @@ using HMS.DAL.Configuration.MappingConfiguration;
 using HMS.DAL.Dtos.Requests;
 using HMS.DAL.Interfaces;
 using Microsoft.AspNetCore.Identity;
-
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using NLog;
 using Swashbuckle.AspNetCore.Filters;
@@ -22,6 +22,7 @@ namespace HMS.API
             builder.Services.ConfigureLoggerService();
             builder.Services.ConfigureCors();
             //builder.Services.AddControllers();
+
             builder.Services.AddControllers().AddNewtonsoftJson();
             builder.Services.AddDatabaseConnection();
             builder.Services.AddAutoMapper(typeof(MappingProfile));

@@ -14,9 +14,9 @@ namespace HMS.BLL.Interfaces
     {
         string GetUserProfile();
         Task<bool> PartialUpdateUserAsync(string userId, JsonPatchDocument<UpdateRequest> patchDoc);
-        Task Delete(string userId);
+        Task<bool> DeleteAsync(string userId);
         Task<bool> UpdateUserAsync(string id, UpdateRequest model);
-        Task<AppUser> GetUserByIdAsync(string userId);
+        Task<AppUserDto> GetUserByIdAsync(string userId);
         Task<IEnumerable<AppUser>> GetAllUsersAsync();
     }
 }
