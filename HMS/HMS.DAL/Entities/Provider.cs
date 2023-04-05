@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace HMS.DAL.Entities
 {
     public class Provider
@@ -11,6 +6,7 @@ namespace HMS.DAL.Entities
         public int Id { get; set; }
         public string Name { get; set; }
         public string Specialty { get; set; }
-        public List<Appointment> Appointment { get; set; }
+        public DateTime RegisteredDate { get; set; }
+        public IEnumerable<Appointment>? Appointments { get; set; }
     }
 }
