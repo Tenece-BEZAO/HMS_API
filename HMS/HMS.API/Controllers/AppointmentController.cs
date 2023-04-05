@@ -1,6 +1,7 @@
 ﻿using HMS.BLL.Interfaces;
 using HMS.DAL.Dtos.Requests;
 using HMS.DAL.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HMS.API.Controllers
@@ -18,9 +19,9 @@ namespace HMS.API.Controllers
             _reportService = reportService;
         }
 
-
+        //[Authorize]
         [HttpGet]
-        [Route("GetAppointments")]
+        [Route("getAppointments")]
         public async Task<IActionResult> GetAppointments()
         {
             var appointments = await _appointmentService.GetAppointmentsAsync();
@@ -28,7 +29,7 @@ namespace HMS.API.Controllers
         }
 
 
-        [HttpGet("GetAppointment/{id}")]
+        [HttpGet("getAppointment/{id}")]
         public async Task<ActionResult<AppointmentDto>> GetAppointment(int id)
         {
             var appointmentDto = await _appointmentService.GetAppointmentAsync(id);
@@ -42,7 +43,7 @@ namespace HMS.API.Controllers
         }
 
 
-        [HttpGet("SearchAppointment")]
+        [HttpGet("searchAppointment")]
         public async Task<IActionResult> SearchAppointments(string searchTerm)
         {
             var appointment = await _appointmentService.SearchAppointmentsAsync(searchTerm);
@@ -56,8 +57,8 @@ namespace HMS.API.Controllers
         }
 
 
-        [HttpPost]
-        [Route("NewAppointment")]
+        /*[HttpPost]
+        [Route("bookNewAppointment")]
         public async Task<IActionResult> AddAppointment([FromBody] AppointmentDto appointmentDto)
         {
             if (appointmentDto == null)
@@ -77,10 +78,41 @@ namespace HMS.API.Controllers
             await _reportService.AddReportAsync(reportDto);
 
             return CreatedAtAction(nameof(GetAppointment), new { id = addedAppointmentDto.Id }, addedAppointmentDto);
+        }*/
+
+
+
+        [HttpPost]
+        [Route("bookNewAppointment")]
+        public async Task<IActionResult> AddAppointment([FromBody] AddAppointmentDto enrolleeDto)
+        {
+            if (enrolleeDto == null || string.IsNullOrEmpty(enrolleeDto.EnrolleeName) || string.IsNullOrEmpty(enrolleeDto.Reason))
+            {
+                return BadRequest("Appointment cannot be created. Please try again!");
+            }
+            var appointmentDto = new AppointmentDto
+            {
+                EnrolleeName = enrolleeDto.EnrolleeName,
+                Reason = enrolleeDto.Reason,
+                AppointmentDate = enrolleeDto.AppointmentDate
+            };
+
+            var addedAppointmentDto = await _appointmentService.AddAppointmentAsync(appointmentDto);
+
+            var reportDto = new ReportDto
+            {
+                Name = addedAppointmentDto.EnrolleeName,
+                Reason = addedAppointmentDto.Reason,
+                ReportDate = addedAppointmentDto.AppointmentDate
+            };
+
+            await _reportService.AddReportAsync(reportDto);
+
+            return CreatedAtAction(nameof(GetAppointment), new { id = addedAppointmentDto.Id }, addedAppointmentDto);
         }
 
 
-        [HttpPut("UpdateAppointment/{id}")]
+        [HttpPut("updateAppointment/{id}")]
         public async Task<IActionResult> UpdateAppointment(int id, [FromBody] AppointmentDto appointmentDto)
         {
             try
@@ -100,7 +132,8 @@ namespace HMS.API.Controllers
         }
 
 
-        [HttpPut("RejectAppointment/{id}")]
+        [Authorize]
+        [HttpPut("rejectAppointment/{id}")]
         public async Task<IActionResult> RejectAppointment(int id)
         {
             try
@@ -124,7 +157,8 @@ namespace HMS.API.Controllers
         }
 
 
-        [HttpPut("ConfirmAppointment/{id}")]
+        //[Authorize]
+        [HttpPut("confirmAppointment/{id}")]
         public async Task<IActionResult> ConfirmAppointment(int id)
         {
             try
@@ -148,7 +182,8 @@ namespace HMS.API.Controllers
         }
 
 
-        [HttpDelete("DeleteAppointment/{id}")]
+        //[Authorize]
+        [HttpDelete("deleteAppointment/{id}")]
         public async Task<IActionResult> DeleteAppointment(int id)
         {
             try
@@ -162,6 +197,4 @@ namespace HMS.API.Controllers
             }
         }
     }
-
 }
-

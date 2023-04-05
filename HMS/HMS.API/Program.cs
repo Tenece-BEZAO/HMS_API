@@ -1,8 +1,10 @@
 using HMS.BLL.Extensions;
 using HMS.DAL.Configuration.MappingConfiguration;
-using HMS.DAL.Context;
+
+using HMS.DAL.Dtos.Requests;
 using HMS.DAL.Interfaces;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using NLog;
 using Swashbuckle.AspNetCore.Filters;
@@ -19,40 +21,40 @@ namespace HMS.API
             LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
             builder.Services.ConfigureLoggerService();
             builder.Services.ConfigureCors();
-            builder.Services.ConfigureJWT(builder.Configuration);
+            //builder.Services.AddControllers();
 
-            builder.Services.AddControllers();
-            builder.Services.AddDbContext<HmoDbContext>(options =>
-            {
-                var conn = builder.Configuration.GetConnectionString("DefaultConnection");
-                options.UseSqlServer(conn);
-            });
+            builder.Services.AddControllers().AddNewtonsoftJson();
             builder.Services.AddDatabaseConnection();
             builder.Services.AddAutoMapper(typeof(MappingProfile));
             builder.Services.AddAutoMapper(Assembly.Load("HMS.DAL"));
-
+            builder.Services.AddHttpContextAccessor();
+            builder.Services.Configure<IdentityOptions>(opts => opts.SignIn.RequireConfirmedEmail= true);
+            builder.Services.ConfigureEmail();
+            builder.Services.AddEmailService(builder.Configuration);
             builder.Services.RegisterServices();
 
             builder.Services.ReportServices();
             builder.Services.AppointmentServices();
+
+            
+             builder.Services.AddSwaggerGen(options =>
+             {
+                 options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme()
+                 {
+                     Description = "Standard Authorization Header Using the Bearer Scheme (\"bearer {token}\")",
+                     In = ParameterLocation.Header,
+                     Name = "Authorization",
+                     Type = SecuritySchemeType.ApiKey,
+                     Scheme = "Bearer"
+                 });
+
+                 options.OperationFilter<SecurityRequirementsOperationFilter>();
+             });
+            builder.Services.ConfigureJWT(builder.Configuration);
+
             builder.Services.EnrolleeServices();
             builder.Services.PlanServices();
             builder.Services.DrugServices();
-
-            builder.Services.AddSwaggerGen(options =>
-            {
-                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
-                {
-                    Description = "Standard Authorization Header Using the Bearer Scheme (\"bearer {token}\")",
-                    In = ParameterLocation.Header,
-                    Name = "Authorization",
-                    Type = SecuritySchemeType.ApiKey,
-                    Scheme = "Bearer"
-                });
-
-                options.OperationFilter<SecurityRequirementsOperationFilter>();
-            });
-
 
             builder.Services.AddAuthorization(options =>
             {
@@ -63,8 +65,7 @@ namespace HMS.API
             builder.Services.AddEndpointsApiExplorer();
             var app = builder.Build();
             var logger = app.Services.GetRequiredService<ILoggerService>();
-            app.ConfigureExceptionHandler(logger);
-
+            app.ConfigureExceptionHandler(builder.Environment, logger);
             if (app.Environment.IsProduction())
                 app.UseHsts();
 

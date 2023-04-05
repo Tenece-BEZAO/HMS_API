@@ -3,6 +3,7 @@ using HMS.DAL.Dtos.Reponses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using System.ComponentModel.DataAnnotations;
 using static HMS.DAL.Dtos.Requests.AuthenticationRequest;
 
 namespace HMS.API.Controllers
@@ -12,10 +13,12 @@ namespace HMS.API.Controllers
     public class AuthenticationController : ControllerBase
     {
         private readonly IAuthenticationService _authService;
+        private readonly IUserService _userService;
 
-        public AuthenticationController(IAuthenticationService authenticationService)
+        public AuthenticationController(IAuthenticationService authenticationService, IUserService userService)
         {
             _authService = authenticationService;
+            _userService = userService;
         }
 
         [Route("register")]
@@ -31,6 +34,7 @@ namespace HMS.API.Controllers
             if (ModelState.IsValid)
             {
                 var result = await _authService.RegisterUser(register);
+
                 if (!result.Succeeded)
                 {
                     foreach (var error in result.Errors)
@@ -39,19 +43,35 @@ namespace HMS.API.Controllers
                     }
                     return BadRequest(ModelState);
                 }
-                return StatusCode(201);
+                return StatusCode(201, "go and confirm your email");
             }
             return BadRequest();
         }
+
+        [HttpGet]
+        [Route("ConfirmEmail")]
+        public async Task<IActionResult> ConfirmEmail(string token, string email)
+        {
+            await _authService.ConfirmedEmailAsync(token, email);
+            return Ok("Email sent Successfully");
+        }
+
 
 
         [HttpPost("login")]
         public async Task<IActionResult> Authenticate([FromBody] LoginDto loginDto)
         {
             AuthStatus response = await _authService.UserLogin(loginDto);
+
             return Ok(response);
         }
-
+        [HttpPost]
+        [Route("login-2FA")]
+        public async Task<IActionResult> LoginWithOtp(string userName, string code)
+        {
+            var token = await _authService.LoginWithOtp(userName, code);
+            return Ok(token);
+        }
 
         [Authorize]
         [HttpPost]
@@ -62,14 +82,104 @@ namespace HMS.API.Controllers
             return Ok();
         }
 
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("ForgotPassword")]
+        public async Task<IActionResult> ForgetPassword([Required] string email)
+        {
+            var response = await _authService.ForgetPasswordAsync(email);
+            return Ok(response);
+        }
+
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("ResetPassword")]
+        public async Task<IActionResult> ResetPassword(string token, string email)
+        {
+            var response = await _authService.ResetPasswordAsync(token, email);
+            return Ok(response);
+        }
+
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("ResetPassword")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordRequest reset) {
+            var response = await _authService.ResetPasswordAsync(reset);
+            return Ok(response);
+
+        }
+
+
+
+        [HttpGet]
+        [Route("email")]
+        public async Task<IActionResult> TestEmail(RegisterDto register)
+        {
+            await _authService.EmailTestAsync();
+           // await _authService.RegisterUser(register);
+            return Ok("Email sent Successfully");
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("ForgotPassword")]
+        public async Task<IActionResult> ForgetPassword([Required] string email)
+        {
+            var response = await _authService.ForgetPasswordAsync(email);
+            return Ok(response);
+        }
+
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("ResetPassword")]
+        public async Task<IActionResult> ResetPassword(string token, string email)
+        {
+            var response = await _authService.ResetPasswordAsync(token, email);
+            return Ok(response);
+        }
+
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("ResetPassword")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordRequest reset) {
+            var response = await _authService.ResetPasswordAsync(reset);
+            return Ok(response);
+        }
+
+
+
+        [HttpGet]
+        [Route("email")]
+        public async Task<IActionResult> TestEmail(RegisterDto register)
+        {
+            await _authService.EmailTestAsync();
+            return Ok("Email sent Successfully");
+        }
+
+
+      
+
         [HttpPost]
         [Route("Logout")]
         public async Task<IActionResult> Logout()
         {
             await _authService.Logout();
-
             return Ok();
         }
 
+
+        [HttpGet, Authorize]
+        public async Task<IActionResult> GetUser()
+        {
+            var result = _userService.GetUserProfile();
+            return Ok(result);
+        }
+
+
+       
     }
 }
