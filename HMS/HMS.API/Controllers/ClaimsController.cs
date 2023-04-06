@@ -25,8 +25,6 @@ namespace HMS.API.Controllers
 
 
         [HttpPost]
-<<<<<<< HEAD
-=======
         [Route("userClaim")]
         public async Task<IActionResult> AddClaims(string email, string claimName, string claimValue)
         {
@@ -36,7 +34,6 @@ namespace HMS.API.Controllers
 
 
         [HttpPost]
->>>>>>> 4075c8a4cb9c3a57c974d7e939efee611ca98ea4
         [Route("roleClaim")]
         public async Task<IActionResult> AddClaims(string email, Claim claim)
         {

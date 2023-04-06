@@ -17,9 +17,10 @@ namespace HMS.DAL.Dtos.Requests
             public string? Email { get; init; }
             [Required(ErrorMessage = "Password name is required")]
             public string? Password { get; init; }
-          
-           
+                    
         }
+
+
         public class RegisterDto
         {
             [Required]
@@ -47,6 +48,8 @@ namespace HMS.DAL.Dtos.Requests
 
 
         }
+
+
         public class ChangePasswordDto
         {
 

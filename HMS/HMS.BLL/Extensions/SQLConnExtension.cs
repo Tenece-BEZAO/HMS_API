@@ -22,11 +22,18 @@ namespace HMS.BLL.Extensions
             services.AddDbContext<HmoDbContext>(options =>
             {
                 options.UseSqlServer(config.GetConnectionString("DefaultConnection"));
+             
             });
 
-            services.AddIdentity<AppUser, IdentityRole>()
+            services.AddIdentity<AppUser, IdentityRole>(options =>
+            {
+
+                options.Tokens.ProviderMap.Add("Email", new TokenProviderDescriptor(
+                    typeof(EmailTokenProvider<AppUser>)));
+            })
                   .AddEntityFrameworkStores<HmoDbContext>()
-                  .AddDefaultTokenProviders();
+                  .AddDefaultTokenProviders()
+                  .AddTokenProvider<EmailTokenProvider<AppUser>>("Email");
 
         }
     }

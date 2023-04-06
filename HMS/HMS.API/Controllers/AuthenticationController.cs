@@ -1,4 +1,5 @@
-﻿using HMS.BLL.Interfaces;
+﻿using HMS.BLL.ActionFilters;
+using HMS.BLL.Interfaces;
 using HMS.DAL.Dtos.Reponses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -24,8 +25,9 @@ namespace HMS.API.Controllers
 
         [Route("register")]
         [HttpPost]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         [SwaggerOperation(Summary = "Creates user")]
-        [SwaggerResponse(StatusCodes.Status200OK, Description = "UserId of created user", Type = typeof(AuthStatus))]
+        [SwaggerResponse(StatusCodes.Status200OK, Description = "UserId of created user pls confirm your email", Type = typeof(AuthStatus))]
         [SwaggerResponse(StatusCodes.Status400BadRequest, Description = "User with provided email already exists", Type = typeof(ErrorResponse))]
         [SwaggerResponse(StatusCodes.Status400BadRequest, Description = "Failed to create user", Type = typeof(ErrorResponse))]
         [SwaggerResponse(StatusCodes.Status500InternalServerError, Description = "It's not you, it's us", Type = typeof(ErrorResponse))]
@@ -33,38 +35,32 @@ namespace HMS.API.Controllers
 
         public async Task<IActionResult> RegisterUser([FromBody] RegisterDto register)
         {
-            if (ModelState.IsValid)
-            {
-                var result = await _authService.RegisterUser(register);
+            var result = await _authService.RegisterUser(register);
+            return (IActionResult)result;
 
-                if (!result.Succeeded)
-                {
-                    foreach (var error in result.Errors)
-                    {
-                        ModelState.TryAddModelError(error.Code, error.Description);
-                    }
-                    return BadRequest(ModelState);
-                }
-                return StatusCode(201, "go and confirm your email");
-            }
-            return BadRequest();
         }
 
 
-<<<<<<< HEAD
+        [HttpGet("Email", Name = "confirm-email")]
+        [SwaggerOperation(Summary = "Confirm User Email")]
+        [SwaggerResponse(StatusCodes.Status200OK, Description = "Your Email has been verified", Type = typeof(AuthStatus))]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, Description = "Invalid Email address", Type = typeof(ErrorResponse))]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, Description = "It's not you, it's us", Type = typeof(ErrorResponse))]
 
-=======
->>>>>>> 4075c8a4cb9c3a57c974d7e939efee611ca98ea4
-        [HttpGet]
-        [Route("ConfirmEmail")]
         public async Task<IActionResult> ConfirmEmail(string token, string email)
         {
             await _authService.ConfirmedEmailAsync(token, email);
-            return Ok("Email sent Successfully");
+            return Ok("Your Email has been verified");
         }
 
 
-        [HttpPost("login")]
+        [AllowAnonymous]
+        [HttpPost("login", Name = "Login")]
+        [SwaggerOperation(Summary = "Authenticates user")]
+        [SwaggerResponse(StatusCodes.Status200OK, Description = "check your mail for otp", Type = typeof(AuthStatus))]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, Description = "Invalid username or password", Type = typeof(ErrorResponse))]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, Description = "It's not you, it's us", Type = typeof(ErrorResponse))]
+
         public async Task<IActionResult> Authenticate([FromBody] LoginDto loginDto)
         {
             AuthStatus response = await _authService.UserLogin(loginDto);
@@ -75,6 +71,11 @@ namespace HMS.API.Controllers
 
         [HttpPost]
         [Route("login-2FA")]
+        [SwaggerOperation(Summary = "Two factor Authentication")]
+        [SwaggerResponse(StatusCodes.Status200OK, Description = "Login Successfull", Type = typeof(AuthStatus))]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, Description = "Invalid username or password", Type = typeof(ErrorResponse))]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, Description = "It's not you, it's us", Type = typeof(ErrorResponse))]
+
         public async Task<IActionResult> LoginWithOtp(string userName, string code)
         {
             var token = await _authService.LoginWithOtp(userName, code);
@@ -84,22 +85,27 @@ namespace HMS.API.Controllers
 
         [Authorize]
         [HttpPost]
-        [Route("ChangePassword")]
+        [Route("change-password")]
+        [SwaggerOperation(Summary = "Change user password")]
+        [SwaggerResponse(StatusCodes.Status200OK, Description = "Password reset successful", Type = typeof(AuthStatus))]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, Description = "Invalid token or email address", Type = typeof(ErrorResponse))]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, Description = "Internal server error", Type = typeof(ErrorResponse))]
+
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto model)
         {
-            await _authService.ChangePasswordAsync(model.Email, model.CurrentPassword, model.NewPassword);
-            return Ok();
+            var response = await _authService.ChangePasswordAsync(model.Email, model.CurrentPassword, model.NewPassword);
+            return Ok(response);
         }
 
-<<<<<<< HEAD
 
-
-        [AllowAnonymous]
-=======
 
         [AllowAnonymous]
         [HttpGet]
         [Route("ResetPassword")]
+        [SwaggerOperation(Summary = "Reset user password")]
+        [SwaggerResponse(StatusCodes.Status200OK, Description = "link has been sent to your email", Type = typeof(AuthStatus))]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, Description = "Invalid token or email address", Type = typeof(ErrorResponse))]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, Description = "Internal server error", Type = typeof(ErrorResponse))]
         public async Task<IActionResult> ResetPassword(string token, string email)
         {
             var response = await _authService.ResetPasswordAsync(token, email);
@@ -107,10 +113,15 @@ namespace HMS.API.Controllers
         }
 
 
+
         [AllowAnonymous]
->>>>>>> 4075c8a4cb9c3a57c974d7e939efee611ca98ea4
         [HttpPost]
-        [Route("ForgotPassword")]
+        [Route("forget-password")]
+        [SwaggerOperation(Summary = "Sends password reset instructions to user's email")]
+        [SwaggerResponse(StatusCodes.Status200OK, Description = "Password reset instructions sent successfully", Type = typeof(AuthStatus))]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, Description = "Failed to send password reset instructions", Type = typeof(ErrorResponse))]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, Description = "It's not you, it's us", Type = typeof(ErrorResponse))]
+
         public async Task<IActionResult> ForgetPassword([Required] string email)
         {
             var response = await _authService.ForgetPasswordAsync(email);
@@ -118,10 +129,12 @@ namespace HMS.API.Controllers
         }
 
 
+
         [AllowAnonymous]
         [HttpPost]
         [Route("ResetPassword")]
-        public async Task<IActionResult> ResetPassword(ResetPasswordRequest reset) {
+        public async Task<IActionResult> ResetPassword(ResetPasswordRequest reset)
+        {
             var response = await _authService.ResetPasswordAsync(reset);
             return Ok(response);
         }
@@ -150,6 +163,6 @@ namespace HMS.API.Controllers
         {
             var result = await _userService.GetUserProfile();
             return Ok(result);
-        } 
+        }
     }
 }
