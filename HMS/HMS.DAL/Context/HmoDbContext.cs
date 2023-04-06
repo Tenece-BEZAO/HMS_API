@@ -1,4 +1,5 @@
 ﻿using HMS.DAL.Configuration.RepoConfiguration;
+using HMS.DAL.Configuration.Seed;
 using HMS.DAL.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +12,9 @@ namespace HMS.DAL.Context
         { }
 
         public DbSet<Appointment> Appointments { get; set; }
+        public DbSet<Report> Reports { get; set; }
         public DbSet<Plan> Plans { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {   
             modelBuilder.Entity<AppUser>(e =>
@@ -23,13 +26,6 @@ namespace HMS.DAL.Context
                 e.HasIndex(u => u.Email, "IX_UniqueEmail")
                  .IsUnique();
             });
-
-            modelBuilder.Entity<AppUser>()
-                .Property(u => u.UserName)
-                .HasMaxLength(100)
-                .IsRequired()
-                .HasAnnotation("ErrorMessage", "Username field is required");
-
 
             modelBuilder.Entity<Appointment>()
                 .Property(a => a.Reason)
@@ -70,6 +66,7 @@ namespace HMS.DAL.Context
           base.OnModelCreating(modelBuilder);
 
             modelBuilder.ApplyConfiguration(new RoleConfiguration());
+            modelBuilder.ApplyConfiguration(new UserConfiguration());
         }
     }
 }

@@ -1,6 +1,6 @@
-﻿
+using HMS.DAL.Enums;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+
 
 namespace HMS.DAL.Entities
 {
@@ -8,11 +8,13 @@ namespace HMS.DAL.Entities
     {
         [Key]
         public int Id { get; set; }
+        public string EnrolleeName { get; set; }
         public DateTime AppointmentDate { get; set; }
         public string Reason { get; set; }
-
-        /*[ForeignKey("AppUser")]
-        public int AppUserId { get; set; }*/
-        //public AppUser AppUser { get; set; }
+        public int? EnrolleeId { get; set; }
+        public Enrollee? Enrollee { get; set; }
+        public Status Status { get; set; } = Status.Pending;
+        public int? ProviderId { get; set; }
+        public Provider? Provider { get; set; } 
     }
 }

@@ -4,11 +4,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HMS.BLL.Extensions
 {
@@ -23,10 +18,12 @@ namespace HMS.BLL.Extensions
                 config = serviceProvider.GetService<IConfiguration>();
             }
             string cc = config.GetConnectionString("DefaultConnection");
+
             services.AddDbContext<HmoDbContext>(options =>
             {
                 options.UseSqlServer(config.GetConnectionString("DefaultConnection"));
             });
+
             services.AddIdentity<AppUser, IdentityRole>()
                   .AddEntityFrameworkStores<HmoDbContext>()
                   .AddDefaultTokenProviders();
