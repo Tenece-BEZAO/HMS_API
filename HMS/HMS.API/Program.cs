@@ -1,9 +1,7 @@
 using HMS.BLL.Extensions;
 using HMS.DAL.Configuration.MappingConfiguration;
-using HMS.DAL.Dtos.Requests;
 using HMS.DAL.Interfaces;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using NLog;
 using Swashbuckle.AspNetCore.Filters;
@@ -26,7 +24,7 @@ namespace HMS.API
             builder.Services.AddAutoMapper(typeof(MappingProfile));
             builder.Services.AddAutoMapper(Assembly.Load("HMS.DAL"));
             builder.Services.AddHttpContextAccessor();
-            builder.Services.Configure<IdentityOptions>(opts => opts.SignIn.RequireConfirmedEmail= true);
+            builder.Services.Configure<IdentityOptions>(opts => opts.SignIn.RequireConfirmedEmail = true);
             builder.Services.ConfigureEmail();
             builder.Services.AddEmailService(builder.Configuration);
             builder.Services.RegisterServices();
@@ -48,8 +46,10 @@ namespace HMS.API
                      Name = "Authorization",
                      Type = SecuritySchemeType.ApiKey,
                      Scheme = "Bearer"
-                 });
-
+                 }
+                 );
+                 options.EnableAnnotations();
+                 options.UseInlineDefinitionsForEnums();
                  options.OperationFilter<SecurityRequirementsOperationFilter>();
              });
             builder.Services.ConfigureJWT(builder.Configuration);
@@ -72,7 +72,7 @@ namespace HMS.API
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
+            app.UseHttpLogging();
             app.UseCors("CorsPolicy");
 
             app.UseHttpsRedirection();

@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using HMS.BLL.ActionFilters;
 using HMS.BLL.Implementation;
 using HMS.BLL.Interfaces;
 using HMS.DAL.Context;
@@ -26,11 +27,10 @@ namespace HMS.BLL.Extensions
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IClaimServices, ClaimServices>();
             services.AddTransient<IValidator<UpdateRequest>, UpdateRequestValidator>();
-
-            //services.AddSingleton<IHttpContextAccessor>();
-
+            services.AddScoped<ValidationFilterAttribute>();
         }
        
+    
 
         public static IServiceCollection AddEmailService(this IServiceCollection services, IConfiguration configuration)
         {
@@ -39,7 +39,6 @@ namespace HMS.BLL.Extensions
             services.AddScoped<IEmailService, EmailService>();
             services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            //services.AddScoped<IUserTwoFactorTokenProvider<AppUser>, MyTokenProvider>();
             return services;
         }
     }

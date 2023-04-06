@@ -69,16 +69,12 @@ namespace HMS.BLL.Implementation
                 var result = await _userManager.CreateAsync(newUser, register.Password);
                 if (!result.Succeeded)
                 {
-                    return IdentityResult.Failed(new IdentityError { Description = "User Failed to create" });
-
+                    throw new InvalidOperationException("User Failed to create");
                 }
                 await _userManager.AddToRolesAsync(newUser, register.Roles);
-
-                //add token to verify email
                 string token = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
 
                 var request = _httpContextAccessor.HttpContext.Request;
-                //create url helper manually
                 var actionContext = new ActionContext(_httpContextAccessor.HttpContext, new Microsoft.AspNetCore.Routing.RouteData(), new ActionDescriptor());
 
                 var urlHelper = _urlHelperFactory.GetUrlHelper(actionContext);
@@ -102,8 +98,7 @@ namespace HMS.BLL.Implementation
                 return IdentityResult.Success;
             }
             else
-                return IdentityResult.Failed(new IdentityError { Description = "enter either admin or enrolle role" });
-
+                throw new InvalidOperationException("enter a role either admin or enrolle");
         }
 
 
@@ -206,36 +201,33 @@ namespace HMS.BLL.Implementation
         public async Task<AuthStatus> UserLogin(LoginDto loginDto)
         {
             LoginStatus loginStatus;
-            string roleName = "";
             _user = await _userManager.FindByEmailAsync(loginDto.Email);
-            // _mapper.Map<AppUser>(loginDto);
-
+            if (_user == null)
+                throw new InvalidOperationException("Email does not exist");
 
             var result = (_user != null && await _userManager.CheckPasswordAsync(_user, loginDto.Password));
-            if (result)
+            if (!result)
+                throw new InvalidOperationException("Invalid Email or password");
+
+            if (_user.TwoFactorEnabled)
             {
-                loginStatus = LoginStatus.LoginSuccessful;
-                var authResponse = new AuthStatus()
-                {
-                    LoginStatus = loginStatus,
-                    Token = await GenerateToken(),
-                };
-
-                if (_user.TwoFactorEnabled)
-                {
-                    await _signInManager.SignOutAsync();
-                    await _signInManager.PasswordSignInAsync(_user, loginDto.Password, false, false);
-                    var token = await _userManager.GenerateTwoFactorTokenAsync(_user, "Email");
-                    var message = new Message(new string[] { _user.Email }, "OTP confirmation", token);
-                    _emailService.sendEmail(message);
-                    var delier = "check you email for otp";
-                    return new AuthStatus { Token = delier };
-                }
-
-                return authResponse;
+                await _signInManager.SignOutAsync();
+                await _signInManager.PasswordSignInAsync(_user, loginDto.Password, false, false);
+                var token = await _userManager.GenerateTwoFactorTokenAsync(_user, "Email");
+                var message = new Message(new string[] { _user.Email }, "OTP confirmation", token);
+                _emailService.sendEmail(message);
+                var deliver = "check you email for otp";
+                return new AuthStatus { Token = deliver };
             }
-            loginStatus = LoginStatus.LoginFailed;
-            return null;
+            loginStatus = LoginStatus.LoginSuccessful;
+            var authResponse = new AuthStatus()
+            {
+                LoginStatus = loginStatus,
+                Token = await GenerateToken(),
+            };
+
+            return authResponse;
+
         }
 
         public async Task<string> LoginWithOtp(string userName, string code)
@@ -243,9 +235,10 @@ namespace HMS.BLL.Implementation
             _user = await _userManager.FindByNameAsync(userName);
             var signIn = await _signInManager.TwoFactorSignInAsync("Email", code, false, false);
 
-            if (!signIn.Succeeded)
+            //if (!signIn.Succeeded)
+            if (signIn == null)
             {
-                return "Invalid two-factor authentication code.";
+                throw new InvalidOperationException("Invalid token");
             }
 
             return await GenerateToken();

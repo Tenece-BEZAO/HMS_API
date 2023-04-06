@@ -24,25 +24,7 @@ namespace HMS.BLL.Implementation
             _roleManager = roleManager;
             _logger = logger;
         }
-
-        /*        public async Task<IdentityResult> GetAllClaimsAsync(string email, ApplicationRole role)
-        {
-            var user = await _userManager.FindByEmailAsync(email);
-                    var registeredUser = await _roleManager.FindByNameAsync(role.Name);
-            if (registeredUser == null)
-            {
-                _logger.LogInformation($"the user with the {email} does not exist");
-                return IdentityResult.Failed(new IdentityError { Description = "User does not exist" });
-            }
-            var userClaims = await _roleManager.GetClaimsAsync(registeredUser);
-            if (userClaims != null)
-            {
-                _logger.LogInformation("Successfully");
-
-            }
-            return (IdentityResult)userClaims;
-                }*/
-
+     
 
         public async Task<IEnumerable<Claim>> GetAllClaimsAsync(string email)
         {
@@ -62,23 +44,7 @@ namespace HMS.BLL.Implementation
             return roleClaims;
         }
 
-        /*    public async Task<IEnumerable<Claim>> GetAllClaimsAsync(string email)
-            {
-                var user = await _userManager.FindByEmailAsync(email);
-                if (user == null)
-                {
-                    _logger.LogInformation($"the user with the {email} does not exist");
-                    return null;
-                }
-                var userClaims = await _userManager.GetClaimsAsync(user);
-                if (userClaims != null)
-                {
-                    _logger.LogInformation("Successfully retrieved user claims");
-                }
-                return userClaims;
-            }
-    */
-
+  
             public async Task<IdentityResult> AddClaimsToUserAsync(string Email, string claimName, string claimValue)
             {
                 var registeredUser = await _userManager.FindByEmailAsync(Email);

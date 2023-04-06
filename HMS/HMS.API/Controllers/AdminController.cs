@@ -11,7 +11,7 @@ namespace HMS.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class AdminController : ControllerBase
     {
         private readonly IAdminService _adminService;
@@ -24,7 +24,7 @@ namespace HMS.API.Controllers
         }
 
 
-        //[Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "AdminPolicy")]
         [Route("getRoles")]
         [HttpGet]
         public async Task<IActionResult> GetRolesAsync()
@@ -34,7 +34,7 @@ namespace HMS.API.Controllers
         }
 
 
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [Route("getUsers")]
         [HttpGet]
         public async Task<IActionResult> GetUsersAsync()
@@ -45,7 +45,7 @@ namespace HMS.API.Controllers
 
 
 
-        //[Authorize]
+        [Authorize]
         [Route("createRoles")]
         [HttpPost]
         public async Task<IActionResult> CreateRoleAsync(ApplicationRole role)
@@ -106,7 +106,7 @@ namespace HMS.API.Controllers
         }
 
 
-        // [Authorize(Policy = "AdminPolicy")]
+         [Authorize(Policy = "AdminPolicy")]
         [Route("assignRole")]
         [HttpPost]
         public async Task<IActionResult> AssignRoleToUserAsync(UserRole user)

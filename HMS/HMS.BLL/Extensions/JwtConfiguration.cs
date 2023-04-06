@@ -24,19 +24,6 @@ namespace HMS.BLL.Extensions
         public static void ConfigureEmail(this IServiceCollection services)
         {
 
-            /*var builder = services.AddIdentity<AppUser, IdentityRole>(o =>
-            {
-                o.Password.RequireDigit = true;
-                o.Password.RequireLowercase = false;
-                o.Password.RequireUppercase = false;
-                o.Password.RequireNonAlphanumeric = false;
-                o.Password.RequiredLength = 10;
-                o.User.RequireUniqueEmail = true;
-            })
-            .AddEntityFrameworkStores<HmoDbContext>()
-            .AddDefaultTokenProviders()
-            .AddTokenProvider<EmailTokenProvider<AppUser>>("Email");*/
-
             services.Configure<IdentityOptions>(opts => opts.SignIn.RequireConfirmedEmail = true);
 
             services.Configure<DataProtectionTokenProviderOptions>(options =>
@@ -44,14 +31,7 @@ namespace HMS.BLL.Extensions
                 options.TokenLifespan = TimeSpan.FromMinutes(60);
             });
 
-/*            services.Configure<EmailTokenProviderOptions>(options =>
-            {
-                options.TokenLifespan = TimeSpan.FromMinutes(15);
-                options.EmailService = typeof(SmtpEmailService);
-                options.EmailSender = "noreply@yourdomain.com";
-                options.EmailSubject = "Your Token";
-                options.EmailBody = "Your security code is {0}";
-            });*/
+
 
         }
 
