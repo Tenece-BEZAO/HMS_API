@@ -1,0 +1,25 @@
+2023-04-02 08:34:28.4012 Info AppDomain Shutting down. LogFactory closing...
+2023-04-02 08:34:29.4255 Debug Stopping file watching for path 'C:\Users\user\Documents\GitClones\HMS_API\HMS\HMS.API' filter 'nlog.config'
+2023-04-02 08:34:29.6253 Trace Flushing all 1 targets...
+2023-04-02 08:34:29.7355 Trace ForEachItemInParallel() 1 items
+2023-04-02 08:34:29.7789 Trace FileTarget(Name=logfile): FlushAsync
+2023-04-02 08:34:29.7789 Trace Continuation invoked: 
+2023-04-02 08:34:29.7789 Trace Parallel task completed. 0 items remaining
+2023-04-02 08:34:29.8598 Debug Flush completed
+2023-04-02 08:34:29.8598 Trace FileTarget(Name=logfile): FlushAsync Done
+2023-04-02 08:34:29.9462 Debug Closing logging configuration...
+2023-04-02 08:34:29.9718 Trace Closing FileTarget(Name=logfile)
+2023-04-02 08:34:29.9940 Debug FileTarget(Name=logfile): Closing...
+2023-04-02 08:34:30.1107 Debug FileTarget(Name=logfile): Closed.
+2023-04-02 08:34:30.1107 Trace Closing .\logs\${shortdate}_logfile.txt
+2023-04-02 08:34:30.1941 Trace Closing Layout Renderer: ${literal}
+2023-04-02 08:34:30.2070 Trace Closing Layout Renderer: ${shortdate}
+2023-04-02 08:34:30.2070 Trace Closing Layout Renderer: ${literal}
+2023-04-02 08:34:30.2070 Trace Closing ${longdate} ${level:uppercase=true} ${message}
+2023-04-02 08:34:30.2070 Trace Closing Layout Renderer: ${longdate}
+2023-04-02 08:34:30.2070 Trace Closing Layout Renderer: ${literal}
+2023-04-02 08:34:30.2070 Trace Closing Layout Renderer: ${level}
+2023-04-02 08:34:30.2070 Trace Closing Layout Renderer: ${literal}
+2023-04-02 08:34:30.2070 Trace Closing Layout Renderer: ${message}
+2023-04-02 08:34:30.2070 Debug Finished closing logging configuration.
+2023-04-02 08:34:30.2070 Info LogFactory has been closed.
