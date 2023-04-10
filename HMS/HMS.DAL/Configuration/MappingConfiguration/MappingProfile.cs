@@ -23,9 +23,9 @@ namespace HMS.DAL.Configuration.MappingConfiguration
 
             CreateMap<Report, ReportDto>();
 
-            CreateMap<EnrolleeDTO, Enrollee>();
+            CreateMap<EnrolleeDto, Enrollee>();
 
-            CreateMap<Enrollee, EnrolleeDTO>();
+            CreateMap<Enrollee, EnrolleeDto>();
 
             CreateMap<PlanDto, Plan>();
 

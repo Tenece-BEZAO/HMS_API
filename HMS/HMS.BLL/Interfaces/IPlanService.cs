@@ -10,5 +10,6 @@ namespace HMS.BLL.Interfaces
         Task<PlanDto> NewPlanAsync(PlanDto planDto);
         Task<PlanDto> UpdatePlanAsync(int planId, PlanDto planDto);
         Task DeletePlanAsync(int planId);
+        Task SetEnrollee(int planId, int enrolleeId);
     }
 }

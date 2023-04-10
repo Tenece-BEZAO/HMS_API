@@ -14,9 +14,10 @@ namespace HMS.DAL.Context
         public DbSet<Appointment> Appointments { get; set; }
         public DbSet<Report> Reports { get; set; }
         public DbSet<Plan> Plans { get; set; }
+        public DbSet<Enrollee> Enrollees { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {   
+        {
             modelBuilder.Entity<AppUser>(e =>
             {
                 e.Property(u => u.Email)
@@ -62,8 +63,8 @@ namespace HMS.DAL.Context
                 .HasPrecision(15, 2)
                 .IsRequired()
                 .HasAnnotation("ErrorMessage", "Price field is required");
-                
-          base.OnModelCreating(modelBuilder);
+
+            base.OnModelCreating(modelBuilder);
 
             modelBuilder.ApplyConfiguration(new RoleConfiguration());
             modelBuilder.ApplyConfiguration(new UserConfiguration());

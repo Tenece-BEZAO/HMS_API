@@ -80,6 +80,11 @@ namespace HMS.BLL.Implementation
             return planDto;
         }
 
+        public Task SetEnrollee(int planId, int enrolleeId)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<PlanDto> UpdatePlanAsync(int planId, PlanDto planDto)
         {
             var existingPlan = await _planRepository.GetByIdAsync(planId);

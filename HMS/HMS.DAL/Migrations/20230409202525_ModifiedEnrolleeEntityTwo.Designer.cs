@@ -4,6 +4,7 @@ using HMS.DAL.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HMS.DAL.Migrations
 {
     [DbContext(typeof(HmoDbContext))]
-    partial class HmoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230409202525_ModifiedEnrolleeEntityTwo")]
+    partial class ModifiedEnrolleeEntityTwo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
