@@ -7,7 +7,7 @@ namespace HMS.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class EnrolleeController : Controller
+    public class EnrolleeController : ControllerBase
     {
         private readonly IEnrolleeService _enrolleeService;
         private readonly IMapper _mapper;
@@ -28,11 +28,11 @@ namespace HMS.API.Controllers
         }
 
 
-        [HttpGet("GetEnrollee/{id}")]
+        [HttpGet("GetEnrollee/{enrolleeId}")]
         [ProducesResponseType(200, Type = typeof(EnrolleeDto))]
-        public async Task<ActionResult<EnrolleeDto>> GetEnrollee(int id)
+        public async Task<ActionResult<EnrolleeDto>> GetEnrollee(int enrolleeId)
         {
-            var enrollee = await _enrolleeService.GetEnrolleeAsync(id);
+            var enrollee = await _enrolleeService.GetEnrolleeAsync(enrolleeId);
 
             if (enrollee == null)
                 return NotFound("Enrollee does not exist");
@@ -42,16 +42,16 @@ namespace HMS.API.Controllers
 
 
 
-        [HttpGet("GetPlan")]
+        [HttpGet("GetEnrollePlan/{enrolleeId}")]
         [ProducesResponseType(200, Type = typeof(PlanDto))]
-        public async Task<ActionResult<PlanDto>> GetEnrolleePlan(int id)
+        public async Task<ActionResult<PlanDto>> GetEnrolleePlan(int enrolleeId)
         {
-            var enrollee = await _enrolleeService.GetEnrolleeAsync(id);
+            var enrollee = await _enrolleeService.GetEnrolleeAsync(enrolleeId);
 
             if (enrollee == null)
                 return NotFound("Enrollee not found");
 
-            var plan = await _enrolleeService.GetEnrolleePlan(id);
+            var plan = await _enrolleeService.GetEnrolleePlanAsync(enrolleeId);
 
             if (plan == null)
                 return NotFound("This enrollee currently isn't subscribed to a plan");
@@ -60,39 +60,49 @@ namespace HMS.API.Controllers
         }
 
 
-
-
-
-        [HttpPost("NewEnrollee")]
-        [ProducesResponseType(200, Type = typeof(EnrolleeDto))]
-        public async Task<ActionResult<EnrolleeDto>> CreateEnrollee([FromBody] EnrolleeDto enrolleeDto)
+        [HttpPost("RegisterEnrollee")]
+        public async Task<IActionResult> AddEnrollee([FromBody] EnrolleeDto enrolleeDto)
         {
-            await _enrolleeService.NewEnrolleeAsync(enrolleeDto);
+            try
+            {
+                if (enrolleeDto == null)
+                {
+                    return BadRequest("Cannot create new enrollee");
+                }
 
-            return Ok("Enrollee created successfully");
-            /*var enrollee = await _enrolleeService.NewEnrolleeAsync(enrolleeDto);
+                await _enrolleeService.CreateEnrolleeAsync(enrolleeDto);
 
-            var createdEnrollee = _mapper.Map<EnrolleeDto>(enrollee);
+                return Ok(enrolleeDto);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error: {ex.Message}/{ex.StackTrace}");
+            }
 
-
-            var createdEnrolleeDto = _mapper.Map<EnrolleeDto>(enrollee);
-            return CreatedAtAction(nameof(CreateEnrollee), new { id = createdEnrollee.Id }, createdEnrolleeDto);*/
         }
 
 
 
-
-
-
-        [HttpPost("SetPlan")]
-        public async Task<ActionResult> SetEnrolleePlan(int enrolleeId, int planId)
+        [HttpPost("{enrolleeId}/subscribeToPlan")]
+        public async Task<ActionResult> SubscribeToPlan(int enrolleeId, int planId)
         {
-            await _enrolleeService.SetEnrolleePlan(enrolleeId, planId
+            try
+            {
+                await _enrolleeService.SubscribeToPlanAsync(enrolleeId, planId
                 );
 
-            return Ok($"Subscribed successfully to plan");
-        }
+                return Ok($"Subscribed successfully to plan");
+            }
+            catch (ArgumentException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Internal server error");
+            }
 
+        }
 
 
 
@@ -101,29 +111,51 @@ namespace HMS.API.Controllers
         {
             try
             {
-                var updatedEnrollee = await _enrolleeService.UpdateEnrolleeAsync(id, enrolleeDto);
+                if (enrolleeDto == null)
+                    return BadRequest("Cannot update enrollee");
 
-                if (updatedEnrollee == null)
-                    return BadRequest("Failed to update enrollee, try again");
+                await _enrolleeService.UpdateEnrolleeAsync(id, enrolleeDto);
 
 
-                return Ok(updatedEnrollee);
+                return Ok(enrolleeDto);
             }
-            catch
+            catch (Exception ex)
             {
-                return BadRequest("Something went wrong, please try again");
+                return BadRequest($"Something went wrong, please try again\n\nError: {ex.Message}--{ex.StackTrace}");
             }
 
         }
 
 
-        [HttpDelete("Delete/{id}")]
-        [ProducesResponseType(200)]
-        public async Task<IActionResult> DeleteEnrollee(int id)
+
+        [HttpPut("{enrolleeId}/unsubscribefromplan")]
+        public async Task<IActionResult> UnsubscribeFromPlan(int enrolleeId)
         {
             try
             {
-                await _enrolleeService.DeleteEnrolleeAsync(id);
+                await _enrolleeService.UnsubscribeFromPlanAsync(enrolleeId);
+                return Ok("Unsubscribed from plan");
+            }
+            catch (ArgumentException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Internal server error");
+            }
+        }
+
+
+
+
+        [HttpDelete("Delete/{enrolleeId}")]
+        [ProducesResponseType(200)]
+        public async Task<IActionResult> DeleteEnrollee(int enrolleeId)
+        {
+            try
+            {
+                await _enrolleeService.DeleteEnrolleeAsync(enrolleeId);
                 return NoContent();
             }
             catch (ArgumentException ex)

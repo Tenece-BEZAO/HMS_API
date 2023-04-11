@@ -64,7 +64,8 @@ namespace HMS.API.Controllers
 
             var addedPlan = await _planService.NewPlanAsync(planDto);
 
-            return CreatedAtAction(nameof(GetPlanById), new { id = addedPlan.Id }, addedPlan);
+            //return CreatedAtAction(nameof(GetPlanById), new { id = addedPlan.Id }, addedPlan);
+            return Ok("Plan created successfully");
         }
 
 

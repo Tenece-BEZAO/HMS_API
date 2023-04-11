@@ -4,6 +4,7 @@ using HMS.DAL.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HMS.DAL.Migrations
 {
     [DbContext(typeof(HmoDbContext))]
-    partial class HmoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230411181822_FixedEnrolleeFKConstraint")]
+    partial class FixedEnrolleeFKConstraint
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -130,11 +133,11 @@ namespace HMS.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "3bb1829a-ae6b-432f-be11-ffaf1ba32e05",
+                            Id = "c71f940b-b81d-405d-b557-f71f9114181f",
                             AccessFailedCount = 0,
                             Address = "583 Wall Dr. Gwynn Oak, MD 21207",
-                            ConcurrencyStamp = "b95e283a-0c7f-405f-8252-cd3a078e5c88",
-                            DateOfBirth = new DateTime(2023, 4, 11, 21, 58, 45, 417, DateTimeKind.Local).AddTicks(4096),
+                            ConcurrencyStamp = "066f6af8-12b9-4c79-819f-316dbbcb6d7a",
+                            DateOfBirth = new DateTime(2023, 4, 11, 19, 18, 21, 838, DateTimeKind.Local).AddTicks(5461),
                             Email = "bellos@gmail.com",
                             EmailConfirmed = false,
                             FirstName = "Bello",
@@ -145,17 +148,17 @@ namespace HMS.DAL.Migrations
                             PhoneNumber = "07038730732",
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "3ee5a3f5-6a94-471f-b76e-c5e4ec66ec82",
+                            SecurityStamp = "67eeabdd-83d2-42ab-bc1a-d1a3d78f6bb8",
                             TwoFactorEnabled = false,
                             UserName = "SobTech"
                         },
                         new
                         {
-                            Id = "3f311074-47e3-4644-b0b2-7001e260326e",
+                            Id = "1e9579ad-1dc5-4e80-9ad6-faa7b1503429",
                             AccessFailedCount = 0,
                             Address = "583 Wall Dr. Gwynn Oak, MD 21207",
-                            ConcurrencyStamp = "0f445174-cbc7-403a-a50c-d8dcef245af8",
-                            DateOfBirth = new DateTime(2023, 4, 11, 21, 58, 45, 417, DateTimeKind.Local).AddTicks(4135),
+                            ConcurrencyStamp = "0139a1c5-4758-45b7-8f69-397280770e5f",
+                            DateOfBirth = new DateTime(2023, 4, 11, 19, 18, 21, 838, DateTimeKind.Local).AddTicks(5530),
                             Email = "caleb@gmail.com",
                             EmailConfirmed = false,
                             FirstName = "Caleb",
@@ -166,17 +169,17 @@ namespace HMS.DAL.Migrations
                             PhoneNumber = "07038730732",
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "1c33bd11-7755-4666-b524-0d94f01fae0d",
+                            SecurityStamp = "c464aad4-7a30-4728-a544-12f0cfe96d63",
                             TwoFactorEnabled = false,
                             UserName = "Caleb"
                         },
                         new
                         {
-                            Id = "62e10b31-551e-4b27-af12-7ef4760fa138",
+                            Id = "9a9aa8dc-5df5-4e12-9f97-4c19d7c51cb1",
                             AccessFailedCount = 0,
                             Address = "583 Wall Dr. Gwynn Oak, MD 21207",
-                            ConcurrencyStamp = "89107fde-efee-4162-b6bc-2063300e2e3f",
-                            DateOfBirth = new DateTime(2023, 4, 11, 21, 58, 45, 417, DateTimeKind.Local).AddTicks(4165),
+                            ConcurrencyStamp = "a37f5312-a751-47bc-8710-b0e3f335b15f",
+                            DateOfBirth = new DateTime(2023, 4, 11, 19, 18, 21, 838, DateTimeKind.Local).AddTicks(5560),
                             Email = "amara@gmail.com",
                             EmailConfirmed = false,
                             FirstName = "Amarachi",
@@ -187,7 +190,7 @@ namespace HMS.DAL.Migrations
                             PhoneNumber = "07038730732",
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "b57b8185-2df1-4b49-9482-29052e095605",
+                            SecurityStamp = "7e28ad00-185d-4ecc-913c-ccb551f91a70",
                             TwoFactorEnabled = false,
                             UserName = "maraxhi"
                         });
@@ -302,7 +305,9 @@ namespace HMS.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PlanId");
+                    b.HasIndex("PlanId")
+                        .IsUnique()
+                        .HasFilter("[PlanId] IS NOT NULL");
 
                     b.ToTable("Enrollees");
                 });
@@ -431,13 +436,13 @@ namespace HMS.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "46736562-183e-4f95-a193-f11002343bd6",
+                            Id = "57a390b7-cc6e-463b-8fb7-f82944672cc1",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "28dd6d31-def5-4302-ac30-e621866181b6",
+                            Id = "749a043f-c042-497c-864b-3289f40c42dd",
                             Name = "Enrollee",
                             NormalizedName = "ENROLLEE"
                         });
@@ -593,8 +598,8 @@ namespace HMS.DAL.Migrations
             modelBuilder.Entity("HMS.DAL.Entities.Enrollee", b =>
                 {
                     b.HasOne("HMS.DAL.Entities.Plan", "Plan")
-                        .WithMany("Enrollees")
-                        .HasForeignKey("PlanId");
+                        .WithOne("Enrollee")
+                        .HasForeignKey("HMS.DAL.Entities.Enrollee", "PlanId");
 
                     b.Navigation("Plan");
                 });
@@ -682,7 +687,7 @@ namespace HMS.DAL.Migrations
                     b.Navigation("Drug")
                         .IsRequired();
 
-                    b.Navigation("Enrollees");
+                    b.Navigation("Enrollee");
                 });
 
             modelBuilder.Entity("HMS.DAL.Entities.Provider", b =>

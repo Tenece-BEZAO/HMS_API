@@ -38,7 +38,6 @@ namespace HMS.BLL.Implementation
         }
 
 
-
         public async Task<EnrolleeDto> GetEnrolleeAsync(int enrolleeId)
         {
             var enrollee = await _enrolleeRepository.GetByIdAsync(enrolleeId);
@@ -51,7 +50,7 @@ namespace HMS.BLL.Implementation
             return enrolleeDto;
         }
 
-        public async Task<PlanDto> GetEnrolleePlan(int enrolleeId)
+        public async Task<PlanDto> GetEnrolleePlanAsync(int enrolleeId)
         {
             var enrolleePlan = await _dbContext.Enrollees
                 .Where(e => e.Id == enrolleeId)
@@ -67,6 +66,7 @@ namespace HMS.BLL.Implementation
 
         }
 
+
         public async Task<IEnumerable<EnrolleeDto>> GetEnrolleesAsync()
         {
             var enrollees = await _enrolleeRepository.GetAllAsync(orderBy: e => e.OrderBy(en => en.Id));
@@ -78,17 +78,22 @@ namespace HMS.BLL.Implementation
 
 
 
-        public async Task<EnrolleeDto> NewEnrolleeAsync(EnrolleeDto enrolleeDto)
+        public async Task<int> CreateEnrolleeAsync(EnrolleeDto enrolleeDto)
         {
+            if (enrolleeDto == null)
+                throw new ArgumentNullException(nameof(enrolleeDto));
+
+
             var enrollee = _mapper.Map<Enrollee>(enrolleeDto);
 
             await _enrolleeRepository.AddAsync(enrollee);
+
             await _unitOfWork.SaveChangesAsync();
 
-            return enrolleeDto;
+            return enrollee.Id;
         }
 
-        public async Task SetEnrolleePlan(int enrolleeId, int planId)
+        public async Task SubscribeToPlanAsync(int enrolleeId, int planId)
         {
             var existingEnrollee = await _enrolleeRepository.GetByIdAsync(enrolleeId);
 
@@ -104,24 +109,36 @@ namespace HMS.BLL.Implementation
 
             await _unitOfWork.SaveChangesAsync();
 
-
         }
 
 
-
-
-        public async Task<EnrolleeDto> UpdateEnrolleeAsync(int enrolleeId, EnrolleeDto enrolleeDTO)
+        public async Task UpdateEnrolleeAsync(int enrolleeId, EnrolleeDto enrolleeDto)
         {
+
+            if (enrolleeDto == null)
+                throw new ArgumentNullException(nameof(enrolleeDto));
+
             var existingEnrollee = await _enrolleeRepository.GetByIdAsync(enrolleeId);
 
+
             if (existingEnrollee == null)
+                throw new ArgumentException("Enrollee does not exist");
+
+            _mapper.Map(enrolleeDto, existingEnrollee);
+            await _enrolleeRepository.UpdateAsync(existingEnrollee);
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task UnsubscribeFromPlanAsync(int enrolleeId)
+        {
+            var enrollee = await _enrolleeRepository.GetByIdAsync(enrolleeId);
+
+            if (enrollee == null)
                 throw new ArgumentException("Enrollee not found");
 
-            var updatedEnrollee = _mapper.Map<EnrolleeDto>(existingEnrollee);
+            enrollee.PlanId = null;
 
             await _unitOfWork.SaveChangesAsync();
-
-            return updatedEnrollee;
         }
     }
 }

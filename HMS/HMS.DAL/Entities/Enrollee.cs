@@ -1,6 +1,4 @@
-﻿
-
-using HMS.DAL.Enums;
+﻿using HMS.DAL.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -9,6 +7,7 @@ namespace HMS.DAL.Entities
     public class Enrollee
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [Required(ErrorMessage = "First name is required"), MaxLength(100)]
@@ -23,9 +22,9 @@ namespace HMS.DAL.Entities
         public DateTime DateOfBirth { get; set; }
         public Gender Gender { get; set; }
 
-        [ForeignKey(nameof(Plan))]
-        public int PlanId { get; set; }
-        public Plan Plan { get; set; }
+        [ForeignKey("Plan")]
+        public int? PlanId { get; set; }
+        public virtual Plan? Plan { get; set; }
 
     }
 }
