@@ -11,10 +11,10 @@ namespace HMS.DAL.Configuration.MappingConfiguration
         public MappingProfile()
         {
 
-           CreateMap<RegisterDto, AppUser>()
-            .ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(src => src.Password))
-            .ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(src => src.ConfirmedPassword))
-             .ForMember(dest => dest.TwoFactorEnabled, opt => opt.MapFrom(src => src.TwoFactorEnabled));
+            CreateMap<RegisterDto, AppUser>()
+             .ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(src => src.Password))
+             .ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(src => src.ConfirmedPassword))
+              .ForMember(dest => dest.TwoFactorEnabled, opt => opt.MapFrom(src => src.TwoFactorEnabled));
 
             // CreateMap<AppUser, LoginDto>();
             CreateMap<AppUserDto, AppUser>().ReverseMap();
@@ -38,7 +38,7 @@ namespace HMS.DAL.Configuration.MappingConfiguration
             ));
             CreateMap<AppUser, UpdateRequest>();
 
-            CreateMap<EnrolleeDTO, Enrollee>().ReverseMap();
+            CreateMap<EnrolleeDto, Enrollee>().ReverseMap();
 
             CreateMap<PlanDto, Plan>().ReverseMap();
 
