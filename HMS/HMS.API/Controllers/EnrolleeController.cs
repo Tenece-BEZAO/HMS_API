@@ -76,7 +76,7 @@ namespace HMS.API.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest($"Error: {ex.Message}/{ex.StackTrace}");
+                return BadRequest($"Error: {ex.Message}");
             }
 
         }
@@ -121,7 +121,7 @@ namespace HMS.API.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest($"Something went wrong, please try again\n\nError: {ex.Message}--{ex.StackTrace}");
+                return BadRequest($"Something went wrong, please try again\n\nError: {ex.Message}");
             }
 
         }
