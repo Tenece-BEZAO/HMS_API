@@ -2,11 +2,10 @@
 
 namespace HMS.DAL.Entities
 {
-    public class Enrollee
+    public class Enrollee : AppUser
     {
-        public int Id { get; set; } 
-        public int? PlanId { get; set; }    
+        public int? PlanId { get; set; }
         public Plan? Plan { get; set; }
- 
+
     }
 }

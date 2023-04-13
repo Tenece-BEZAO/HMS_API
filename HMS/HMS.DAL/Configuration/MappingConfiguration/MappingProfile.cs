@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using HMS.DAL.Dtos.Requests;
 using HMS.DAL.Entities;
+using Microsoft.AspNetCore.Identity;
 using static HMS.DAL.Dtos.Requests.AuthenticationRequest;
 
 
@@ -10,11 +11,13 @@ namespace HMS.DAL.Configuration.MappingConfiguration
     {
         public MappingProfile()
         {
-
            CreateMap<RegisterDto, AppUser>()
             .ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(src => src.Password))
             .ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(src => src.ConfirmedPassword))
              .ForMember(dest => dest.TwoFactorEnabled, opt => opt.MapFrom(src => src.TwoFactorEnabled));
+
+            CreateMap<ResetPasswordRequest, AppUser>()
+        .ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(src => src.ConfirmedPassword));
 
             // CreateMap<AppUser, LoginDto>();
             CreateMap<AppUserDto, AppUser>().ReverseMap();
@@ -29,7 +32,6 @@ namespace HMS.DAL.Configuration.MappingConfiguration
             .ForAllMembers(x => x.Condition(
                 (src, dest, prop) =>
                 {
-                    // ignore null & empty string properties
                     if (prop == null) return false;
                     if (prop.GetType() == typeof(string) && string.IsNullOrEmpty((string)prop)) return false;
 

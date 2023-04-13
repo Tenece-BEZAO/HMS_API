@@ -3,6 +3,7 @@ using HMS.BLL.Interfaces;
 using HMS.DAL.Dtos.Requests;
 using HMS.DAL.Entities;
 using HMS.DAL.Interfaces;
+using Microsoft.AspNetCore.Identity;
 
 namespace HMS.BLL.Implementation
 {
@@ -12,11 +13,15 @@ namespace HMS.BLL.Implementation
         private readonly IRepository<Enrollee> _enrolleeRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public EnrolleeService(IUnitOfWork unitOfWork, IMapper mapper)
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly UserManager<AppUser> _userManager;
+        public EnrolleeService(IUnitOfWork unitOfWork, IMapper mapper, RoleManager<IdentityRole> roleManager, UserManager<AppUser> userManager)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _enrolleeRepository = _unitOfWork.GetRepository<Enrollee>();
+            _roleManager = roleManager;
+            _userManager = userManager;
         }
 
         public async Task DeleteEnrolleeAsync(int enrolleeId)
@@ -57,10 +62,24 @@ namespace HMS.BLL.Implementation
         }
 
 
-        public async Task<EnrolleeDTO> NewEnrolleeAsync(EnrolleeDTO enrolleeDTO)
+        /*public async Task<EnrolleeDTO> NewEnrolleeAsync(EnrolleeDTO enrolleeDTO)
         {
             var enrollee = _mapper.Map<Enrollee>(enrolleeDTO);
 
+            await _enrolleeRepository.AddAsync(enrollee);
+            await _unitOfWork.SaveChangesAsync();
+
+            return enrolleeDTO;
+        }
+*/
+
+
+        public async Task<EnrolleeDTO> NewEnrolleeAsync(EnrolleeDTO enrolleeDTO)
+        {
+            var enrollee = _mapper.Map<Enrollee>(enrolleeDTO);
+            await _roleManager.CreateAsync(new IdentityRole("Enrollee"));
+            await _userManager.AddToRoleAsync(enrollee, "Enrollee");
+            enrollee.RegisteredDate = DateTime.Now;
             await _enrolleeRepository.AddAsync(enrollee);
             await _unitOfWork.SaveChangesAsync();
 

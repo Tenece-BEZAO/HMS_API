@@ -3,6 +3,7 @@ using HMS.BLL.Interfaces;
 using HMS.DAL.Dtos.Requests;
 using HMS.DAL.Entities;
 using HMS.DAL.Interfaces;
+using Microsoft.AspNetCore.Identity;
 
 namespace HMS.BLL.Implementation
 {
@@ -11,18 +12,22 @@ namespace HMS.BLL.Implementation
         private readonly IRepository<Provider> _providerRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly UserManager<AppUser> _userManager;
 
-        public ProviderService(IUnitOfWork unitOfWork, IMapper mapper)
+        public ProviderService(IUnitOfWork unitOfWork, IMapper mapper, RoleManager<IdentityRole> roleManager, UserManager<AppUser> userManager)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _providerRepository = _unitOfWork.GetRepository<Provider>();
+            _roleManager = roleManager;
+            _userManager = userManager;
         }
 
 
         public async Task<IEnumerable<ProviderDto>> SearchProvidersAsync(string searchTerm)
         {
-            var providers = await _providerRepository.GetByAsync(p => p.Name.ToLower().Contains(searchTerm.ToLower()) ||
+            var providers = await _providerRepository.GetByAsync(p => p.UserName.ToLower().Contains(searchTerm.ToLower()) ||
                                    p.Specialty.ToLower().Contains(searchTerm.ToLower()),
                                    orderBy: q => q.OrderBy(p => p.RegisteredDate));
 
@@ -59,7 +64,7 @@ namespace HMS.BLL.Implementation
 
         public async Task<IEnumerable<ProviderDto>> GetProvidersAsync()
         {
-            var providers = await _providerRepository.GetAllAsync(orderBy: p => p.OrderBy(p => p.Name));
+            var providers = await _providerRepository.GetAllAsync(orderBy: p => p.OrderBy(p => p.UserName));
 
             var providerDto = _mapper.Map<IEnumerable<ProviderDto>>(providers);
 
@@ -70,13 +75,17 @@ namespace HMS.BLL.Implementation
         public async Task<ProviderDto> RegisterProviderAsync(ProviderDto providerDto)
         {
             var provider = _mapper.Map<Provider>(providerDto);
+          
             provider.RegisteredDate = DateTime.Now;
-
             await _providerRepository.AddAsync(provider);
             await _unitOfWork.SaveChangesAsync();
 
+            await _roleManager.CreateAsync(new IdentityRole("Provider"));
+            await _userManager.AddToRoleAsync(provider, "Provider");
+
             return providerDto;
         }
+
 
 
         public async Task<ProviderDto> UpdateProviderAsync(int providerId, ProviderDto providerDto)

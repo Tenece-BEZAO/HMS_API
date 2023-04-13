@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Win32;
+using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
 using System.Security.Claims;
@@ -55,23 +57,25 @@ namespace HMS.BLL.Implementation
             _serviceProvider = serviceProvider;
         }
 
-        public async Task<IdentityResult> RegisterUser(RegisterDto register)
+        public async Task<RegistrationResult> RegisterUser(RegisterDto register)
         {
             _user = await _userManager.FindByEmailAsync(register.Email);
             if (_user != null)
             {
-                return IdentityResult.Failed(new IdentityError { Description = "User already exist" });
+                return new RegistrationResult { Succeeded = false, ErrorMessage = "User already exists" };
             }
             var newUser = _mapper.Map<AppUser>(register);
-            string roles = string.Join(",", register.Roles);
-            if (await _roleManager.RoleExistsAsync(roles))
-            {
-                var result = await _userManager.CreateAsync(newUser, register.Password);
+          //  string roles = string.Join(",", register.Roles);
+           var result = await _userManager.CreateAsync(newUser, register.Password);
                 if (!result.Succeeded)
                 {
                     throw new InvalidOperationException("User Failed to create");
                 }
-                await _userManager.AddToRolesAsync(newUser, register.Roles);
+            // if (await _roleManager.RoleExistsAsync(roles))
+            if (newUser.TwoFactorEnabled == true)
+            {
+
+                // await _userManager.AddToRolesAsync(newUser, register.Roles);
                 string token = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
 
                 var request = _httpContextAccessor.HttpContext.Request;
@@ -95,10 +99,10 @@ namespace HMS.BLL.Implementation
                 var message = new Message(new string[] { newUser.Email }, "confirmation email link", confirmationLink);
                 _emailService.sendEmail(message);
 
-                return IdentityResult.Success;
+                return new RegistrationResult { Succeeded = true , ConfirmationLink = confirmationLink};
             }
             else
-                throw new InvalidOperationException("enter a role either admin or enrolle");
+                return new RegistrationResult { Succeeded = true };
         }
 
 
@@ -136,14 +140,13 @@ namespace HMS.BLL.Implementation
 
         }
 
-        public async Task<string> ForgetPasswordAsync(string email)
+        public async Task<string> ForgetPasswordAsync([Required] string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
             if (user != null)
             {
                 var token = await _userManager.GeneratePasswordResetTokenAsync(user);
                 var request = _httpContextAccessor.HttpContext.Request;
-                //create url helper manually
                 var actionContext = new ActionContext(_httpContextAccessor.HttpContext, new Microsoft.AspNetCore.Routing.RouteData(), new ActionDescriptor());
 
                 var urlHelper = _urlHelperFactory.GetUrlHelper(actionContext);
@@ -163,7 +166,7 @@ namespace HMS.BLL.Implementation
                 });
                 var message = new Message(new string[] { user.Email }, "forget password  email link", forgetPasswordLink);
                 _emailService.sendEmail(message);
-                return "forget password link has been sent to your email; go and verify";
+                return "forget password link has been sent to your email; pls verify your email";
 
             }
             else
@@ -172,15 +175,16 @@ namespace HMS.BLL.Implementation
             }
         }
 
-        public async Task<string> ResetPasswordAsync(string token, string email)
+        public async Task<ResetPasswordRequest> ResetPasswordAsync(string token, string email)
         {
             var model = new ResetPasswordRequest()
             {
                 Token = token,
                 Email = email
             };
-            return "link has been sent to your email";
+            return model;
         }
+
 
         public async Task<string> ResetPasswordAsync(ResetPasswordRequest reset)
         {
@@ -190,12 +194,16 @@ namespace HMS.BLL.Implementation
                 var passwordRest = await _userManager.ResetPasswordAsync(user, reset.Token, reset.NewPassword);
                 if (passwordRest.Succeeded)
                 {
-                    return "forget password link has been sent to your email; go and verify";
+                    _mapper.Map(reset, user);
+                    user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, reset.NewPassword);
+                    var result = await _userManager.UpdateAsync(user);
+                    if (result.Succeeded)
+                    {
+                        return "Your Password has Been Changed";
+                    }
                 }
             }
-
             return "email does not exist";
-
         }
 
         public async Task<AuthStatus> UserLogin(LoginDto loginDto)
