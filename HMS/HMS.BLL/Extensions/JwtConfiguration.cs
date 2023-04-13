@@ -1,11 +1,8 @@
-﻿using HMS.DAL.Context;
-using HMS.DAL.Entities;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using System.Data;
 using System.Text;
 
 namespace HMS.BLL.Extensions
@@ -30,9 +27,6 @@ namespace HMS.BLL.Extensions
             {
                 options.TokenLifespan = TimeSpan.FromMinutes(60);
             });
-
-
-
         }
 
         public static void ConfigureJWT(this IServiceCollection services, IConfiguration configuration)
@@ -63,6 +57,5 @@ namespace HMS.BLL.Extensions
                 };
             });
         }
-
     }
 }

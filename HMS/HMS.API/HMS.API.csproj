@@ -23,4 +23,8 @@
 	<ProjectReference Include="..\HMS.Shared\HMS.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="internal_logs\" />
+  </ItemGroup>
+
 </Project>

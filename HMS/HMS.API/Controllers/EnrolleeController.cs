@@ -30,7 +30,7 @@ namespace HMS.API.Controllers
 
         [HttpGet("GetEnrollee/{enrolleeId}")]
         [ProducesResponseType(200, Type = typeof(EnrolleeDto))]
-        public async Task<ActionResult<EnrolleeDto>> GetEnrollee(int enrolleeId)
+        public async Task<ActionResult<EnrolleeDto>> GetEnrollee(string enrolleeId)
         {
             var enrollee = await _enrolleeService.GetEnrolleeAsync(enrolleeId);
 
@@ -44,7 +44,7 @@ namespace HMS.API.Controllers
 
         [HttpGet("GetEnrollePlan/{enrolleeId}")]
         [ProducesResponseType(200, Type = typeof(PlanDto))]
-        public async Task<ActionResult<PlanDto>> GetEnrolleePlan(int enrolleeId)
+        public async Task<ActionResult<PlanDto>> GetEnrolleePlan(string enrolleeId)
         {
             var enrollee = await _enrolleeService.GetEnrolleeAsync(enrolleeId);
 
@@ -84,7 +84,7 @@ namespace HMS.API.Controllers
 
 
         [HttpPost("{enrolleeId}/subscribeToPlan")]
-        public async Task<ActionResult> SubscribeToPlan(int enrolleeId, int planId)
+        public async Task<ActionResult> SubscribeToPlan(string enrolleeId, int planId)
         {
             try
             {
@@ -107,7 +107,7 @@ namespace HMS.API.Controllers
 
 
         [HttpPut("Update/{id}")]
-        public async Task<ActionResult<EnrolleeDto>> UpdateEnrollee(int id, [FromBody] EnrolleeDto enrolleeDto)
+        public async Task<ActionResult<EnrolleeDto>> UpdateEnrollee(string id, [FromBody] EnrolleeDto enrolleeDto)
         {
             try
             {
@@ -129,7 +129,7 @@ namespace HMS.API.Controllers
 
 
         [HttpPut("{enrolleeId}/unsubscribefromplan")]
-        public async Task<IActionResult> UnsubscribeFromPlan(int enrolleeId)
+        public async Task<IActionResult> UnsubscribeFromPlan(string enrolleeId)
         {
             try
             {
@@ -151,7 +151,7 @@ namespace HMS.API.Controllers
 
         [HttpDelete("Delete/{enrolleeId}")]
         [ProducesResponseType(200)]
-        public async Task<IActionResult> DeleteEnrollee(int enrolleeId)
+        public async Task<IActionResult> DeleteEnrollee(string enrolleeId)
         {
             try
             {

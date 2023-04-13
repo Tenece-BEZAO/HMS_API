@@ -9,5 +9,12 @@ namespace HMS.DAL.Dtos.Reponses
         //public string UserName { get; set; }
        // public string Role { get; set; }
     }
-   // public record ResponseStatus(int StatusCode, string Message, string Token, string UserName, string Role);
+    // public record ResponseStatus(int StatusCode, string Message, string Token, string UserName, string Role);
+    public class RegistrationResult
+    {
+        public bool Succeeded { get; set; }
+        public string ErrorMessage { get; set; }
+        public string ConfirmationLink { get; set; }
+    }
+
 }

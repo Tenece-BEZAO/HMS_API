@@ -5,12 +5,12 @@ namespace HMS.BLL.Interfaces
     public interface IEnrolleeService
     {
         Task<IEnumerable<EnrolleeDto>> GetEnrolleesAsync();
-        Task<EnrolleeDto> GetEnrolleeAsync(int enrolleeId);
-        Task<int> CreateEnrolleeAsync(EnrolleeDto enrolleeDTO);
-        Task SubscribeToPlanAsync(int enrolleeId, int planId);
-        Task<PlanDto> GetEnrolleePlanAsync(int enrolleeId);
-        Task UnsubscribeFromPlanAsync(int enrolleeId);
-        Task UpdateEnrolleeAsync(int enrolleeId, EnrolleeDto enrolleeDTO);
-        Task DeleteEnrolleeAsync(int enrolleeId);
+        Task<EnrolleeDto> GetEnrolleeAsync(string enrolleeId);
+        Task<string> CreateEnrolleeAsync(EnrolleeDto enrolleeDTO);
+        Task SubscribeToPlanAsync(string enrolleeId, int planId);
+        Task<PlanDto> GetEnrolleePlanAsync(string enrolleeId);
+        Task UnsubscribeFromPlanAsync(string enrolleeId);
+        Task UpdateEnrolleeAsync(string enrolleeId, EnrolleeDto enrolleeDTO);
+        Task DeleteEnrolleeAsync(string enrolleeId);
     }
 }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace HMS.BLL.ActionFilters
 {
-    public class ValidationFilterAttribute : IActionFilter
+    /*public class ValidationFilterAttribute : IActionFilter
     {
         public ValidationFilterAttribute()
         { }
@@ -27,6 +27,26 @@ namespace HMS.BLL.ActionFilters
                 context.Result = new UnprocessableEntityObjectResult(context.ModelState);
         }
         public void OnActionExecuted(ActionExecutedContext context) { }
+    }
+*/
+
+    public class ValidationFilterAttribute : ActionFilterAttribute
+    {
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            if (!context.ModelState.IsValid)
+            {
+                var errors = new List<string>();
+                foreach (var value in context.ModelState.Values)
+                {
+                    foreach (var error in value.Errors)
+                    {
+                        errors.Add(error.ErrorMessage);
+                    }
+                }
+                context.Result = new BadRequestObjectResult(new { message = "Validation errors", errors });
+            }
+        }
     }
 
 }

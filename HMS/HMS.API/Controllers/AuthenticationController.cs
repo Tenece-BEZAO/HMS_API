@@ -31,12 +31,10 @@ namespace HMS.API.Controllers
         [SwaggerResponse(StatusCodes.Status400BadRequest, Description = "User with provided email already exists", Type = typeof(ErrorResponse))]
         [SwaggerResponse(StatusCodes.Status400BadRequest, Description = "Failed to create user", Type = typeof(ErrorResponse))]
         [SwaggerResponse(StatusCodes.Status500InternalServerError, Description = "It's not you, it's us", Type = typeof(ErrorResponse))]
-
-
         public async Task<IActionResult> RegisterUser([FromBody] RegisterDto register)
         {
             var result = await _authService.RegisterUser(register);
-            return (IActionResult)result;
+            return Ok(result);
 
         }
 
@@ -46,12 +44,12 @@ namespace HMS.API.Controllers
         [SwaggerResponse(StatusCodes.Status200OK, Description = "Your Email has been verified", Type = typeof(AuthStatus))]
         [SwaggerResponse(StatusCodes.Status400BadRequest, Description = "Invalid Email address", Type = typeof(ErrorResponse))]
         [SwaggerResponse(StatusCodes.Status500InternalServerError, Description = "It's not you, it's us", Type = typeof(ErrorResponse))]
-
         public async Task<IActionResult> ConfirmEmail(string token, string email)
         {
             await _authService.ConfirmedEmailAsync(token, email);
             return Ok("Your Email has been verified");
         }
+
 
 
         [AllowAnonymous]
@@ -83,6 +81,22 @@ namespace HMS.API.Controllers
         }
 
 
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("forget-password")]
+        [SwaggerOperation(Summary = "Sends password reset instructions to user's email")]
+        [SwaggerResponse(StatusCodes.Status200OK, Description = "Password reset instructions sent successfully", Type = typeof(AuthStatus))]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, Description = "Failed to send password reset instructions", Type = typeof(ErrorResponse))]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, Description = "It's not you, it's us", Type = typeof(ErrorResponse))]
+
+        public async Task<IActionResult> ForgetPassword([Required] string email)
+        {
+            var response = await _authService.ForgetPasswordAsync(email);
+            return Ok(response);
+        }
+
+
+
         [Authorize]
         [HttpPost]
         [Route("change-password")]
@@ -101,11 +115,7 @@ namespace HMS.API.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        [Route("ResetPassword")]
-        [SwaggerOperation(Summary = "Reset user password")]
-        [SwaggerResponse(StatusCodes.Status200OK, Description = "link has been sent to your email", Type = typeof(AuthStatus))]
-        [SwaggerResponse(StatusCodes.Status400BadRequest, Description = "Invalid token or email address", Type = typeof(ErrorResponse))]
-        [SwaggerResponse(StatusCodes.Status500InternalServerError, Description = "Internal server error", Type = typeof(ErrorResponse))]
+        [Route("reset-password")]
         public async Task<IActionResult> ResetPassword(string token, string email)
         {
             var response = await _authService.ResetPasswordAsync(token, email);
@@ -113,40 +123,19 @@ namespace HMS.API.Controllers
         }
 
 
-
         [AllowAnonymous]
         [HttpPost]
-        [Route("forget-password")]
-        [SwaggerOperation(Summary = "Sends password reset instructions to user's email")]
-        [SwaggerResponse(StatusCodes.Status200OK, Description = "Password reset instructions sent successfully", Type = typeof(AuthStatus))]
-        [SwaggerResponse(StatusCodes.Status400BadRequest, Description = "Failed to send password reset instructions", Type = typeof(ErrorResponse))]
-        [SwaggerResponse(StatusCodes.Status500InternalServerError, Description = "It's not you, it's us", Type = typeof(ErrorResponse))]
-
-        public async Task<IActionResult> ForgetPassword([Required] string email)
-        {
-            var response = await _authService.ForgetPasswordAsync(email);
-            return Ok(response);
-        }
-
-
-
-        [AllowAnonymous]
-        [HttpPost]
-        [Route("ResetPassword")]
-        public async Task<IActionResult> ResetPassword(ResetPasswordRequest reset)
+        [Route("reset-password")]
+        [SwaggerOperation(Summary = "Reset-user-password")]
+        [SwaggerResponse(StatusCodes.Status200OK, Description = "link has been sent to your email", Type = typeof(AuthStatus))]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, Description = "Invalid token or email address", Type = typeof(ErrorResponse))]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, Description = "Internal server error", Type = typeof(ErrorResponse))]
+        public async Task<IActionResult> ResetPasswordss(ResetPasswordRequest reset)
         {
             var response = await _authService.ResetPasswordAsync(reset);
             return Ok(response);
         }
 
-
-        [HttpGet]
-        [Route("email")]
-        public async Task<IActionResult> TestEmail(RegisterDto register)
-        {
-            await _authService.EmailTestAsync();
-            return Ok("Email sent Successfully");
-        }
 
 
         [HttpPost]

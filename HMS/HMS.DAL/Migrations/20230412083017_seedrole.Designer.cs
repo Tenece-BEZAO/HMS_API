@@ -12,18 +12,59 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HMS.DAL.Migrations
 {
     [DbContext(typeof(HmoDbContext))]
-    [Migration("20230327153541_UpdatedEnrollee")]
-    partial class UpdatedEnrollee
+    [Migration("20230412083017_seedrole")]
+    partial class seedrole
     {
-        /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.4")
+                .HasAnnotation("ProductVersion", "6.0.15")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("HMS.DAL.Entities.Appointment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("AppointmentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("EnrolleeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("EnrolleeId1")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("EnrolleeName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProviderId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)")
+                        .HasAnnotation("ErrorMessage", "Reason field is required");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EnrolleeId1");
+
+                    b.HasIndex("ProviderId");
+
+                    b.ToTable("Appointments");
+                });
 
             modelBuilder.Entity("HMS.DAL.Entities.AppUser", b =>
                 {
@@ -43,6 +84,10 @@ namespace HMS.DAL.Migrations
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(256)
@@ -51,9 +96,6 @@ namespace HMS.DAL.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
-
-                    b.Property<int?>("EnrolleeId")
-                        .HasColumnType("int");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -92,13 +134,13 @@ namespace HMS.DAL.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("ProviderId")
-                        .HasColumnType("int");
-
                     b.Property<string>("RefreshToken")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("RefreshTokenExpiryTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("RegisteredDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("SecurityStamp")
@@ -113,8 +155,6 @@ namespace HMS.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EnrolleeId");
-
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -123,64 +163,22 @@ namespace HMS.DAL.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.HasIndex("ProviderId");
-
                     b.HasIndex(new[] { "Email" }, "IX_UniqueEmail")
                         .IsUnique();
 
                     b.ToTable("AspNetUsers", (string)null);
 
+                    b.HasDiscriminator<string>("Discriminator").HasValue("AppUser");
+
                     b.HasData(
                         new
                         {
-                            Id = "76941694-bdea-4b88-b5b3-b698d9714899",
+                            Id = "02fdd356-9430-410e-8e62-3e88eca0038f",
                             AccessFailedCount = 0,
                             Address = "583 Wall Dr. Gwynn Oak, MD 21207",
-                            ConcurrencyStamp = "fa424205-20e3-4780-ac5d-2b754d5afd1c",
-                            DateOfBirth = new DateTime(2023, 3, 27, 16, 35, 40, 552, DateTimeKind.Local).AddTicks(9949),
-                            Email = "bellos@gmail.com",
-                            EmailConfirmed = false,
-                            FirstName = "Bello",
-                            Gender = 0,
-                            LastName = "Soliu",
-                            LockoutEnabled = false,
-                            PasswordHash = "@Bello123",
-                            PhoneNumber = "07038730732",
-                            PhoneNumberConfirmed = false,
-                            RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "54faa7d9-05fd-4bf4-91f9-7abb38fc9c13",
-                            TwoFactorEnabled = false,
-                            UserName = "SobTech"
-                        },
-                        new
-                        {
-                            Id = "d71e4283-40b6-4120-9f7e-cf5c63a936ed",
-                            AccessFailedCount = 0,
-                            Address = "583 Wall Dr. Gwynn Oak, MD 21207",
-                            ConcurrencyStamp = "e62aeaa2-636c-4762-a50f-38812f85a54b",
-                            DateOfBirth = new DateTime(2023, 3, 27, 16, 35, 40, 552, DateTimeKind.Local).AddTicks(9981),
-                            Email = "caleb@gmail.com",
-                            EmailConfirmed = false,
-                            FirstName = "Caleb",
-                            Gender = 0,
-                            LastName = "Okechi",
-                            LockoutEnabled = false,
-                            PasswordHash = "@Caleb123",
-                            PhoneNumber = "07038730732",
-                            PhoneNumberConfirmed = false,
-                            RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "4a567712-55eb-4715-b9d5-fab06ad4ae8b",
-                            TwoFactorEnabled = false,
-                            UserName = "Caleb"
-                        },
-                        new
-                        {
-                            Id = "43f38469-4214-4dd7-8b91-7ce4feb76022",
-                            AccessFailedCount = 0,
-                            Address = "583 Wall Dr. Gwynn Oak, MD 21207",
-                            ConcurrencyStamp = "547cbb56-5273-4b28-beff-e137c990e6bb",
-                            DateOfBirth = new DateTime(2023, 3, 27, 16, 35, 40, 552, DateTimeKind.Local).AddTicks(9995),
-                            Email = "amara@gmail.com",
+                            ConcurrencyStamp = "a6856ba5-0dc3-4d44-8154-2924ed46df4a",
+                            DateOfBirth = new DateTime(2023, 4, 12, 9, 30, 16, 983, DateTimeKind.Local).AddTicks(6083),
+                            Email = "prptamarachi@gmail.com",
                             EmailConfirmed = false,
                             FirstName = "Amarachi",
                             Gender = 1,
@@ -190,47 +188,11 @@ namespace HMS.DAL.Migrations
                             PhoneNumber = "07038730732",
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "d90a4e9d-9ea9-41d8-97af-4334a8a14255",
+                            RegisteredDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            SecurityStamp = "119af00c-9f82-4fee-b056-767e8baa707a",
                             TwoFactorEnabled = false,
                             UserName = "maraxhi"
                         });
-                });
-
-            modelBuilder.Entity("HMS.DAL.Entities.Appointment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("AppointmentDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("EnrolleId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("EnrolleeName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("ProviderId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Reason")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)")
-                        .HasAnnotation("ErrorMessage", "Reason field is required");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProviderId");
-
-                    b.ToTable("Appointments");
                 });
 
             modelBuilder.Entity("HMS.DAL.Entities.Drug", b =>
@@ -239,7 +201,7 @@ namespace HMS.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Description")
                         .HasMaxLength(1000)
@@ -267,40 +229,13 @@ namespace HMS.DAL.Migrations
                     b.ToTable("Drug");
                 });
 
-            modelBuilder.Entity("HMS.DAL.Entities.Enrollee", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
-
-                    b.Property<int?>("AppointmentId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("PlanId")
-                        .HasColumnType("int");
-
-                    b.HasKey("id");
-
-                    b.HasIndex("AppointmentId")
-                        .IsUnique()
-                        .HasFilter("[AppointmentId] IS NOT NULL");
-
-                    b.HasIndex("PlanId")
-                        .IsUnique()
-                        .HasFilter("[PlanId] IS NOT NULL");
-
-                    b.ToTable("Enrollee");
-                });
-
             modelBuilder.Entity("HMS.DAL.Entities.Plan", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -321,59 +256,33 @@ namespace HMS.DAL.Migrations
                     b.ToTable("Plans");
                 });
 
-            modelBuilder.Entity("HMS.DAL.Entities.Provider", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Specialty")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Provider");
-                });
-
             modelBuilder.Entity("HMS.DAL.Entities.Report", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("AppUserId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("AppUserId1")
-                        .HasColumnType("nvarchar(450)");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int?>("DrugId")
+                        .IsRequired()
                         .HasColumnType("int");
 
-                    b.Property<int?>("EnrolleId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Enrolleeid")
-                        .HasColumnType("int");
+                    b.Property<string>("EnrolleeId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("PlanId")
+                        .IsRequired()
                         .HasColumnType("int");
 
-                    b.Property<int?>("ProviderId")
-                        .HasColumnType("int");
+                    b.Property<string>("ProviderId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Reason")
                         .IsRequired()
@@ -384,11 +293,9 @@ namespace HMS.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AppUserId1");
-
                     b.HasIndex("DrugId");
 
-                    b.HasIndex("Enrolleeid");
+                    b.HasIndex("EnrolleeId");
 
                     b.HasIndex("PlanId");
 
@@ -426,15 +333,10 @@ namespace HMS.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "4bb0068e-0e0d-4cb0-bc36-394189378092",
+                            Id = "67d735e5-e135-4ddf-a6ee-26a42153ff60",
+                            ConcurrencyStamp = "7a257176-b14c-4e2e-8af4-7a865c48fbdb",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
-                        },
-                        new
-                        {
-                            Id = "26f07371-19b5-4cfb-9f92-aab06965fc42",
-                            Name = "Enrollee",
-                            NormalizedName = "ENROLLEE"
                         });
                 });
 
@@ -444,7 +346,7 @@ namespace HMS.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -469,7 +371,7 @@ namespace HMS.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -544,28 +446,44 @@ namespace HMS.DAL.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("HMS.DAL.Entities.AppUser", b =>
+            modelBuilder.Entity("HMS.DAL.Entities.Enrollee", b =>
+                {
+                    b.HasBaseType("HMS.DAL.Entities.AppUser");
+
+                    b.Property<int?>("PlanId")
+                        .HasColumnType("int");
+
+                    b.HasIndex("PlanId")
+                        .IsUnique()
+                        .HasFilter("[PlanId] IS NOT NULL");
+
+                    b.HasDiscriminator().HasValue("Enrollee");
+                });
+
+            modelBuilder.Entity("HMS.DAL.Entities.Provider", b =>
+                {
+                    b.HasBaseType("HMS.DAL.Entities.AppUser");
+
+                    b.Property<string>("Specialty")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasDiscriminator().HasValue("Provider");
+                });
+
+            modelBuilder.Entity("HMS.DAL.Entities.Appointment", b =>
                 {
                     b.HasOne("HMS.DAL.Entities.Enrollee", "Enrollee")
                         .WithMany()
-                        .HasForeignKey("EnrolleeId");
+                        .HasForeignKey("EnrolleeId1");
 
                     b.HasOne("HMS.DAL.Entities.Provider", "Provider")
-                        .WithMany()
+                        .WithMany("Appointments")
                         .HasForeignKey("ProviderId");
 
                     b.Navigation("Enrollee");
 
                     b.Navigation("Provider");
-                });
-
-            modelBuilder.Entity("HMS.DAL.Entities.Appointment", b =>
-                {
-                    b.HasOne("HMS.DAL.Entities.Provider", "provider")
-                        .WithMany("Appointment")
-                        .HasForeignKey("ProviderId");
-
-                    b.Navigation("provider");
                 });
 
             modelBuilder.Entity("HMS.DAL.Entities.Drug", b =>
@@ -579,44 +497,31 @@ namespace HMS.DAL.Migrations
                     b.Navigation("Plan");
                 });
 
-            modelBuilder.Entity("HMS.DAL.Entities.Enrollee", b =>
-                {
-                    b.HasOne("HMS.DAL.Entities.Appointment", "appointment")
-                        .WithOne("enrollee")
-                        .HasForeignKey("HMS.DAL.Entities.Enrollee", "AppointmentId");
-
-                    b.HasOne("HMS.DAL.Entities.Plan", "Plan")
-                        .WithOne("Enrollee")
-                        .HasForeignKey("HMS.DAL.Entities.Enrollee", "PlanId");
-
-                    b.Navigation("Plan");
-
-                    b.Navigation("appointment");
-                });
-
             modelBuilder.Entity("HMS.DAL.Entities.Report", b =>
                 {
-                    b.HasOne("HMS.DAL.Entities.AppUser", "AppUser")
-                        .WithMany()
-                        .HasForeignKey("AppUserId1");
-
                     b.HasOne("HMS.DAL.Entities.Drug", "Drug")
                         .WithMany()
-                        .HasForeignKey("DrugId");
+                        .HasForeignKey("DrugId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
-                    b.HasOne("HMS.DAL.Entities.Enrollee", "Enrollee")
+                    b.HasOne("HMS.DAL.Entities.AppUser", "Enrollee")
                         .WithMany()
-                        .HasForeignKey("Enrolleeid");
+                        .HasForeignKey("EnrolleeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("HMS.DAL.Entities.Plan", "Plan")
                         .WithMany()
-                        .HasForeignKey("PlanId");
+                        .HasForeignKey("PlanId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
-                    b.HasOne("HMS.DAL.Entities.Provider", "provider")
+                    b.HasOne("HMS.DAL.Entities.AppUser", "Provider")
                         .WithMany()
-                        .HasForeignKey("ProviderId");
-
-                    b.Navigation("AppUser");
+                        .HasForeignKey("ProviderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Drug");
 
@@ -624,7 +529,7 @@ namespace HMS.DAL.Migrations
 
                     b.Navigation("Plan");
 
-                    b.Navigation("provider");
+                    b.Navigation("Provider");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -678,10 +583,13 @@ namespace HMS.DAL.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("HMS.DAL.Entities.Appointment", b =>
+            modelBuilder.Entity("HMS.DAL.Entities.Enrollee", b =>
                 {
-                    b.Navigation("enrollee")
-                        .IsRequired();
+                    b.HasOne("HMS.DAL.Entities.Plan", "Plan")
+                        .WithOne("Enrollee")
+                        .HasForeignKey("HMS.DAL.Entities.Enrollee", "PlanId");
+
+                    b.Navigation("Plan");
                 });
 
             modelBuilder.Entity("HMS.DAL.Entities.Plan", b =>
@@ -695,7 +603,7 @@ namespace HMS.DAL.Migrations
 
             modelBuilder.Entity("HMS.DAL.Entities.Provider", b =>
                 {
-                    b.Navigation("Appointment");
+                    b.Navigation("Appointments");
                 });
 #pragma warning restore 612, 618
         }

@@ -21,13 +21,15 @@ namespace HMS.BLL.Extensions
     {
         public static void RegisterServices(this IServiceCollection services)
         {
-            services.AddScoped<IUnitOfWork, UnitOfWork<HmoDbContext>>();
+            services.AddTransient<IUnitOfWork, UnitOfWork<HmoDbContext>>();
             services.AddTransient<IAuthenticationService, AuthenticationService>();
             services.AddTransient<IAdminService, AdminService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IClaimServices, ClaimServices>();
             services.AddTransient<IValidator<UpdateRequest>, UpdateRequestValidator>();
             services.AddScoped<ValidationFilterAttribute>();
+           // services.AddScoped<UserManager<Provider>, UserManager<Provider>>();
+           // services.AddScoped<UserManager<Enrollee>, UserManager<Enrollee>>();
         }
        
     

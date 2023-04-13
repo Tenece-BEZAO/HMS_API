@@ -42,7 +42,7 @@ namespace HMS.DAL.Dtos.Requests
             [Compare("Password", ErrorMessage = "Password and Confirmation Password do not match")]
             public string ConfirmedPassword { get; init; }
             public string? PhoneNumber { get; init; }
-            public ICollection<string>? Roles { get; init; }
+           // public ICollection<string>? Roles { get; init; }
             [Display(Name = "2 Factor Authentication")]
             public bool TwoFactorEnabled { get; set; } = true;
 
@@ -98,9 +98,10 @@ namespace HMS.DAL.Dtos.Requests
             [Required]
             public string NewPassword { get; set; }
 
-            [Compare("Password", ErrorMessage = "your password does not match")]
+            [Compare("NewPassword", ErrorMessage = "your password does not match")]
             public string ConfirmedPassword { get; set; }
         }
+
 
         public class UpdateRecoveryMailRequest
         {

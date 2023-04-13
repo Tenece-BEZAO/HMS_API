@@ -15,8 +15,6 @@ namespace HMS.BLL.Extensions
 {
     public static class ExceptionMiddlewareExtensions
     {
-
-     
         public static void ConfigureExceptionHandler(this IApplicationBuilder app, IWebHostEnvironment hostEnvironment, ILoggerService logger)
         {
 
@@ -68,14 +66,13 @@ namespace HMS.BLL.Extensions
                             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                         };
 
-                        var json = System.Text.Json.JsonSerializer.Serialize(errorResponse, jsonSerializerOptions);
+                        var json = JsonSerializer.Serialize(errorResponse, jsonSerializerOptions);
 
                         await context.Response.WriteAsync(json);
                     }
                 });
             });
         }
-
 
         public static void ConfigureLoggerService(this IServiceCollection services) =>
            services.AddSingleton<ILoggerService, LoggerService>();

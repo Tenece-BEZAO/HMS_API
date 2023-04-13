@@ -28,4 +28,9 @@ namespace HMS.DAL.Entities.ErrorModel
         }
     }
 
+    public class BadRequestException : Exception
+    {
+        public BadRequestException(string message) : base(message) { }
+    }
+
 }

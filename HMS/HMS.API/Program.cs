@@ -1,12 +1,12 @@
 using HMS.BLL.Extensions;
 using HMS.DAL.Configuration.MappingConfiguration;
+using HMS.DAL.Entities;
 using HMS.DAL.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
 using NLog;
 using Swashbuckle.AspNetCore.Filters;
 using System.Reflection;
-
 
 namespace HMS.API
 {
@@ -21,10 +21,10 @@ namespace HMS.API
 
             builder.Services.AddControllers().AddNewtonsoftJson();
             builder.Services.AddDatabaseConnection();
+
             builder.Services.AddAutoMapper(typeof(MappingProfile));
             builder.Services.AddAutoMapper(Assembly.Load("HMS.DAL"));
             builder.Services.AddHttpContextAccessor();
-            builder.Services.Configure<IdentityOptions>(opts => opts.SignIn.RequireConfirmedEmail = true);
             builder.Services.ConfigureEmail();
             builder.Services.AddEmailService(builder.Configuration);
             builder.Services.RegisterServices();
@@ -46,24 +46,26 @@ namespace HMS.API
                      Name = "Authorization",
                      Type = SecuritySchemeType.ApiKey,
                      Scheme = "Bearer"
-                 }
-                 );
+                 });
+
                  options.EnableAnnotations();
                  options.UseInlineDefinitionsForEnums();
                  options.OperationFilter<SecurityRequirementsOperationFilter>();
              });
+
             builder.Services.ConfigureJWT(builder.Configuration);
 
             builder.Services.AddAuthorization(options =>
             {
-                options.AddPolicy("AdminPolicy", policy =>
-                    policy.RequireRole("Admin"));
+                options.AddPolicy("SuperAdmin", policy =>
+                policy.RequireClaim("Role", "SuperAdmin"));
             });
 
             builder.Services.AddEndpointsApiExplorer();
             var app = builder.Build();
             var logger = app.Services.GetRequiredService<ILoggerService>();
             app.ConfigureExceptionHandler(builder.Environment, logger);
+            app.SeedRoleAsync();
             if (app.Environment.IsProduction())
                 app.UseHsts();
 
@@ -85,5 +87,6 @@ namespace HMS.API
 
             app.Run();
         }
+
     }
 }

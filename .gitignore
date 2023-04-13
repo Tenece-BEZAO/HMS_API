@@ -98,6 +98,8 @@ StyleCopReport.xml
 *.svclog
 *.scc
 
+HMS/HMS.API/internal_logs
+
 # Chutzpah Test files
 _Chutzpah*
 
