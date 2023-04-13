@@ -1,16 +1,22 @@
-﻿
-using HMS.DAL.Enums;
+﻿using HMS.DAL.Enums;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HMS.DAL.Entities
 {
     public class Plan
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public string Name { get; set; }
-        public PlanType PlanType { get; set; }
-        public decimal Price { get; set; }
 
-        public Enrollee Enrollee { get; set; }
+        [Required(ErrorMessage = "Name is required")]
+        public string Name { get; set; } = null!;
+        public PlanType PlanType { get; set; }
+
+        [Required(ErrorMessage = "Price is required")]
+        public decimal Price { get; set; }
+        public IEnumerable<Enrollee> Enrollees { get; set; } = new List<Enrollee>();
         public Drug Drug { get; set; }
     }
 }

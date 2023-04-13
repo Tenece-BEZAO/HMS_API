@@ -1,14 +1,22 @@
+
 ﻿using HMS.DAL.Entities;
 using System.ComponentModel.DataAnnotations;
 using System.Xml.Linq;
 
+﻿using HMS.DAL.Enums;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+
 namespace HMS.DAL.Dtos.Requests
 {
-    public class EnrolleeDTO
+    public class EnrolleeDto
     {
-        [Required]
-        public string FirstName { get; init; }
-        public string LastName { get; init; }
+        [Required(ErrorMessage = "First name is required"), MaxLength(100)]
+        public string FirstName { get; set; } = null!;
+
+        [Required(ErrorMessage = "Last name is required"), MaxLength(100)]
+        public string LastName { get; set; } = null!;
 
         [Required(ErrorMessage = "Username is required")]
         public string UserName { get; init; }
@@ -29,6 +37,8 @@ namespace HMS.DAL.Dtos.Requests
         [Display(Name = "2 Factor Authentication")]
         public bool TwoFactorEnabled { get; set; } = true;
         public DateTime RegisteredDate { get; set; }
+       // [ForeignKey("Plan")]
+        //public int? PlanId { get; set; }
 
     }
 }
