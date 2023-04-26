@@ -25,11 +25,14 @@
               "src/assets"
             ],
             "styles": [
+              "./node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",
+              "./node_modules/bootstrap/dist/css/bootstrap.min.css",
               "@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.css"
             ],
             "scripts": []
           },
+
           "configurations": {
             "production": {
               "budgets": [
@@ -44,6 +47,7 @@
                   "maximumError": "4kb"
                 }
               ],
+            
               "outputHashing": "all"
             },
             "development": {
@@ -81,7 +85,7 @@
             "polyfills": [
               "zone.js",
               "zone.js/testing"
-            ],
+            ],  
             "tsConfig": "tsconfig.spec.json",
             "assets": [
               "src/favicon.ico",
