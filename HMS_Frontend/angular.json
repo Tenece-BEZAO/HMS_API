@@ -32,7 +32,6 @@
             ],
             "scripts": []
           },
-
           "configurations": {
             "production": {
               "budgets": [
@@ -47,7 +46,6 @@
                   "maximumError": "4kb"
                 }
               ],
-            
               "outputHashing": "all"
             },
             "development": {
@@ -85,7 +83,7 @@
             "polyfills": [
               "zone.js",
               "zone.js/testing"
-            ],  
+            ],
             "tsConfig": "tsconfig.spec.json",
             "assets": [
               "src/favicon.ico",
