@@ -37,7 +37,8 @@ export class RegisterComponent {
         phoneNumber: new FormControl('', [Validators.required, Validators.maxLength(60)]),
         password: new FormControl('', [Validators.required]),
         confirmedpassword: new FormControl(''),
-        
+       
+
       });
 const confirmedPassword = this.registerForm.get('confirmedpassword');
 const passwordControl = this.registerForm.get('password');
@@ -69,6 +70,7 @@ if (confirmedPassword && passwordControl) {
     onSubmit(registerFormValue: User){
       if(this.registerForm.valid){
         this.showError = false;
+        this.executeUserRegistration(registerFormValue)
           //     this.auth.signUp(this.registerForm.value).subscribe({
         this.auth.signUp("Authentication/register", registerFormValue).subscribe({
           next: (res)=>{alert("successful"); this.registerForm.reset(); this.route.navigate(['login'])},
@@ -81,7 +83,25 @@ if (confirmedPassword && passwordControl) {
       }
     }
 
-    // onSubmit = (registerFormValue : User) => {
+    private executeUserRegistration = (registerFormValue : User) =>{
+       const defaultDate = new Date('1970-01-01');
+     const user: User = {
+       firstName: registerFormValue.firstName,
+       lastName: registerFormValue.lastName,
+       userName: registerFormValue.userName,
+       phoneNumber: registerFormValue.phoneNumber,
+       password: registerFormValue.password,
+       confirmedPasswor: registerFormValue.confirmedPasswor,
+       email: registerFormValue.email,
+       clientURI: 'http://localhost:7297/authentication/ConfirmEmail'
+     }}
+     redirectToRegisterUser = () => {
+      this.router.navigate(['/auth/register']);
+      }  
+    
+}
+
+ // onSubmit = (registerFormValue : User) => {
     //   if (this.registerForm.valid)
     //     this.executeUserRegistration(registerFormValue);
     // }
@@ -122,11 +142,3 @@ if (confirmedPassword && passwordControl) {
     //         }
     //       })    
     // }
-
-   
-    
-    redirectToRegisterUser = () => {
-    this.router.navigate(['/auth/register']);
-    }
-    
-}

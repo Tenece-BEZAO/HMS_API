@@ -27,11 +27,13 @@ import { AuthModule } from './auth/auth.module';
 import { ReactFormModule } from './shared/modules/react-form/react-form.module';
 import { DatePipe } from '@angular/common';
 import { ErrorHandlerService } from './shared/services/error-handler.service';
-//import { JwtModule } from '@auth0/angular-jwt';
+import { JwtModule } from '@auth0/angular-jwt';
 import { AuthGuard } from './shared/guards/auth.guard';
 import { PrivacyComponent } from './components/privacy/privacy.component';
 import { ForbiddenComponent } from './components/forbidden/forbidden.component';
 // import { authInterceptorProviders } from './_helpers/auth.interceptor';
+import { SocialLoginModule, SocialAuthServiceConfig } from '@abacritt/angularx-social-login';
+import { GoogleLoginProvider } from '@abacritt/angularx-social-login';
 
 export function tokenGetter() {
   return localStorage.getItem('token');
@@ -69,19 +71,40 @@ export function tokenGetter() {
     HttpClientModule,
     AuthModule,
     ReactFormModule,
-    // JwtModule.forRoot({
-    //   config: {
-    //     tokenGetter: tokenGetter,
-    //     allowedDomains: ['localhost:7258', 'localhost:7297'],
-    //     disallowedRoutes: [],
-    //   },
-    // }),
+    SocialLoginModule,
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: tokenGetter,
+        allowedDomains: ['localhost:7258', 'localhost:7297'],
+        disallowedRoutes: [],
+      },
+    }),
   ],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
       useClass: ErrorHandlerService,
       multi: true,
+    },
+    {
+      provide: 'SocialAuthServiceConfig',
+      useValue: {
+        autoLogin: false,
+        providers: [
+          {
+            id: GoogleLoginProvider.PROVIDER_ID,
+            provider: new GoogleLoginProvider(
+              '904888776847-4cg98fp26vn79sg275vbdf660bng9pbq.apps.googleusercontent.com', {
+                scopes: 'email',
+                //plugin_name: 'HMS'
+              }
+            )
+          },
+        ],
+        onError: (err) => {
+          console.error(err);
+        }
+      } as SocialAuthServiceConfig
     },
     DatePipe,
     AuthGuard,

@@ -21,7 +21,7 @@
           <div class="col-lg-6 mb-5 mb-lg-0">
             <div class="card">
               <div class="card-body py-5 px-md-5">
-                <div *ngIf="showError" class="alert alert-danger" role="alert">
+                <div *ngIf="invalidLogin" class="alert alert-danger" role="alert">
                   {{errorMessage}}
               </div>
                 <form [formGroup]="loginForm">
@@ -76,9 +76,9 @@
                   <!-- Register buttons -->
                   <div class="text-center">
                     <p>or sign up with:</p>
-                    <button type="button" class="btn btn-link btn-floating mx-1">
-                      <i class="fab fa-facebook-f"></i>
-                    </button>
+                    <div style="padding: 20px;">
+                      <button class="btn btn-info" type="button" (click)="externalLogin()">Google</button>
+                  </div>
   
                     <button type="button" class="btn btn-link btn-floating mx-1">
                       <i class="fab fa-google"></i>

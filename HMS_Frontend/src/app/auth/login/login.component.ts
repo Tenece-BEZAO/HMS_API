@@ -8,6 +8,7 @@ import { AuthService } from 'src/app/shared/services/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserLoginDto } from 'src/app/models/user-login-dto';
 import { AuthResponseDto } from 'src/app/response/auth-response-dto';
+import { ExternalAuthDto } from 'src/app/models/external-auth-dto';
 
 @Component({
   selector: 'app-login',
@@ -24,8 +25,9 @@ type: string = 'password';
 loginForm! : FormGroup;
 isText: boolean = false;
 errorMessage: string = '';
-showError?: boolean;
-eyeIcon: string = "fa-eye-slash"
+invalidLogin?: boolean;
+eyeIcon: string = "fa-eye-slash";
+returnUrl: string = '';
 constructor (private fb: FormBuilder,private repo: RepositoryService, private auth: AuthService, 
    private router: ActivatedRoute, private route: Router,private errorHandler: ErrorHandlerService){}
 
@@ -35,7 +37,7 @@ ngOnInit(): void {
     email: ['', Validators.required],
     password: ['', Validators.required]
   })
-  //this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+  this.returnUrl = this.router.snapshot.queryParams['returnUrl'] || '/';
 }
 
 hideShowPass(){
@@ -51,42 +53,89 @@ hasError = (controlName: string, errorName: string) => {
   return this.loginForm.get(controlName)?.hasError(errorName)
 }
 
-onSubmit(loginFormValue : User){
-  this.showError = false;
-  if(this.loginForm.valid){
-console.log(this.loginForm.value);
-const user: User = {
-  firstName: loginFormValue.firstName,
-  lastName: loginFormValue.lastName,
-  userName: loginFormValue.userName,
-  //dateOfBirth: transformedDateOfBirth ? new Date(transformedDateOfBirth) : new Date(),
-  phoneNumber: loginFormValue.phoneNumber,
-  password: loginFormValue.password,
-  confirmedPasswor: loginFormValue.confirmedPasswor,
-  email: loginFormValue.email
-}
+// onSubmit(loginFormValue : User){
+//   this.invalidLogin = false;
+//   if(this.loginForm.valid){
+// console.log(this.loginForm.value);
+// const user: User = {
+//   firstName: loginFormValue.firstName,
+//   lastName: loginFormValue.lastName,
+//   userName: loginFormValue.userName,
+//   //dateOfBirth: transformedDateOfBirth ? new Date(transformedDateOfBirth) : new Date(),
+//   phoneNumber: loginFormValue.phoneNumber,
+//   password: loginFormValue.password,
+//   confirmedPasswor: loginFormValue.confirmedPasswor,
+//   email: loginFormValue.email
+// }
 
-this.onSubmit = (loginFormValue: UserLoginDto) => {
-  this.showError = false;
+onSubmit = (loginFormValue: UserLoginDto) => {
+  this.auth.isExternalAuth = false;
+  this.invalidLogin = false;
   const login = {... loginFormValue };
+  if(this.loginForm.valid){
+    console.log(this.loginForm.value);
   const userForAuth: UserLoginDto = {
     email: login.email,
-    password: login.password
+    password: login.password,
+    clientURI: 'http://localhost:7297/authentication/forgotpassword'
   }
   this.auth.loginUser('Authentication/login', userForAuth)
   .subscribe({
     next: (res:AuthResponseDto) => {
      localStorage.setItem("token", res.token);
+     this.invalidLogin = false;
      this.auth.sendAuthStateChangeNotification(res.isAuthSuccessful);
      this.route.navigate(['/home']);
   },
   error: (err: HttpErrorResponse) => {
     this.errorMessage = err.message;
-    this.showError = true;
+    this.invalidLogin = true;
   }})
+}else{
+  console.log('form is not valid');
+  this.validateAllFormFields(this.loginForm);
+  alert("your form is invalid")
+}
+}
+private validateAllFormFields(formGroup: FormGroup){
+  Object.keys(formGroup.controls).forEach(field =>{
+   const control = formGroup.get(field);
+   if( control instanceof FormControl){
+     control.markAsDirty({onlySelf:true})
+   }else if (control instanceof FormGroup){
+     this.validateAllFormFields(control)
+   }
+  })
+ }
+
+
+ externalLogin = () => {
+  this.invalidLogin = false;
+  this.auth.signInWithGoogle();
+  this.auth.extAuthChanged.subscribe( user => {
+    const externalAuth: ExternalAuthDto = {
+      provider: user.provider,
+      idToken: user.idToken
+    }
+    this.validateExternalAuth(externalAuth);
+  })
 }
 
-
+private validateExternalAuth(externalAuth: ExternalAuthDto) {
+  this.auth.externalLogin('api/accounts/externallogin', externalAuth)
+    .subscribe({
+      next: (res) => {
+          localStorage.setItem("token", res.token);
+          this.auth.sendAuthStateChangeNotification(res.isAuthSuccessful);
+          this.route.navigate([this.returnUrl]);
+    },
+      error: (err: HttpErrorResponse) => {
+        this.errorMessage = err.message;
+        this.invalidLogin = true;
+        this.auth.signOutExternal();
+      }
+    });
+}
 // const apiUrl = 'Authentication/login';
 //           this.repo.Authenticate(apiUrl, user)
 //           .subscribe({
@@ -101,11 +150,7 @@ this.onSubmit = (loginFormValue: UserLoginDto) => {
 //                   //alert(err?.error.Message)
 //                 }
 //             })
-  }else{
-    console.log('form is not valid');
-    this.validateAllFormFields(this.loginForm);
-    alert("your form is invalid")
-  }
+ 
 }
 
 
@@ -130,15 +175,6 @@ this.onSubmit = (loginFormValue: UserLoginDto) => {
 //   }
 // }
 
-private validateAllFormFields(formGroup: FormGroup){
- Object.keys(formGroup.controls).forEach(field =>{
-  const control = formGroup.get(field);
-  if( control instanceof FormControl){
-    control.markAsDirty({onlySelf:true})
-  }else if (control instanceof FormGroup){
-    this.validateAllFormFields(control)
-  }
- })
-}
 
-}
+
+

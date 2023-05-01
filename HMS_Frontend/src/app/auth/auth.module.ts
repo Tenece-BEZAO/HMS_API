@@ -7,10 +7,14 @@ import { ReactFormModule } from '../shared/modules/react-form/react-form.module'
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { SharedModule } from '../shared/shared.module';
 import { RegisterComponent } from './register/register.component';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+import { EmailConfirmationComponent } from './email-confirmation/email-confirmation.component';
 @NgModule({
   declarations: [
     LoginComponent,
-    RegisterComponent
+    RegisterComponent,
+    ForgotPasswordComponent,
+    EmailConfirmationComponent
   ],
   imports: [
     CommonModule,
