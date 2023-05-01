@@ -27,7 +27,7 @@ import { AuthModule } from './auth/auth.module';
 import { ReactFormModule } from './shared/modules/react-form/react-form.module';
 import { DatePipe } from '@angular/common';
 import { ErrorHandlerService } from './shared/services/error-handler.service';
-//import { JwtModule } from '@auth0/angular-jwt';
+import { JwtModule } from '@auth0/angular-jwt';
 import { AuthGuard } from './shared/guards/auth.guard';
 import { PrivacyComponent } from './components/privacy/privacy.component';
 import { ForbiddenComponent } from './components/forbidden/forbidden.component';
@@ -69,13 +69,13 @@ export function tokenGetter() {
     HttpClientModule,
     AuthModule,
     ReactFormModule,
-    // JwtModule.forRoot({
-    //   config: {
-    //     tokenGetter: tokenGetter,
-    //     allowedDomains: ['localhost:7258', 'localhost:7297'],
-    //     disallowedRoutes: [],
-    //   },
-    // }),
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: tokenGetter,
+        allowedDomains: ['localhost:7258', 'localhost:7297'],
+        disallowedRoutes: [],
+      },
+    }),
   ],
   providers: [
     {
