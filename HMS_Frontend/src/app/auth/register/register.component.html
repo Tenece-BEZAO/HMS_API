@@ -1,11 +1,11 @@
-<section class="vh-100 gradient-custom">
+<!-- <section class="vh-100 gradient-custom">
     <div class="container py-5 h-100">
       <div class="row justify-content-center align-items-center h-100">
         <div class="col-12 col-lg-9 col-xl-7">
           <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
             <div class="card-body p-4 p-md-5">
               <h3 class="mb-4 pb-2 pb-md-0 mb-md-5">Registration Form</h3>
-              <!-- <form [formGroup] ="registerForm" autocomplete ="off" novalidate (ngSubmit)="onSubmit(registerForm.value)"> -->
+              <form [formGroup] ="registerForm" autocomplete ="off" novalidate (ngSubmit)="onSubmit(registerForm.value)">
                 <form [formGroup] ="registerForm">
                   <div *ngIf="showError" class="alert alert-danger" role="alert">
                     <span [innerHTML]="errorMessage"></span>
@@ -39,47 +39,7 @@
                       <label class="form-label" for="lastName">UserName</label>
                     </div>
                   </div>
-                  <!-- <div class="col-md-6 mb-4">  
-                    <div class="form-outline">
-                      <input formControlName ="email" type="text" id="lastName" class="form-control form-control-lg" />
-                      <label class="form-label" for="lastName">Email</label>
-                    </div>
-                  </div> -->
                 </div>
-  
-                <!-- <div class="row">
-                  <div class="col-md-6 mb-4 d-flex align-items-center">
-  
-                    <div class="form-outline datepicker w-100">
-                      <input type="text" class="form-control form-control-lg" id="birthdayDate" />
-                      <label for="birthdayDate" class="form-label">Birthday</label>
-                    </div>
-  
-                  </div>
-                  <div class="col-md-6 mb-4">
-  
-                    <h6 class="mb-2 pb-1">Gender: </h6>
-  
-                    <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="inlineRadioOptions" id="femaleGender"
-                        value="option1" checked />
-                      <label class="form-check-label" for="femaleGender">Female</label>
-                    </div>
-  
-                    <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="inlineRadioOptions" id="maleGender"
-                        value="option2" />
-                      <label class="form-check-label" for="maleGender">Male</label>
-                    </div>
-  
-                    <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="inlineRadioOptions" id="otherGender"
-                        value="option3" />
-                      <label class="form-check-label" for="otherGender">Other</label>
-                    </div>
-  
-                  </div>
-                </div> -->
   
                 <div class="row">
                   <div class="col-md-6 mb-4 pb-2">
@@ -110,39 +70,20 @@
                     <input formControlName ="confirmedpassword" type="password" id="form3Example4" class="form-control" />
                     <label class="form-label" for="form3Example4">ConfirmedPassword</label>
                   </div>
-                  <div class="col-md-5">
+                 
+                </div> <div class="col-md-5">
                     <em *ngIf="validateControl('confirm') && hasError('confirm', 'required')">Confirmation is required</em>
                     <em *ngIf="hasError('confirm', 'mustMatch')">Passwords must match</em>
                 </div>
-                </div>
-  
-                <!-- <div class="row">
-                  <div class="col-12">
-  
-                    <select class="select form-control-lg">
-                      <option value="1" disabled>Choose option</option>
-                      <option value="2">Subject 1</option>
-                      <option value="3">Subject 2</option>
-                      <option value="4">Subject 3</option>
-                    </select>
-                    <label class="form-label select-label">Choose option</label>
-  
-                  </div>
-                </div> -->
                 <br><br>
  
                 <div class="mt-4 pt-2">
                     <div class="offset-5 col-md-1">
                         <button (click)="onSubmit(registerForm.value)" type="submit" class="btn btn-info" [disabled]="!registerForm.valid">register</button>
-                        <!-- <button type="submit" class="btn btn-info" [disabled]="!registerForm.valid">Save</button> -->
                     </div>
-                    <!-- <div class="col-md-1">
-                        <button type="button" class="btn btn-danger" (click)="redirectToRegisterUser()">Cancel</button>
-                    </div> -->
+                  
                 </div>
-                <!-- <div class="mt-4 pt-2">
-                  <input class="btn btn-primary btn-lg" type="submit" value="Submit" />
-                </div> -->
+           
   
               </form>
             </div>
@@ -150,4 +91,204 @@
         </div>
       </div>
     </div>
-  </section>
+  </section> -->
+
+<ul class="nav nav-pills nav-justified mb-3" id="ex1" role="tablist">
+  <li class="nav-item" role="presentation">
+    <a class="nav-link active" id="tab-login" data-mdb-toggle="pill" href="#pills-login" role="tab"
+      aria-controls="pills-login" aria-selected="true">Login</a>
+  </li>
+  <li class="nav-item" role="presentation">
+    <a class="nav-link" id="tab-register" data-mdb-toggle="pill" href="#pills-register" role="tab"
+      aria-controls="pills-register" aria-selected="false">Register</a>
+  </li>
+</ul>
+<!-- Pills navs -->
+
+<!-- Pills content -->
+<div class="tab-content">
+  <div class="tab-pane fade show active" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
+    <form [formGroup]="registerForm">
+      <div *ngIf="showError" class="alert alert-danger" role="alert">
+        <span [innerHTML]="errorMessage"></span>
+    </div>
+
+      <div class="text-center mb-3">
+        <p>Sign in with:</p>
+        <button type="button" class="btn btn-link btn-floating mx-1">
+          <i class="fab fa-facebook-f"></i>
+        </button>
+
+        <button type="button" class="btn btn-link btn-floating mx-1">
+          <i class="fab fa-google"></i>
+        </button>
+
+        <button type="button" class="btn btn-link btn-floating mx-1">
+          <i class="fab fa-twitter"></i>
+        </button>
+
+        <button type="button" class="btn btn-link btn-floating mx-1">
+          <i class="fab fa-github"></i>
+        </button>
+      </div>
+
+      <p class="text-center">or:</p>
+
+      <!-- Email input -->
+      <div class="form-outline mb-4">
+        <input formControlName ="email" type="email" id="emailAddress" class="form-control" />
+        <label class="form-label" for="emailAddress">Email or username</label>
+        <div class="col-md-5">
+          <em *ngIf="validateControl('email') && hasError('email', 'email')">Please provide a valid email</em>
+          <em *ngIf="validateControl('email') && hasError('email', 'required')">Email is required</em>
+        </div>
+      </div>
+      <!-- firstName -->
+      <div class="form-outline mb-4">
+        <input formControlName ="firstName" type="text" id="firstName" class="form-control" />
+        <label class="form-label" for="firstName">First Name</label>
+        <!-- <span *ngIf="errorMessage">{{ errorMessage }}</span> -->
+      </div>
+      <!-- lastName -->
+      <div class="form-outline mb-4">
+        <input formControlName ="lastName" type="text" id="lastName" class="form-control" />
+        <label class="form-label" for="lastName">Last Name</label>
+      </div>
+      <!-- userName -->
+      <div class="form-outline mb-4">
+        <input formControlName ="userName" type="text" id="userName" class="form-control" />
+        <label class="form-label" for="userName">username</label>
+        <div class="col-md-5">
+          <em *ngIf="validateControl('name') 
+          && hasError('name', 'required')">UserName is required</em>
+          <em *ngIf="validateControl('name') 
+          && hasError('name', 'maxlength')">Maximum allowed length is 60 characters.</em>
+        </div>
+      </div>
+
+      <!-- phoneNumber -->
+      <div class="form-outline mb-4">
+        <input formControlName ="phoneNumber" type="tel" id="phoneNumber" class="form-control form-control-lg" />
+        <label class="form-label" for="phoneNumber">Phone Number</label>
+        <!-- <span *ngIf="errorMessage">{{ errorMessage }}</span> -->
+      </div>
+      <!-- Password input -->
+      <div class="form-outline mb-4">
+        <input formControlName ="password" type="password" id="loginPassword" class="form-control" />
+        <label class="form-label" for="loginPassword">Password</label>
+        <em *ngIf="validateControl('password') && hasError('password', 'required')">Password is required</em>
+      </div>
+
+      <!-- Confirmed Password input -->
+      <div class="form-outline mb-4">
+        <input formControlName ="confirmedpassword" type="password" id="form3Example4" class="form-control" />
+        <label class="form-label" for="form3Example4">ConfirmedPassword</label>
+        
+       <div class="col-md-5">
+        <em *ngIf="validateControl('confirm') && hasError('confirm', 'required')">Confirmation is required</em>
+        <em *ngIf="hasError('confirm', 'mustMatch')">Passwords must match</em>
+        </div>
+      </div>
+
+      <!-- 2 column grid layout -->
+      <div class="row mb-4">
+        <div class="col-md-6 d-flex justify-content-center">
+          <!-- Checkbox -->
+          <div class="form-check mb-3 mb-md-0">
+            <input class="form-check-input" type="checkbox" value="" id="loginCheck" checked />
+            <label class="form-check-label" for="loginCheck"> Remember me </label>
+          </div>
+        </div>
+
+        <div class="col-md-6 d-flex justify-content-center">
+          <!-- Simple link -->
+          <a href="#!">Forgot password?</a>
+        </div>
+      </div>
+
+      <!-- Submit button -->
+      <button (click)="onSubmit(registerForm.value)"  type="submit" class="btn btn-primary btn-block mb-4" [disabled]="!registerForm.valid">Sign up</button>
+      <!-- <button (click)="onSubmit(registerForm.value)" type="submit" class="btn btn-primary btn-block" [disabled]="!registerForm.valid">register</button> -->
+      <!-- Register buttons -->
+      <div class="text-center">
+        <p>Already a member? <a href="#!">login</a></p>
+      </div>
+    </form>
+
+  </div>
+  <div class="tab-pane fade" id="pills-register" role="tabpanel" aria-labelledby="tab-register">
+    <form>
+      <div class="text-center mb-3">
+        <p>Sign up with:</p>
+        <button type="button" class="btn btn-link btn-floating mx-1">
+          <i class="fab fa-facebook-f"></i>
+        </button>
+
+        <button type="button" class="btn btn-link btn-floating mx-1">
+          <i class="fab fa-google"></i>
+        </button>
+
+        <button type="button" class="btn btn-link btn-floating mx-1">
+          <i class="fab fa-twitter"></i>
+        </button>
+
+        <button type="button" class="btn btn-link btn-floating mx-1">
+          <i class="fab fa-github"></i>
+        </button>
+      </div>
+
+      <p class="text-center">or:</p>
+
+      <!-- Name input -->
+      <div class="form-outline mb-4">
+        <input type="text" id="registerName" class="form-control" />
+        <label class="form-label" for="registerName">Name</label>
+      </div>
+
+      <!-- Username input -->
+      <div class="form-outline mb-4">
+        <input type="text" id="registerUsername" class="form-control" />
+        <label class="form-label" for="registerUsername">Username</label>
+      </div>
+
+      <!-- Email input -->
+      <div class="form-outline mb-4">
+        <input type="email" id="registerEmail" class="form-control" />
+        <label class="form-label" for="registerEmail">Email</label>
+      </div>
+
+      <!-- Password input -->
+      <div class="form-outline mb-4">
+        <input type="password" id="registerPassword" class="form-control" />
+        <label class="form-label" for="registerPassword">Password</label>
+      </div>
+
+      <!-- Repeat Password input -->
+      <div class="form-outline mb-4">
+        <input type="password" id="registerRepeatPassword" class="form-control" />
+        <label class="form-label" for="registerRepeatPassword">Repeat password</label>
+      </div>
+     <div>
+      <label>
+        <input type="checkbox" name="enableTwoFactorAuth" formControlName="enableTwoFactorAuth">
+        Enable two-factor authentication
+      </label>
+      
+     </div>
+      
+      <!-- Checkbox -->
+      <div class="form-check d-flex justify-content-center mb-4">
+        <input class="form-check-input me-2" type="checkbox" value="" id="registerCheck" checked
+          aria-describedby="registerCheckHelpText" />
+        <label class="form-check-label" for="registerCheck">
+          I have read and agree to the terms
+        </label>
+      </div>
+
+      <!-- Submit button -->
+      <!-- <button (click)="onSubmit(registerForm.value)" type="submit" class="btn btn-info" [disabled]="!registerForm.valid">register</button> -->
+    <!-- <button type="submit" class="btn btn-primary btn-block mb-3">Sign in</button> -->
+    </form>
+  </div>
+</div>
+<!-- Pills content -->

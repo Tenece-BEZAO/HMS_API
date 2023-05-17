@@ -34,7 +34,8 @@ import { ForbiddenComponent } from './components/forbidden/forbidden.component';
 // import { authInterceptorProviders } from './_helpers/auth.interceptor';
 import { SocialLoginModule, SocialAuthServiceConfig } from '@abacritt/angularx-social-login';
 import { GoogleLoginProvider } from '@abacritt/angularx-social-login';
-
+import { RouterModule } from '@angular/router';
+//import { GoogleSigninButtonModule } from '@abacritt/angularx-social-login';
 export function tokenGetter() {
   return localStorage.getItem('token');
 }
@@ -57,6 +58,8 @@ export function tokenGetter() {
   ],
   imports: [
     BrowserModule,
+    AuthModule,
+   // GoogleSigninButtonModule,
     AppRoutingModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
@@ -69,7 +72,7 @@ export function tokenGetter() {
     MatCardModule,
     MatDividerModule,
     HttpClientModule,
-    AuthModule,
+   
     ReactFormModule,
     SocialLoginModule,
     JwtModule.forRoot({
@@ -100,6 +103,10 @@ export function tokenGetter() {
               }
             )
           },
+          // {
+          //   id: FacebookLoginProvider.PROVIDER_ID,
+          //   provider: new FacebookLoginProvider('APP_ID')
+          // }
         ],
         onError: (err) => {
           console.error(err);

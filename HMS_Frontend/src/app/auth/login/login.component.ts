@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component,NgZone, OnInit } from '@angular/core';
 import { User } from 'src/app/models/user';
 import { RepositoryService } from 'src/app/shared/services/repository.service';
 import { ErrorHandlerService } from 'src/app/shared/services/error-handler.service';
@@ -10,6 +10,12 @@ import { UserLoginDto } from 'src/app/models/user-login-dto';
 import { AuthResponseDto } from 'src/app/response/auth-response-dto';
 import { ExternalAuthDto } from 'src/app/models/external-auth-dto';
 
+
+import { ToastrService } from 'ngx-toastr';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { TwoFactorComponent } from '../two-factor/two-factor.component';
+import { CredentialResponse, PromptMomentNotification } from 'google-one-tap';
+//import { google } from 'google-accounts'
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -28,11 +34,30 @@ errorMessage: string = '';
 invalidLogin?: boolean;
 eyeIcon: string = "fa-eye-slash";
 returnUrl: string = '';
-constructor (private fb: FormBuilder,private repo: RepositoryService, private auth: AuthService, 
-   private router: ActivatedRoute, private route: Router,private errorHandler: ErrorHandlerService){}
+verificationCode: string = '';
+
+constructor (private fb: FormBuilder,private repo: RepositoryService, private auth: AuthService, //private toastr: ToastrService,
+   private ngzone : NgZone,private modalService: BsModalService,private router: ActivatedRoute, private route: Router, private errorHandler: ErrorHandlerService){}
 
 
 ngOnInit(): void {
+//   (window as any).onGoogleLibraryLoad = () => { 
+//     google.accounts.id.initialize({
+// client_id: '',
+//login_uri: 'api/dashboard',
+//callback: this.handleCredentialResponse.bind(this),
+// auto_select : false,
+// cancel_on_tap_outside: true,
+//     });
+
+//     google.accounts.id.renderButton(
+//       document.getElementById("buttonDiv"){
+//         theme: "outline", size:"medium", width: "100%"
+//       }
+//     );
+// google.accounts.id.prompt((notification: PromptMomentNotification) =>{})
+//   }
+  //old
   this.loginForm = this.fb.group({
     email: ['', Validators.required],
     password: ['', Validators.required]
@@ -73,19 +98,26 @@ onSubmit = (loginFormValue: UserLoginDto) => {
   this.invalidLogin = false;
   const login = {... loginFormValue };
   if(this.loginForm.valid){
-    console.log(this.loginForm.value);
+    console.log(this.loginForm.value); 
   const userForAuth: UserLoginDto = {
     email: login.email,
-    password: login.password,
+    password: login.password, 
     clientURI: 'http://localhost:7297/authentication/forgotpassword'
   }
   this.auth.loginUser('Authentication/login', userForAuth)
   .subscribe({
-    next: (res:AuthResponseDto) => {
-     localStorage.setItem("token", res.token);
-     this.invalidLogin = false;
+      next: (res:AuthResponseDto) => {
+        if (res.is2StepVerificationRequired) {
+          //this.route.navigate(['/auth/twostep'])
+          const  queryParams = { returnUrl: this.returnUrl, provider: res.provider, email: userForAuth.email }
+          this.route.navigate(['/twostepverification'], { queryParams });
+        } else {
+      localStorage.setItem("token", res.token);
+      this.invalidLogin = false;
      this.auth.sendAuthStateChangeNotification(res.isAuthSuccessful);
-     this.route.navigate(['/home']);
+     this.route.navigate([this.returnUrl]);
+    // this.route.navigate(['/home']);
+      }
   },
   error: (err: HttpErrorResponse) => {
     this.errorMessage = err.message;
@@ -93,6 +125,7 @@ onSubmit = (loginFormValue: UserLoginDto) => {
   }})
 }else{
   console.log('form is not valid');
+  //this.toastr.error('an error occured')
   this.validateAllFormFields(this.loginForm);
   alert("your form is invalid")
 }
@@ -109,9 +142,11 @@ private validateAllFormFields(formGroup: FormGroup){
  }
 
 
- externalLogin = () => {
-  this.invalidLogin = false;
+ googleLogin = () => {
+  //this.showError = false;
   this.auth.signInWithGoogle();
+  this.invalidLogin = false;
+  //this.auth.signInWithGoogle();
   this.auth.extAuthChanged.subscribe( user => {
     const externalAuth: ExternalAuthDto = {
       provider: user.provider,
@@ -122,7 +157,7 @@ private validateAllFormFields(formGroup: FormGroup){
 }
 
 private validateExternalAuth(externalAuth: ExternalAuthDto) {
-  this.auth.externalLogin('api/accounts/externallogin', externalAuth)
+  this.auth.GoogleLogin('/authentication/Googlelogin', externalAuth)
     .subscribe({
       next: (res) => {
           localStorage.setItem("token", res.token);
@@ -136,6 +171,38 @@ private validateExternalAuth(externalAuth: ExternalAuthDto) {
       }
     });
 }
+
+
+public logout(){
+  this.auth.signOutExternal();
+  this.ngzone.run(() => {
+    this.route.navigate(['/home']).then(() => window.location.reload())
+  })
+}
+
+// openVerificationModal() {
+//   const modalRef = this.modalService.open(TwoFactorComponent);
+//   modalRef.result.then((result) => {
+//     if (modalRef.content && modalRef.content.verificationCode) {
+//       this.verificationCode = modalRef.content.verificationCode;
+//       this.submitVerificationCode();
+//     }
+//   }).catch((error) => {
+//     console.log('Modal dismissed with error:', error);
+//   });
+  
+  
+// }
+// verifyCode() {
+// }
+// submitVerificationCode() {
+//   this.auth.verifyTwoFactor(this.username, this.verificationCode).subscribe((res: AuthResponseDto) => {
+//     localStorage.setItem('token', res.token);
+//     this.invalidLogin = false;
+//     this.auth.sendAuthStateChangeNotification(res.isAuthSuccessful);
+//     this.redirectToDashboard();
+//   });
+// }
 // const apiUrl = 'Authentication/login';
 //           this.repo.Authenticate(apiUrl, user)
 //           .subscribe({

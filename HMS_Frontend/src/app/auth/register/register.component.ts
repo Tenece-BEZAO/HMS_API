@@ -11,17 +11,22 @@ import { SuccessModalComponent } from 'src/app/shared/modals/success-modal/succe
 import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { PasswordConfirmationValidatorService } from 'src/app/shared/custom-validators/password-confirmation-validator.service';
-  // template: `<div>hello</div>`,
+import { catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
+// template: `<div>hello</div>`,
 @Component({
   selector: 'app-register',
    templateUrl: './register.component.html',
 
   styleUrls: ['./register.component.css']
 })
+
 export class RegisterComponent {
   
     registerForm!: FormGroup;
     errorMessage : string = '';
+    enableTwoFactorAuth = false;
+
     //bsModalRef?: BsModalRef;
     public showError?: boolean;
     constructor(private repo: RepositoryService, private router: Router, private datePipe: DatePipe, private auth: AuthService, private route: Router,
@@ -64,21 +69,51 @@ if (confirmedPassword && passwordControl) {
     }
     
 
-
-
-
     onSubmit(registerFormValue: User){
       if(this.registerForm.valid){
         this.showError = false;
         this.executeUserRegistration(registerFormValue)
           //     this.auth.signUp(this.registerForm.value).subscribe({
-        this.auth.signUp("Authentication/register", registerFormValue).subscribe({
-          next: (res)=>{alert("successful"); this.registerForm.reset(); this.route.navigate(['login'])},
-          error: (err: HttpErrorResponse) => {
-            this.errorMessage = err.message;
-            this.showError = true;
-          }
-        })
+            this.auth.signUp("Authentication/register", registerFormValue).pipe(
+              
+              catchError((error: HttpErrorResponse) => {
+                this.errorMessage = error.error.message;
+                return throwError(error);
+              })
+            ).subscribe({
+              
+              next: (res)=>{
+               // alert("successful"); this.registerForm.reset(); this.route.navigate(['login'])},
+               if(this.enableTwoFactorAuth){
+               // this.auth.enableTwoFactorAuth(res.userId).subscribe(() => {
+                
+                this.auth.enableTwoFactorAuth(res.userId).subscribe(() => {
+                  alert("Two-factor authentication enabled successfully.");
+                  this.registerForm.reset();
+                  this.route.navigate(['login']);
+                }, (err: HttpErrorResponse) => {
+                  this.errorMessage = err.message;
+                  this.showError = true;
+                });
+              } else {
+                alert("Registration successful.");
+                this.registerForm.reset();
+                this.route.navigate(['login']);
+              }
+            },
+              error: (err: HttpErrorResponse) => {
+                this.errorMessage = err.message;
+                this.showError = true;
+              }
+            })
+            
+        // this.auth.signUp("Authentication/register", registerFormValue).subscribe({
+        //   next: (res)=>{alert("successful"); this.registerForm.reset(); this.route.navigate(['login'])},
+        //   error: (err: HttpErrorResponse) => {
+        //     this.errorMessage = err.message;
+        //     this.showError = true;
+        //   }
+        // })
         console.log(this.registerForm.value)
       }
     }

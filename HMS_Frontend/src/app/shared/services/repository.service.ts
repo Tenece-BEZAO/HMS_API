@@ -14,9 +14,9 @@ export class RepositoryService {
   constructor(private http: HttpClient, private envUrl: EnvironmentUrlService) { }
 
 
-   public registerUser = (route: string, body: User) => {
-    return this.http.post<RegistrationResponseDto>(this.createCompleteRoute(route, this.envUrl.urlAddress), body, this.generateHeaders());
-  }
+  //  public registerUser = (route: string, body: User) => {
+  //   return this.http.post<RegistrationResponseDto>(this.createCompleteRoute(route, this.envUrl.urlAddress), body, this.generateHeaders());
+  // }
 
   // registerUsers(): Observable<string[]>{
   //   return this.http.post<string[]>('https://localhost:7258/api/Authentication/register')
@@ -24,9 +24,9 @@ export class RepositoryService {
  
  
 
-  public Authenticate = (route: string, user: User) => {
-    return this.http.post<User>(this.createCompleteRoute(route, this.envUrl.urlAddress), user, this.generateHeaders());
-  }
+  // public Authenticate = (route: string, user: User) => {
+  //   return this.http.post<User>(this.createCompleteRoute(route, this.envUrl.urlAddress), user, this.generateHeaders());
+  // }
   public getClaims = (route: string) => {
     return this.http.get(this.createCompleteRoute(route, this.envUrl.urlAddress));
   }

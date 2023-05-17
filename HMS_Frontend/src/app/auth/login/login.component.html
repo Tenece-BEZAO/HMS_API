@@ -1,7 +1,7 @@
 
 <!-- Section: Design Block -->
-<section class="">
-    <!-- Jumbotron -->
+<!-- <section class="">
+
     <div class="px-4 py-5 px-md-5 text-center text-lg-start" style="background-color: hsl(0, 0%, 96%)">
       <div class="container">
         <div class="row gx-lg-5 align-items-center">
@@ -25,29 +25,14 @@
                   {{errorMessage}}
               </div>
                 <form [formGroup]="loginForm">
-                  <!-- <div class="row">
-                    <div class="col-md-6 mb-4">
-                      <div class="form-outline">
-                        <input type="text" id="form3Example1" class="form-control" />
-                        <label class="form-label" for="form3Example1">First name</label>
-                      </div>
-                    </div>
-                    <div class="col-md-6 mb-4">
-                      <div class="form-outline">
-                        <input type="text" id="form3Example2" class="form-control" />
-                        <label class="form-label" for="form3Example2">Last name</label>
-                      </div>
-                    </div>
-                  </div> -->
-  
-                  <!-- Email input -->
+                
                   <div class="form-outline mb-4 input-field" [class.error] ="loginForm.controls['email'].dirty && loginForm.hasError('required','email')">
                     <input formControlName ="email" type="email" id="form3Example3" class="form-control" />
                     <small *ngIf="loginForm.controls['email'].dirty && loginForm.hasError('required','email')" class="text-danger">email is require</small>
                     <label class="form-label" for="form3Example3">Email address</label>
                   </div>
   
-                  <!-- Password input -->
+                  
                   <div class="form-outline mb-4">
                     <input formControlName ="password" type="password" id="form3Example4" class="form-control" />
                     <small *ngIf="loginForm.controls['password'].dirty && loginForm.hasError('required','password')" class="text-danger">password is require</small>
@@ -56,7 +41,7 @@
                     <label class="form-label" for="form3Example4">Password</label>
                   </div>
                   <p class="small mb-5 pb-lg-2"><a class="text-muted" href="#!">Forgot password?</a></p>
-                  <!-- Checkbox -->
+                 
                   <div class="form-check d-flex justify-content-center mb-4">
                     <input class="form-check-input me-2" type="checkbox" value="" id="form2Example33" checked />
                     <label class="form-check-label" for="form2Example33">
@@ -64,16 +49,12 @@
                     </label>
                   </div>
   
-                  <!-- Submit button -->
+            
                   <div class="offset-5 col-md-1">
                     <button (click)="onSubmit(loginForm.value)" type="submit" class="btn btn-info" [disabled]="!loginForm.valid">login</button>
                     <div class ="">Dont have account?<a id="forget" routerLink="/register">signUp</a></div>
                 </div>
-                  <!-- <button type="submit" class="btn btn-primary btn-block mb-4">
-                    Sign up
-                  </button> -->
-  
-                  <!-- Register buttons -->
+                  
                   <div class="text-center">
                     <p>or sign up with:</p>
                     <div style="padding: 20px;">
@@ -99,6 +80,73 @@
         </div>
       </div>
     </div>
-    <!-- Jumbotron -->
-  </section>
-  <!-- Section: Design Block -->
+
+  </section> -->
+
+
+  <form [formGroup]="loginForm">
+    <div class="card-body py-5 px-md-5">
+      <div *ngIf="invalidLogin" class="alert alert-danger" role="alert">
+        {{errorMessage}}
+      </div>
+      <!-- Email input -->
+      <div class="form-outline mb-4">
+        <input formControlName="email" type="email" id="form3Example3" class="form-control" />
+        <small *ngIf="validateControl('email') && loginForm.controls['email'].dirty && loginForm.hasError('required','email')" class="text-danger">Email is required</small>
+        <label class="form-label" for="form3Example3">Email address</label>
+      </div>
+  
+      <!-- Password input -->
+      <div class="form-outline mb-4">
+        <input formControlName="password" type="password" id="form3Example4" class="form-control" />
+        <small *ngIf="validateControl('password') && hasError('password', 'required')" class="text-danger">
+          Password is required
+        </small>
+        <span (click)="hideShowPass()" class="fa {{eyeIcon}}"></span>
+        <label class="form-label" for="form3Example4">Password</label>
+      </div>
+  
+      
+      <div class="row mb-4">
+        <div class="col d-flex justify-content-center">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="form2Example31" checked />
+            <label class="form-check-label" for="form2Example31"> Remember me </label>
+          </div>
+        </div>
+  
+        <div class="col">
+          <a href="#!">Forgot password?</a>
+        </div>
+      </div>
+  
+      <!-- Submit button -->
+      <button (click)="onSubmit(loginForm.value)" type="submit" class="btn btn-info" [disabled]="!loginForm.valid">Sign In</button>
+   
+    </div>
+  </form>
+  <!-- Register buttons -->
+  <div class="text-center">
+    <div class="">Don't have an account?<a id="forget" routerLink="/register">Sign Up</a></div>
+    <p>or sign up with:</p>
+    <button type="button" class="btn btn-link btn-floating mx-1">
+      <i class="fab fa-facebook-f"></i>
+    </button>
+    <asl-google-signin-button></asl-google-signin-button>
+    <!-- <asl-google-signin-button type = 'icon' (click)="googleLogin()"></asl-google-signin-button> -->
+    <!-- <asl-google-signin-button type = 'icon' client_id="904888776847-4cg98fp26vn79sg275vbdf660bng9pbq.apps.googleusercontent.com" (click)="googleLogin()">google</asl-google-signin-button> -->
+    <button type="button" class="btn btn-link btn-floating mx-1 social-btn google" (click)="googleLogin()">
+      <i class="fab fa-google"></i>
+    </button>
+
+    <button type="button" class="btn btn-link btn-floating mx-1">
+      <i class="fab fa-twitter"></i>
+    </button>
+
+    <button type="button" class="btn btn-link btn-floating mx-1">
+      <i class="fab fa-github"></i>
+    </button>
+  </div>
+  
+
+ 
