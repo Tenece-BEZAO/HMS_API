@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Google.Apis.Auth;
 using HMS.BLL.Interfaces;
 using HMS.DAL.Dtos.Reponses;
 using HMS.DAL.Dtos.Requests;
@@ -11,7 +12,6 @@ using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.Win32;
 using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
@@ -21,7 +21,7 @@ using static HMS.DAL.Dtos.Requests.AuthenticationRequest;
 
 namespace HMS.BLL.Implementation
 {
-    public class AuthenticationService : IAuthenticationService
+    public class AuthenticationService : IAuthenticationServices
     {
         private readonly IMapper _mapper;
         private readonly UserManager<AppUser> _userManager;
@@ -32,6 +32,7 @@ namespace HMS.BLL.Implementation
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IUrlHelperFactory _urlHelperFactory;
         private readonly IServiceProvider _serviceProvider;
+        private readonly IConfigurationSection _goolgeSettings;
         private AppUser? _user;
 
         public AuthenticationService(
@@ -55,22 +56,28 @@ namespace HMS.BLL.Implementation
             _httpContextAccessor = httpContextAccessor;
             _urlHelperFactory = urlHelperFactory;
             _serviceProvider = serviceProvider;
+            _goolgeSettings = _configuration.GetSection("GoogleAuthSettings");
         }
 
-        public async Task<RegistrationResult> RegisterUser(RegisterDto register)
+        public async Task<IdentityResult> RegisterUser(RegisterDto register)
         {
             _user = await _userManager.FindByEmailAsync(register.Email);
             if (_user != null)
             {
-                return new RegistrationResult { Succeeded = false, ErrorMessage = "User already exists" };
+                return IdentityResult.Failed(new IdentityError { Code = "DuplicateEmail", Description = "A user with this email address already exists." });
             }
             var newUser = _mapper.Map<AppUser>(register);
-          //  string roles = string.Join(",", register.Roles);
-           var result = await _userManager.CreateAsync(newUser, register.Password);
-                if (!result.Succeeded)
-                {
-                    throw new InvalidOperationException("User Failed to create");
-                }
+            //  string roles = string.Join(",", register.Roles);
+            var nameExist = await _userManager.FindByNameAsync(register.UserName);
+            if (nameExist != null)
+            {
+                return IdentityResult.Failed(new IdentityError { Description = "Username already exist" });
+            }
+            var result = await _userManager.CreateAsync(newUser, register.Password);
+            if (!result.Succeeded)
+            {
+                return IdentityResult.Failed(new IdentityError { Code = "InvalidPassword", Description = "Password must contain alphanumerics, cap and small letter and numbers." });
+            }
             // if (await _roleManager.RoleExistsAsync(roles))
             if (newUser.TwoFactorEnabled == true)
             {
@@ -99,10 +106,10 @@ namespace HMS.BLL.Implementation
                 var message = new Message(new string[] { newUser.Email }, "confirmation email link", confirmationLink);
                 _emailService.sendEmail(message);
 
-                return new RegistrationResult { Succeeded = true , ConfirmationLink = confirmationLink};
+                return IdentityResult.Success;
             }
             else
-                return new RegistrationResult { Succeeded = true };
+                return IdentityResult.Success;
         }
 
 
@@ -203,39 +210,60 @@ namespace HMS.BLL.Implementation
                     }
                 }
             }
+            // await _userManager.SetLockoutEndDateAsync(user, new DateTime(2000, 1, 1));
             return "email does not exist";
         }
 
-        public async Task<AuthStatus> UserLogin(LoginDto loginDto)
+
+
+        public async Task<AuthResponseDto> UserLogin(LoginDto loginDto)
         {
             LoginStatus loginStatus;
             _user = await _userManager.FindByEmailAsync(loginDto.Email);
             if (_user == null)
-                throw new InvalidOperationException("Email does not exist");
-
+                return new AuthResponseDto { ErrorMessage = "A user with this email address does not exist." };
+            /*if (!await _userManager.IsEmailConfirmedAsync(_user))
+                return new AuthResponseDto { ErrorMessage = "Email not confirmed" };*/
             var result = (_user != null && await _userManager.CheckPasswordAsync(_user, loginDto.Password));
-            if (!result)
-                throw new InvalidOperationException("Invalid Email or password");
+            await _userManager.AccessFailedAsync(_user);
+            if (await _userManager.IsLockedOutAsync(_user))
+            {
+                var content = $"Your account is locked out. To reset the password click this link: {loginDto.ClientURI}";
+                var message = new Message(new string[] { loginDto.Email }, "Locked out account information", content);
+
+                _emailService.sendEmail(message);
+
+                return new AuthResponseDto { ErrorMessage = "Your account has been locked out." };
+            }
+
+            /*    if (await _userManager.GetTwoFactorEnabledAsync(user))
+                    return await GenerateOTPFor2StepVerification(user);*/
 
             if (_user.TwoFactorEnabled)
             {
+                var providers = await _userManager.GetValidTwoFactorProvidersAsync(_user);
+                if (!providers.Contains("Email"))
+                {
+                    return new AuthResponseDto { ErrorMessage = "Invalid 2-Step Verification Provider." };
+                }
+
                 await _signInManager.SignOutAsync();
                 await _signInManager.PasswordSignInAsync(_user, loginDto.Password, false, false);
                 var token = await _userManager.GenerateTwoFactorTokenAsync(_user, "Email");
                 var message = new Message(new string[] { _user.Email }, "OTP confirmation", token);
                 _emailService.sendEmail(message);
-                var deliver = "check you email for otp";
-                return new AuthStatus { Token = deliver };
+                var deliver = "check your email for otp";
+                return new AuthResponseDto { IsAuthSuccessful = true, Token = deliver, Is2StepVerificationRequired = true, Provider = "Email" };
             }
-            loginStatus = LoginStatus.LoginSuccessful;
-            var authResponse = new AuthStatus()
+
+            var authResponse = new AuthResponseDto()
             {
-                LoginStatus = loginStatus,
-                Token = await GenerateToken(),
+                IsAuthSuccessful = true,
+                Token = await GenerateToken(_user),
             };
 
+            //return Task.FromResult(authResponse);
             return authResponse;
-
         }
 
         public async Task<string> LoginWithOtp(string userName, string code)
@@ -249,14 +277,14 @@ namespace HMS.BLL.Implementation
                 throw new InvalidOperationException("Invalid token");
             }
 
-            return await GenerateToken();
+            return await GenerateToken(_user);
         }
 
 
-        private async Task<string> GenerateToken()
+        private async Task<string> GenerateToken(AppUser user)
         {
             var signingCredentials = GetSigningCredentials();
-            var claims = await GetClaims();
+            var claims = await GetClaims(user);
             var tokenOptions = GenerateTokenOptions(signingCredentials, claims);
             return new JwtSecurityTokenHandler().WriteToken(tokenOptions);
 
@@ -269,7 +297,7 @@ namespace HMS.BLL.Implementation
             return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
         }
 
-        private async Task<List<Claim>> GetClaims()
+        private async Task<List<Claim>> GetClaims(AppUser _user)
         {
             if (_user == null)
             {
@@ -338,5 +366,82 @@ namespace HMS.BLL.Implementation
         {
             await _signInManager.SignOutAsync();
         }
+
+
+        public async Task<AuthResponseDto> GoogleLogin(GoogleAuthDto googleAuth)
+        {
+            var payload = await VerifyGoogleToken(googleAuth);
+            if (payload == null)
+                throw new Exception("Invalid External Authentication.");
+            var info = new UserLoginInfo(googleAuth.Provider, payload.Subject, googleAuth.Provider);
+            var user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
+            if (user == null)
+            {
+                user = await _userManager.FindByEmailAsync(payload.Email);
+                if (user == null)
+                {
+                    user = new AppUser { Email = payload.Email, UserName = payload.Email };
+                    await _userManager.CreateAsync(user);
+                    //prepare and send an email for the email confirmation
+                    await _userManager.AddToRoleAsync(user, "Viewer");
+                    await _userManager.AddLoginAsync(user, info);
+                }
+                else
+                {
+                    await _userManager.AddLoginAsync(user, info);
+                }
+            }
+            if (user == null)
+                throw new Exception("Invalid External Authentication.");
+            //check for the Locked out account
+            var token = await GenerateToken(user);
+            //return token;
+            return new AuthResponseDto { Token = token, IsAuthSuccessful = true };
+        }
+        private async Task<GoogleJsonWebSignature.Payload> VerifyGoogleToken(GoogleAuthDto googleAuth)
+        {
+            try
+            {
+                var settings = new GoogleJsonWebSignature.ValidationSettings()
+                {
+                    Audience = new List<string>() { _goolgeSettings.GetSection("clientId").Value }
+                };
+
+                var payload = await GoogleJsonWebSignature.ValidateAsync(googleAuth.IdToken, settings);
+                return payload;
+            }
+            catch (Exception ex)
+            {
+                //log an exception
+                return null;
+            }
+        }
+        public async Task<string> VerifyTwoFactorAuth(TwoFactorDto twoFactorDto)
+        {
+
+            var user = await _userManager.FindByEmailAsync(twoFactorDto.Email);
+            if (user is null)
+                return "Invalid Request";
+            // await _userManager.SetTwoFactorEnabledAsync(user, true);
+            var validVerification = await _userManager.VerifyTwoFactorTokenAsync(user, twoFactorDto.Provider, twoFactorDto.Token);
+            if (!validVerification)
+                return "Invalid Token Verification";
+
+            var token = await GenerateToken(user);
+            return token;
+        }
+
+        public async Task EnableTwoFactorAuth(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user != null)
+            {
+                await _userManager.SetTwoFactorEnabledAsync(user, true);
+            }
+        }
+
+
+
+
     }
 }

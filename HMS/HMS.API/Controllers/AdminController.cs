@@ -141,6 +141,16 @@ namespace HMS.API.Controllers
         }
 
 
+        [HttpGet("Privacy")]
+        [Authorize]
+        public IActionResult Privacy()
+        {
+            var claims = User.Claims
+                .Select(c => new { c.Type, c.Value })
+                .ToList();
+            return Ok(claims);
+        }
+
         private ResponseStatus SetResponse(int code, string message, string token, string role)
         {
             ResponseStatus response = new ResponseStatus()

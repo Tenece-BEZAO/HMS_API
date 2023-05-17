@@ -111,8 +111,8 @@ namespace HMS.BLL.Implementation
         {
             var enrollee = _mapper.Map<Enrollee>(enrolleeDTO);
             await _roleManager.CreateAsync(new IdentityRole("Enrollee"));
-            await _userManager.AddToRoleAsync(enrollee, "Enrollee");
-            enrollee.RegisteredDate = DateTime.Now;
+          //  await _userManager.AddToRoleAsync(enrollee, "Enrollee");
+          //  enrollee.RegisteredDate = DateTime.Now;
             await _enrolleeRepository.AddAsync(enrollee);
             await _unitOfWork.SaveChangesAsync();
 

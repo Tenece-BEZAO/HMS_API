@@ -176,7 +176,7 @@ namespace HMS.DAL.Migrations
                             Address = "583 Wall Dr. Gwynn Oak, MD 21207",
                             ConcurrencyStamp = "a6856ba5-0dc3-4d44-8154-2924ed46df4a",
                             DateOfBirth = new DateTime(2023, 4, 12, 9, 30, 16, 983, DateTimeKind.Local).AddTicks(6083),
-                            Email = "prptamarachi@gmail.com",
+                            Email = "admin@gmail.com",
                             EmailConfirmed = false,
                             FirstName = "Amarachi",
                             Gender = 1,

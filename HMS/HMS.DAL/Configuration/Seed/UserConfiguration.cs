@@ -29,7 +29,7 @@ namespace HMS.DAL.Configuration.Seed
                     Gender = Gender.Female,
                     PhoneNumber = "07038730732",
                     PasswordHash = "@Amara123",
-                    Email = "prptamarachi@gmail.com"
+                    Email = "admin@gmail.com"
                 }
 
             );
@@ -38,7 +38,7 @@ namespace HMS.DAL.Configuration.Seed
 
 /*        public async Task SeedAdminRole()
         {
-            var adminUser = await _userManager.FindByEmailAsync("prptamarachi@gmail.com");
+            var adminUser = await _userManager.FindByEmailAsync("admin@gmail.com");
 
             if (adminUser != null)
             {

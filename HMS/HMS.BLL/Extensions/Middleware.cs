@@ -22,7 +22,7 @@ namespace HMS.BLL.Extensions
         public static void RegisterServices(this IServiceCollection services)
         {
             services.AddTransient<IUnitOfWork, UnitOfWork<HmoDbContext>>();
-            services.AddTransient<IAuthenticationService, AuthenticationService>();
+            services.AddTransient<IAuthenticationServices, AuthenticationService>();
             services.AddTransient<IAdminService, AdminService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IClaimServices, ClaimServices>();
@@ -39,7 +39,7 @@ namespace HMS.BLL.Extensions
             var emailConfig = configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
             services.AddSingleton(emailConfig);
             services.AddScoped<IEmailService, EmailService>();
-            services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
+            services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();   
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             return services;
         }
