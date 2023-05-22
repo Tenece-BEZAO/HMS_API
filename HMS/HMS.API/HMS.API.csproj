@@ -20,12 +20,11 @@
   </ItemGroup>
 
   <ItemGroup>
-	<ProjectReference Include="..\HMS.BLL\HMS.BLL.csproj" />
-	<ProjectReference Include="..\HMS.Shared\HMS.Shared.csproj" />
+    <Folder Include="internal_logs\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="internal_logs\" />
+    <ProjectReference Include="..\HMS.BLL\HMS.BLL.csproj" />
   </ItemGroup>
 
 </Project>

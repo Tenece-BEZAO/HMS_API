@@ -1,6 +1,7 @@
 ﻿using HMS.BLL.ActionFilters;
 using HMS.BLL.Interfaces;
 using HMS.DAL.Dtos.Reponses;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
@@ -17,13 +18,13 @@ namespace HMS.API.Controllers
     {
         private readonly IAuthenticationServices _authService;
         private readonly IUserService _userService;
+        private IAuthenticationService service;
 
         public AuthenticationController(IAuthenticationServices authenticationService, IUserService userService)
         {
             _authService = authenticationService;
             _userService = userService;
         }
-
 
         [Route("register")]
         [HttpPost]
@@ -89,7 +90,7 @@ namespace HMS.API.Controllers
             var token = await _authService.LoginWithOtp(userName, code);
             return Ok(token);
         }
-
+    
         [HttpPost("TwoStepVerification")]
         public async Task<IActionResult> TwoStepVerification([FromBody] TwoFactorDto twoFactorDto)
         {

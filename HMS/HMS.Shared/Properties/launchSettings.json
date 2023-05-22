@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "HMS.Shared": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:62536;http://localhost:62537"
+    }
+  }
+}
