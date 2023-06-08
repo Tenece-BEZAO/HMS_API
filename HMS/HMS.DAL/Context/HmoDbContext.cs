@@ -109,7 +109,7 @@ namespace HMS.DAL.Context
             var roleManager = serviceScope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
 
-            var user = userManager.FindByEmailAsync("prptamarachi@gmail.com").Result;
+            var user = userManager.FindByEmailAsync("admin@gmail.com").Result;
             if (user != null)
             {
                 userManager.AddToRoleAsync(user, "Admin").Wait();

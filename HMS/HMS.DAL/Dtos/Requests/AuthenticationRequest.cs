@@ -17,7 +17,8 @@ namespace HMS.DAL.Dtos.Requests
             public string? Email { get; init; }
             [Required(ErrorMessage = "Password name is required")]
             public string? Password { get; init; }
-                    
+            public string? ClientURI { get; set; }
+
         }
 
 
@@ -44,7 +45,7 @@ namespace HMS.DAL.Dtos.Requests
             public string? PhoneNumber { get; init; }
            // public ICollection<string>? Roles { get; init; }
             [Display(Name = "2 Factor Authentication")]
-            public bool TwoFactorEnabled { get; set; } = true;
+            public bool TwoFactorEnabled { get; set; } = false;
 
 
         }
@@ -132,5 +133,21 @@ namespace HMS.DAL.Dtos.Requests
             [Required]
             public string RecoveryEmail { get; set; }
         }
+
+        public class GoogleAuthDto
+        {
+            public string? Provider { get; set; }
+            public string? IdToken { get; set; }
+        }
+        public class TwoFactorDto
+        {
+            [Required]
+            public string? Email { get; set; }
+            [Required]
+            public string? Provider { get; set; }
+            [Required]
+            public string? Token { get; set; }
+        }
+
     }
 }

@@ -29,7 +29,12 @@ namespace HMS.BLL.Extensions
 
             services.AddIdentity<AppUser, IdentityRole>(options =>
             {
-
+                options.Password.RequiredLength = 7;
+                options.Password.RequireDigit = true;
+                options.User.RequireUniqueEmail = true;
+                options.Lockout.AllowedForNewUsers = true;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(9);
+                options.Lockout.MaxFailedAccessAttempts = 3;
                 options.Tokens.ProviderMap.Add("Email", new TokenProviderDescriptor(
                     typeof(EmailTokenProvider<AppUser>)));
             })
@@ -54,7 +59,7 @@ namespace HMS.BLL.Extensions
                 Gender = Gender.Male,
                 PhoneNumber = "07038730732",
                 PasswordHash = "P@ssword2023",
-                Email = "superadmin@hms.com",
+                Email = "superadmin@gmail.com",
                 EmailConfirmed = false
             };
 
